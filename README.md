@@ -28,3 +28,17 @@ src/
 │   ├── shared/       # Componentes y utilidades compartidas
 │   ├── assets/       # Recursos estáticos
 │   └── environments/ # Configuraciones por entorno
+
+```
+## 🧑‍💻 Contribuir
+
+**Sigue estos pasos:**
+
+- Clona el repositorio.
+- Crea una rama para tu funcionalidad (git checkout -b feature/nueva-funcionalidad).
+- Realiza tus cambios y haz commit (git commit -m "Descripción de cambios").
+- Haz push a tu rama (git push origin feature/nueva-funcionalidad).
+- Abre un Pull Request.
+
+**🛡️ Licencia**
+Este proyecto está bajo la licencia MIT.

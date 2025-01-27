@@ -1,6 +1,4 @@
-# JoajuCalls
-
-# Central Telefónica en la Nube - Dashboard
+# JoajuCalls - Central Telefónica en la Nube
 
 Este proyecto consiste en un **Dashboard para la gestión de una central telefónica desde la nube**, diseñado para facilitar la administración, el seguimiento y la gestión de agentes y reportes. Proporciona una interfaz moderna y eficiente, construida con tecnologías de vanguardia.
 

@@ -1,101 +1,113 @@
-<div class="h-full bg-white border-r border-gray-200 flex flex-col">
+<div class="h-screen bg-white dark:bg-darkbg border-r border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden">
   <!-- Logo -->
-  <div class="p-4">
+  <div class="flex-shrink-0 p-4">
     <div class="flex items-center">
-      <h1 class="text-indigo-600 text-3xl font-bold">JoajuCall</h1>
+      <h1 class="text-indigo-600 dark:text-indigo-400 text-3xl font-bold">JoajuCall</h1>
     </div>
   </div>
 
-  <!-- Main Navigation -->
-  <nav class="px-3 py-2">
-    <a routerLink="/dashboard"
-       routerLinkActive="text-indigo-600"
-       class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-      </svg>
-      Dashboard
-    </a>
+  <!-- Contenedor scrolleable para la navegación -->
+  <div class="flex-1 overflow-y-auto">
+    <!-- Principal -->
+    <div class="px-3 mt-3">
+      <h3 class="px-3 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+        Principal
+      </h3>
+    </div>
 
-    <a routerLink="/team"
-       routerLinkActive="text-indigo-600"
-       class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-      </svg>
-      Team
-    </a>
-
-    <a routerLink="/projects"
-       routerLinkActive="text-indigo-600"
-       class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
-      </svg>
-      Projects
-    </a>
-
-    <a routerLink="/calendar"
-       routerLinkActive="text-indigo-600"
-       class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-      </svg>
-      Calendar
-    </a>
-
-    <a routerLink="/documents"
-       routerLinkActive="text-indigo-600"
-       class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-      </svg>
-      Documents
-    </a>
-
-    <a routerLink="/reports"
-       routerLinkActive="text-indigo-600"
-       class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-      </svg>
-      Reports
-    </a>
-  </nav>
-
-  <!-- Teams Section -->
-  <div class="mt-8 px-3">
-    <h3 class="px-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-      Your teams
-    </h3>
-    <div class="mt-2 space-y-1">
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer">
-        <span class="flex-shrink-0 w-6 h-6 rounded-md bg-indigo-100 text-indigo-500 flex items-center justify-center font-medium">
-          H
-        </span>
-        Heroicons
+    <nav class="px-3 py-2">
+      <a routerLink="/dashboard"
+         routerLinkActive="text-indigo-600 dark:text-indigo-400"
+         class="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg cursor-pointer">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        </svg>
+        Dashboard
       </a>
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer">
-        <span class="flex-shrink-0 w-6 h-6 rounded-md bg-purple-100 text-purple-500 flex items-center justify-center font-medium">
-          T
-        </span>
-        Tailwind Labs
-      </a>
-      <a href="#" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer">
-        <span class="flex-shrink-0 w-6 h-6 rounded-md bg-green-100 text-green-500 flex items-center justify-center font-medium">
-          W
-        </span>
-        Workcation
-      </a>
+    </nav>
+
+    <!-- Interface Section -->
+    <div class="px-3">
+      <h3 class="px-3 text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+        INTERFACE
+      </h3>
+      <div class="mt-2 space-y-1">
+        <!-- Admin Dropdown -->
+        <div>
+          <a href="#"
+             (click)="toggleDropdown($event)"
+             class="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.1 0 2-.9 2-2V7a2 2 0 10-4 0v2c0 1.1.9 2 2 2zm0 3c-2.5 0-4.5 2-4.5 4.5V20h9v-1.5c0-2.5-2-4.5-4.5-4.5z" />
+            </svg>
+            Admin
+            <svg [class.rotate-180]="isDropdownOpen" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-auto transition-transform duration-300"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </a>
+          @if(isDropdownOpen) {
+            <div class="pl-6 space-y-1">
+              <a routerLink="/admin/usuarios" class="block px-3 py-2 text-gray-500 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400">Usuarios</a>
+              <a routerLink="/admin/colas" class="block px-3 py-2 text-gray-500 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400">Colas</a>
+              <a routerLink="/admin/agentes" class="block px-3 py-2 text-gray-500 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400">Agentes</a>
+              <a routerLink="/admin/teams" class="block px-3 py-2 text-gray-500 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400">Teams</a>
+            </div>
+          }
+        </div>
+
+        <!-- Call Center Dropdown -->
+        <div>
+          <a href="#"
+             (click)="toggleCallCenter($event)"
+             class="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v-3a8 8 0 1 1 16 0v3m-2 4h2a2 2 0 0 0 2-2v-4M2 13v4a2 2 0 0 0 2 2h2m8 0h-4m4 0a2 2 0 0 1-2 2h-2"/>
+            </svg>
+            Call Center
+            <svg [class.rotate-180]="isCallCenterOpen" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-auto transition-transform duration-300"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </a>
+          @if(isCallCenterOpen) {
+            <div class="pl-6 space-y-1">
+              <a routerLink="/callcenter/consola" class="block px-3 py-2 text-gray-500 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400">Consola</a>
+            </div>
+          }
+        </div>
+
+        <!-- Utilidades Dropdown -->
+        <div>
+          <a href="#"
+             (click)="toggleUtilidades($event)"
+             class="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 1v2m0 18v2m-6.364-3.364l1.414-1.414M18.364 4.636l-1.414 1.414M21 12h-2m-16 0H1m3.636-7.364l1.414 1.414M18.364 19.364l-1.414-1.414M12 5a7 7 0 1 1 0 14"/>
+            </svg>
+            Utilidades
+            <svg [class.rotate-180]="isUtilidadesOpen" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 ml-auto transition-transform duration-300"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </a>
+          @if(isUtilidadesOpen) {
+            <div class="pl-6 space-y-1">
+              <a routerLink="/utilidades/reportehistorico" class="block px-3 py-2 text-gray-500 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400">Reporte Histórico</a>
+              <a routerLink="/utilidades/reportemonitoreos" class="block px-3 py-2 text-gray-500 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400">Reportes Monitoreos</a>
+              <a routerLink="/utilidades/preview" class="block px-3 py-2 text-gray-500 dark:text-gray-300 hover:text-indigo-500 dark:hover:text-indigo-400">Preview</a>
+            </div>
+          }
+        </div>
+      </div>
     </div>
   </div>
 
-
-    <!-- Settings link - Add this at the bottom of the sidebar -->
-  <div class="mt-auto px-3 py-4">
+  <!-- Settings (fixed at bottom) -->
+  <div class="flex-shrink-0 px-3 py-4 border-t border-gray-200 dark:border-gray-700">
     <a routerLink="/settings"
-      routerLinkActive="text-indigo-600"
-      class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg">
+       routerLinkActive="text-indigo-600 dark:text-indigo-400"
+       class="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -103,7 +115,4 @@
       Settings
     </a>
   </div>
-
 </div>
-
-

@@ -7,5 +7,9 @@ module.exports = {
     extend: {},
   },
   plugins: [],
+  important: false,
+  darkMode: 'class',
+  corePlugins: {
+    preflight: false
+  }
 }
-

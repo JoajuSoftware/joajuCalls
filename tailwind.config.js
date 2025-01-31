@@ -1,15 +1,3 @@
-// /** @type {import('tailwindcss').Config} */
-// module.exports = {
-//   content: [
-//     "./src/**/*.{html,ts}"
-//   ],
-//   theme: {
-//     extend: {},
-//   },
-//   plugins: [],
-// }
-
-
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -17,13 +5,7 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
-    extend: {
-      colors: {
-
-        darkbg: '#1a1f2b',
-        darksecondary: '#232936'
-      }
-    },
+    extend: {},
   },
   plugins: [],
 }

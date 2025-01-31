@@ -11,22 +11,15 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './topbar.component.scss'
 })
 export class TopbarComponent implements OnInit {
-  @ViewChild('themeToggle') themeToggle!: ElementRef;
+
   searchQuery: string = '';
-  userName: string = 'Thomas Anree';
-  userRole: string = 'UX Designer';
-  isDark: boolean = false;
+  userName: string = 'Renato Martinez';
+  userRole: string = 'Developer';
+
 
   ngOnInit() {
-    // Verificar el tema actual
-    const savedTheme = localStorage.getItem('theme');
-    this.isDark = savedTheme === 'dark';
-    document.documentElement.classList.toggle('dark', this.isDark);
+
   }
 
-  toggleTheme() {
-    this.isDark = !this.isDark;
-    document.documentElement.classList.toggle('dark', this.isDark);
-    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
-  }
+
 }

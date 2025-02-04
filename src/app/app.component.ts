@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { TableModule } from 'primeng/table';
+import { RouterModule, RouterOutlet } from '@angular/router';
+
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, TableModule],
+  imports: [RouterOutlet, RouterModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

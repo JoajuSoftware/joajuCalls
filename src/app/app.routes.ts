@@ -15,17 +15,28 @@ import { MonitoreoPorColaComponent } from './pages/utilidades/reportes-monitoreo
 import { ListarCarterasComponent } from './pages/utilidades/preview/listar-carteras/listar-carteras.component';
 import { CrearCarteraComponent } from './pages/utilidades/preview/crear-cartera/crear-cartera.component';
 
+import { LoginComponent } from './auth/login/login.component';
+// import { authGuard } from './guards/auth.guard';
+// import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
   {
     path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: '',
     component: LayoutComponent,
+    // canActivate: [authGuard],
     children: [
-      // Redirige a Dashboard
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
 
-      //SECCION ADMIN
+      // SECCIÓN ADMIN
       {
         path: 'admin',
         children: [
@@ -33,41 +44,39 @@ export const routes: Routes = [
           { path: 'colas', component: ColasComponent },
           { path: 'agentes', component: AgentesComponent },
           { path: 'teams', component: TeamsComponent },
-          // Si entras a `/admin`, te lleva a `/admin/usuarios`
           { path: '', redirectTo: 'usuarios', pathMatch: 'full' },
         ],
       },
-      //SECCION CALLCENTER
+
+      // SECCIÓN CALLCENTER
       {
         path: 'callcenter',
         children: [
-          {path:'consola', component: ConsolaComponent}
+          { path: 'consola', component: ConsolaComponent }
         ]
       },
 
-      //SECCION UTILIDADES
+      // SECCIÓN UTILIDADES
       {
         path: 'utilidades',
         children: [
-          //REPORTES HISTORICOS
+          // REPORTES HISTÓRICOS
           { path: 'reportes-historicos/call-detalle', component: CallDetalleComponent },
           { path: 'reportes-historicos/resumen-por-agente', component: ResumenPorAgenteComponent },
           { path: 'reportes-historicos/resumen-por-cola', component: ResumenPorColaComponent },
           { path: 'reportes-historicos/conexion-agentes', component: ConexionAgentesComponent },
 
-           // REPORTES MONITOREO
+          // REPORTES MONITOREO
           { path: 'reportes-monitoreo/monitoreo-agentes', component: MonitoreoAgentesComponent },
           { path: 'reportes-monitoreo/monitoreo-por-cola', component: MonitoreoPorColaComponent },
 
-          //PREVIEW
+          // PREVIEW
           { path: 'preview/listar-carteras', component: ListarCarterasComponent },
           { path: 'preview/crear-cartera', component: CrearCarteraComponent }
         ],
-
       },
-
     ],
   },
-  // Si pones una URL incorrecta, te lleva a `/dashboard`
-  { path: '**', redirectTo: '' },
+  // Redirección si la URL no existe
+  { path: '**', redirectTo: 'login' }
 ];

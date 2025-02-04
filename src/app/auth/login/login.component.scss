@@ -28,13 +28,20 @@
 }
 
 .login-form-container .inputGroup {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .login-form-container #p-password .p-password .p-inputtext{
     width: 100%;
 }
 
-/* .login-form-container #password:first-child{
-    width: 100%;
-} */
+:host ::ng-deep .p-toast-message-error .p-toast-close-button,
+:host ::ng-deep .p-toast-message-error .p-toast-close-icon {
+    color: #c6c6c6;
+    background-color: inherit;
+}
+
+:host ::ng-deep .p-toast-message-error .p-toast-close-button:hover,
+:host ::ng-deep .p-toast-message-error .p-toast-close-icon:hover {
+    background-color: inherit;
+}

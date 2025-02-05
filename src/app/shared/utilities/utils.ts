@@ -1,0 +1,1 @@
+export const joajuLogo = 'https://cdn.joaju.net/joaju-logo.png'

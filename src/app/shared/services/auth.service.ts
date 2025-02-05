@@ -49,7 +49,7 @@ export class AuthService {
         }
     }
 
-    signOut() {
+    logout() {
         sessionStorage.removeItem('userData');
         this.isAuth.next(false);
         this.router.navigate(['/login']);

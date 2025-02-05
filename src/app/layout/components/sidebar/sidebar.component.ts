@@ -1,7 +1,8 @@
 // sidebar.component.ts
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -17,6 +18,7 @@ export class SidebarComponent {
   isReporteHistoricoOpen = false;
   isReporteMonitoreoOpen = false;
   isPreviewOpen = false;
+  authService: AuthService = inject(AuthService);
 
   toggleDropdown(event: Event) {
     event.preventDefault();
@@ -46,5 +48,9 @@ export class SidebarComponent {
   togglePreview(event: Event) {
     event.preventDefault();
     this.isPreviewOpen = !this.isPreviewOpen;
+  }
+
+  logout() {
+    this.authService.logout(); 
   }
 }

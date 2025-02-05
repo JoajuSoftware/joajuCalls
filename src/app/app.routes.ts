@@ -16,8 +16,7 @@ import { ListarCarterasComponent } from './pages/utilidades/preview/listar-carte
 import { CrearCarteraComponent } from './pages/utilidades/preview/crear-cartera/crear-cartera.component';
 
 import { LoginComponent } from './auth/login/login.component';
-// import { authGuard } from './guards/auth.guard';
-// import { HomeComponent } from './home/home.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -32,7 +31,7 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
     children: [
       { path: 'dashboard', component: DashboardComponent },
 

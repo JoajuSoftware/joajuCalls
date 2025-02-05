@@ -11,6 +11,7 @@ import { PasswordModule } from 'primeng/password';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { joajuLogo } from '../../shared/utilities/utils';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +32,8 @@ import { ToastModule } from 'primeng/toast';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+  loading = false;
+  joajuLogo = joajuLogo;
 
   constructor(
     private authService: AuthService, 
@@ -58,9 +61,11 @@ export class LoginComponent implements OnInit {
   
   login() {
     if (this.loginForm.valid) {
+      this.loading = true;
       const credentials = this.loginForm.value;
       this.authService.signIn(credentials).subscribe({
         next: (response) => {
+          this.loading = false;
           if (response.err_code === "200") {
             this.messageService.add({ 
               severity: 'success', 
@@ -68,6 +73,7 @@ export class LoginComponent implements OnInit {
               detail: 'Inicio de sesión exitoso' 
             });
           } else {
+            this.loading = false;
             this.messageService.add({ 
               severity: 'error', 
               summary: 'Error', 

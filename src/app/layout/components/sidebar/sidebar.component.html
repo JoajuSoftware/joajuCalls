@@ -175,7 +175,11 @@
                 class="flex items-center justify-between px-3 py-2 text-gray-600 hover:text-indigo-600 cursor-pointer"
               >
                 <span>Reportes Monitoreos</span>
-                <i [class.pi-chevron-down]="!isReporteMonitoreoOpen" [class.pi-chevron-up]="isReporteMonitoreoOpen" class="pi scale-75 ml-auto transition-transform duration-300"></i>
+                <i
+                  [class.pi-chevron-down]="!isReporteMonitoreoOpen"
+                  [class.pi-chevron-up]="isReporteMonitoreoOpen"
+                  class="pi scale-75 ml-auto transition-transform duration-300"
+                ></i>
               </a>
 
               @if(isReporteMonitoreoOpen) {
@@ -203,7 +207,11 @@
                 class="flex items-center justify-between px-3 py-2 text-gray-600 hover:text-indigo-600 cursor-pointer"
               >
                 <span>Preview</span>
-                <i [class.pi-chevron-down]="!isPreviewOpen" [class.pi-chevron-up]="isPreviewOpen" class="pi scale-75 ml-auto transition-transform duration-300"></i>
+                <i
+                  [class.pi-chevron-down]="!isPreviewOpen"
+                  [class.pi-chevron-up]="isPreviewOpen"
+                  class="pi scale-75 ml-auto transition-transform duration-300"
+                ></i>
               </a>
 
               @if(isPreviewOpen) {

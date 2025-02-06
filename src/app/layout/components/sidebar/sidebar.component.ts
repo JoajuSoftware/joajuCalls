@@ -1,9 +1,9 @@
 // sidebar.component.ts
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../shared/services/auth.service';
-import { inject } from '@angular/core';
+
 
 @Component({
   selector: 'app-sidebar',
@@ -13,12 +13,6 @@ import { inject } from '@angular/core';
   standalone: true
 })
 export class SidebarComponent {
-  //LOGIN
-  private authService = inject(AuthService);
-  logout() {
-    console.log('Logout clicked');
-    this.authService.signOut();
-  }
 
   isDropdownOpen = false;
   isCallCenterOpen = false;
@@ -26,6 +20,7 @@ export class SidebarComponent {
   isReporteHistoricoOpen = false;
   isReporteMonitoreoOpen = false;
   isPreviewOpen = false;
+  authService: AuthService = inject(AuthService);
 
   toggleDropdown(event: Event) {
     event.preventDefault();
@@ -55,5 +50,9 @@ export class SidebarComponent {
   togglePreview(event: Event) {
     event.preventDefault();
     this.isPreviewOpen = !this.isPreviewOpen;
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

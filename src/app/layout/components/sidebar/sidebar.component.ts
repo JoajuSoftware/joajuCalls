@@ -2,6 +2,8 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../../shared/services/auth.service';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,6 +13,13 @@ import { CommonModule } from '@angular/common';
   standalone: true
 })
 export class SidebarComponent {
+  //LOGIN
+  private authService = inject(AuthService);
+  logout() {
+    console.log('Logout clicked');
+    this.authService.signOut();
+  }
+
   isDropdownOpen = false;
   isCallCenterOpen = false;
   isUtilidadesOpen = false;

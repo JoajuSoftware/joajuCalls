@@ -1,24 +1,23 @@
 .login-container-parent {
     width: 100vw;
     height: 100vh;
-    background-color: rgb(40, 75, 215);
+    background-color: white;
     display: flex;
-    align-items: stretch;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
 
-    > .flex {
-        display: flex;
-        width: 100%;
-    }
 }
 
 .login-form-side {
     width: 35%;
+    height: 70vh;
     background: white;
     padding: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 .logo-container {
@@ -60,7 +59,7 @@
 .login-button {
     width: 100%;
     padding: 0.75rem;
-    background-color: #10B981;
+    background-color: #a855f7;
     color: white;
     border: none;
     border-radius: 0.375rem;
@@ -69,12 +68,12 @@
     transition: background-color 0.2s;
 
     &:hover {
-        background-color: #059669;
+        background-color: #9139e3;
     }
 }
 
 .forgot-password {
-    color: #10B981;
+    color: #3b82f6;
     text-decoration: none;
     font-size: 1rem;
     text-align: center;
@@ -114,7 +113,7 @@
         font-size: 1rem;
 
         i {
-            color: #10B981;
+            color: #a855f7;
             font-size: 1.25rem;
         }
     }

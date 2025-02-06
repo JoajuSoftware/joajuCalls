@@ -1,78 +1,50 @@
 <div class="login-container-parent">
-    <div class="flex">
-        <div class="login-form-side">
-            <!-- Logo -->
-            <div class="logo-container">
-                <img [src]="joajuLogo" alt="Solvan" class="logo-img" />
-                <span class="company-name">Joaju Calls</span>
+    <div class="login-form-side">
+        <!-- Logo -->
+        <div class="logo-container">
+            <img [src]="joajuLogo" alt="Solvan" class="logo-img" />
+            <span class="company-name">Joaju Calls</span>
+        </div>
+
+        
+        <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form-container">
+            <!-- <h2 class="login-title">Iniciar Sesión</h2> -->
+            <div class="input-wrapper">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-user"></i>
+                    </p-inputGroupAddon>
+                    <input 
+                        pInputText
+                        formControlName="username"
+                        placeholder="Usuario"
+                        class="p-inputtext"
+                    />
+                </p-inputGroup>
             </div>
 
-            
-            <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form-container">
-                <h2 class="login-title">Iniciar Sesión</h2>
-                <div class="input-wrapper">
-                    <p-inputGroup>
-                        <p-inputGroupAddon>
-                            <i class="pi pi-user"></i>
-                        </p-inputGroupAddon>
-                        <input 
-                            pInputText
-                            formControlName="username"
-                            placeholder="Usuario"
-                            class="p-inputtext"
-                        />
-                    </p-inputGroup>
-                </div>
+            <div class="input-wrapper">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-lock"></i>
+                    </p-inputGroupAddon>
+                    <p-password
+                        formControlName="password"
+                        [toggleMask]="true"
+                        [feedback]="false"
+                        placeholder="Contraseña"
+                        styleClass="p-password p-component p-inputwrapper p-input-icon-right"
+                        [style]="{ width: '100%' }"
+                        [inputStyle]="{ width: '100%' }"
+                    ></p-password>
+                </p-inputGroup>
+            </div>
 
-                <div class="input-wrapper">
-                    <p-inputGroup>
-                        <p-inputGroupAddon>
-                            <i class="pi pi-lock"></i>
-                        </p-inputGroupAddon>
-                        <p-password
-                            formControlName="password"
-                            [toggleMask]="true"
-                            [feedback]="false"
-                            placeholder="Contraseña"
-                            styleClass="p-password p-component p-inputwrapper p-input-icon-right"
-                            [style]="{ width: '100%' }"
-                            [inputStyle]="{ width: '100%' }"
-                        ></p-password>
-                    </p-inputGroup>
-                </div>
+            <button type="submit" class="login-button">
+                Iniciar Sesión
+            </button>
 
-                <button type="submit" class="login-button">
-                    Iniciar Sesión
-                </button>
-
-            </form>
-            <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
-        </div>
-
-        <div class="content-side">
-            <h1 class="welcome-title">Bienvenido a CloudPbx</h1>
-            <ul class="features-list">
-                <li>
-                    <i class="pi pi-check"></i>
-                    <span>Visualiza cada detalle de tus llamadas en la nube</span>
-                </li>
-                <li>
-                    <i class="pi pi-check"></i>
-                    <span>Control total sobre tus comunicaciones</span>
-                </li>
-                <li>
-                    <i class="pi pi-check"></i>
-                    <span>Cada llamada cuenta. Conoce los detalles</span>
-                </li>
-                <li>
-                    <i class="pi pi-check"></i>
-                    <span>Tus reportes de llamadas, siempre disponibles</span>
-                </li>
-                <li>
-                    <i class="pi pi-check"></i>
-                    <span>Datos en tiempo real para mejorar tu estrategia de comunicación</span>
-                </li>
-            </ul>
-        </div>
+        </form>
+        <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
     </div>
 </div>

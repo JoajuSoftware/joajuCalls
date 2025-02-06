@@ -10,7 +10,6 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
 import { joajuLogo } from '../../shared/utilities/utils';
 
 @Component({
@@ -24,8 +23,7 @@ import { joajuLogo } from '../../shared/utilities/utils';
     InputGroupAddonModule,
     InputGroupModule,
     FloatLabelModule,
-    PasswordModule,
-    ToastModule
+    PasswordModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -69,7 +67,7 @@ export class LoginComponent implements OnInit {
           if (response.err_code === "200") {
             this.messageService.add({ 
               severity: 'success', 
-              summary: 'Success', 
+              summary: 'Éxito', 
               detail: 'Inicio de sesión exitoso' 
             });
           } else {

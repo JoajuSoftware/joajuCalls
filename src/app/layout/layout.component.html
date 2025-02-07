@@ -1,17 +1,17 @@
-<div class="layout-wrapper flex h-screen">
+<div class="layout-wrapper flex h-screen bg-gray-100">
   <!-- Sidebar -->
-  <div class="layout-sidebar w-72 ">
+  <div class="layout-sidebar w-72 bg-white shadow-lg">
     <app-sidebar></app-sidebar>
   </div>
 
   <!-- Contenido Principal -->
   <div class="layout-main-container flex-1 flex flex-col">
     <!-- Topbar -->
-    <app-topbar></app-topbar>
+    <app-topbar class="bg-white shadow-sm"></app-topbar>
 
     <!-- Router Outlet -->
-    <div class="layout-main flex-1 p-6 overflow-y-auto">
+    <div class="layout-main flex-1 p-6 overflow-y-auto bg-gray-50">
       <router-outlet></router-outlet>
     </div>
   </div>
-</div>
+ </div>

@@ -11,15 +11,15 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './topbar.component.scss'
 })
 export class TopbarComponent implements OnInit {
-
-  searchQuery: string = '';
-  userName: string = 'Renato Martinez';
-  userRole: string = 'Developer';
+  userName: String = ''
+  userRole: String = ''
 
 
   ngOnInit() {
-
+    //obtemenos los datos guardados sessionStorage
+    const userData = JSON.parse(sessionStorage.getItem('userData') || '{}')
+    this.userName = userData.usuario
+    this.userRole = userData.perfil
   }
-
 
 }

@@ -4,6 +4,7 @@ import { RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../shared/services/auth.service';
 
+
 @Component({
   selector: 'app-sidebar',
   imports: [RouterLink, CommonModule, RouterModule],
@@ -12,6 +13,7 @@ import { AuthService } from '../../../shared/services/auth.service';
   standalone: true
 })
 export class SidebarComponent {
+
   isDropdownOpen = false;
   isCallCenterOpen = false;
   isUtilidadesOpen = false;
@@ -51,6 +53,6 @@ export class SidebarComponent {
   }
 
   logout() {
-    this.authService.logout(); 
+    this.authService.logout();
   }
 }

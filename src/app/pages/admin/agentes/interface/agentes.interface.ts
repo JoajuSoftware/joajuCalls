@@ -1,5 +1,6 @@
 // La interfaz principal que usas en tu componente para mostrar los datos
 export interface Agent {
+  id?: string;
   agente: string;
   nombre: string;
   exten: number;

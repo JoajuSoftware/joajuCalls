@@ -1,5 +1,8 @@
+<!-- agentes.component.html -->
 <div class="card">
-  <!-- Header Section -->
+  <p-messages [(value)]="messages" [enableService]="false" [closable]="true"></p-messages>
+
+  <!-- Sección del Encabezado -->
   <div class="flex justify-between items-center p-4 border-b bg-white">
     <button
       pButton
@@ -19,7 +22,7 @@
     </span>
   </div>
 
-  <!-- Table -->
+  <!-- Tabla -->
   <p-table
     #dt
     [value]="agents()"
@@ -30,6 +33,8 @@
     dataKey="id"
     [showCurrentPageReport]="true"
     [rowsPerPageOptions]="[10,25,50]"
+    [paginatorDropdownAppendTo]="'body'"
+    [paginatorPosition]="'bottom'"
     currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
     styleClass="p-datatable-sm"
     [scrollable]="true"
@@ -63,27 +68,36 @@
         <td class="p-2">{{agent.team}}</td>
         <td class="p-2">{{agent.estado}}</td>
         <td class="p-2">
-          <button
-            pButton
-            icon="pi pi-pencil"
-            class="p-button-primary p-button-sm p-button-rounded"
-            (click)="editAgent(agent)"
-            pTooltip="Modificar"
-          ></button>
+          <div class="action-buttons">
+            <button
+              pButton
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-sm p-button-edit"
+              (click)="editAgent(agent)"
+              pTooltip="Modificar"
+            ></button>
+            <button
+              pButton
+              icon="pi pi-trash"
+              class="p-button-rounded p-button-sm p-button-delete"
+              pTooltip="Eliminar"
+              (click)="false"
+            ></button>
+          </div>
         </td>
       </tr>
     </ng-template>
   </p-table>
 
-  <!-- Create/Edit Agent Dialog -->
+  <!-- Diálogo para Crear/Editar Agente -->
   <p-dialog
     [(visible)]="dialogVisible"
     [style]="{width: '450px'}"
-    header="Crear Agente"
+    [header]="isEditing ? 'Editar Agente' : 'Crear Agente'"
     [modal]="true"
     [draggable]="false"
     [resizable]="false"
-    class="p-fluid"
+    class="p-fluid dialog-container"
   >
     <div class="p-fluid">
       <div class="field">
@@ -144,4 +158,4 @@
       ></button>
     </div>
   </p-dialog>
- </div>
+</div>

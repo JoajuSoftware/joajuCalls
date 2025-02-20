@@ -22,14 +22,6 @@
       background: #7C3AED;
       border-color: #7C3AED;
     }
-
-    &.p-button-sm {
-      padding: 0.4rem;
-
-      &.p-button-rounded {
-        border-radius: 50%;
-      }
-    }
   }
 
   // Estilos del buscador
@@ -100,124 +92,32 @@
     }
   }
 
-  // Estilos del diálogo
-  .p-dialog {
-    border-radius: 0.5rem;
-    overflow: visible !important;
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    z-index: 1000 !important;
+  // Estilos de los botones de acción
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
 
-    &.p-dialog-draggable .p-dialog-header {
-      cursor: default;
-    }
+    .p-button.p-button-rounded {
+      width: 2.5rem;
+      height: 2.5rem;
 
-    .p-dialog-header {
-      background: #fff;
-      padding: 1.25rem 1.5rem;
-      border-bottom: 1px solid #e5e7eb;
-
-      .p-dialog-title {
-        font-size: 1.125rem;
-        font-weight: 600;
-        color: #111827;
-      }
-
-      .p-dialog-header-close {
-        width: 2rem;
-        height: 2rem;
-        border-radius: 9999px;
-        color: #6b7280;
+      &.p-button-edit {
+        background: #10B981;
+        border-color: #10B981;
 
         &:hover {
-          background: #f3f4f6;
+          background: #059669;
+          border-color: #059669;
         }
       }
-    }
 
-    .p-dialog-content {
-      background: #fff;
-      padding: 1.5rem;
-      position: relative;
-      overflow: visible !important;
+      &.p-button-delete {
+        background: #EF4444;
+        border-color: #EF4444;
 
-      .field {
-        margin-bottom: 1.25rem;
-
-        label {
-          display: block;
-          margin-bottom: 0.5rem;
-          font-weight: 500;
-          color: #374151;
-          font-size: 0.875rem;
-        }
-
-        // Estilos para el dropdown
-        .p-dropdown {
-          width: 100%;
-          border: 1px solid #e5e7eb;
-          border-radius: 0.375rem;
-          background: #fff;
-          z-index: 1001 !important;
-          position: relative;
-
-          .p-dropdown-label {
-            padding: 0.625rem 0.75rem;
-            font-size: 0.875rem;
-            color: #6b7280;
-            font-family: system-ui, -apple-system, sans-serif;
-          }
-
-          .p-dropdown-trigger {
-            padding-right: 0.75rem;
-            color: #6b7280;
-          }
-
-          &:not(.p-disabled):hover {
-            border-color: #8B5CF6;
-          }
-
-          &:not(.p-disabled).p-focus {
-            border-color: #8B5CF6;
-            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-          }
-        }
-
-        input {
-          width: 100%;
-          padding: 0.625rem 0.75rem;
-          border: 1px solid #e5e7eb;
-          border-radius: 0.375rem;
-          font-size: 0.875rem;
-          color: #1f2937;
-          transition: all 0.2s;
-
-          &:focus {
-            outline: none;
-            border-color: #8B5CF6;
-            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-          }
-
-          &::placeholder {
-            color: #9ca3af;
-          }
-        }
-      }
-    }
-
-    .p-dialog-footer {
-      background: #f9fafb;
-      padding: 1rem 1.5rem;
-      border-top: 1px solid #e5e7eb;
-
-      .p-button {
-        margin-left: 0.75rem;
-
-        &.p-button-text {
-          color: #6b7280;
-
-          &:hover {
-            background: rgba(107, 114, 128, 0.1);
-          }
+        &:hover {
+          background: #DC2626;
+          border-color: #DC2626;
         }
       }
     }
@@ -227,65 +127,146 @@
   .p-paginator {
     background: #fff;
     padding: 0.75rem;
-    border-top: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
 
     .p-paginator-element {
-      color: #4b5563;
-      min-width: 2rem;
-      height: 2rem;
-      margin: 0 0.125rem;
-
       &.p-highlight {
-        background: #8B5CF6;
-        color: #fff;
-      }
-
-      &:not(.p-highlight):hover {
-        background: #f3f4f6;
+        background: #8B5CF6 !important;
+        border-color: #8B5CF6 !important;
       }
     }
-  }
 
-  // Estilos del overlay y dropdown panel
-  .p-component-overlay {
-    z-index: 9998 !important;
-  }
-
-  .p-dropdown-panel {
-    z-index: 9999 !important;
-
-    .p-dropdown-items-wrapper {
-      max-height: 200px !important;
-      overflow-y: auto !important;
-    }
-
-    .p-dropdown-items {
-      padding: 0.25rem 0;
-
-      .p-dropdown-item {
-        padding: 0.625rem 0.75rem;
-        color: #374151;
-        font-size: 0.875rem;
-        font-family: system-ui, -apple-system, sans-serif;
-
-        &:hover {
-          background: #EEE6FE;
-        }
-
-        &.p-highlight {
-          background: #8B5CF6 !important;
-          color: white !important;
-        }
-      }
-    }
-  }
-
-  // Estilos específicos para el dropdown personalizado
-  .custom-dropdown {
     .p-dropdown {
-      .p-dropdown-label.p-placeholder {
-        color: #9ca3af;
+      .p-dropdown-label {
+        padding: 0.5rem;
+      }
+
+      .p-dropdown-panel {
+        top: auto !important;
+        bottom: 2.5rem !important;
+        left: auto !important;
+        right: 0 !important;
+        margin-top: 0 !important;
+        margin-bottom: 0.5rem !important;
+        min-width: 5rem !important;
+        transform: none !important;
+        position: absolute !important;
+        border: 1px solid #E5E7EB !important;
+        border-radius: 4px !important;
+        background: white !important;
+        box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1) !important;
+
+        .p-dropdown-items {
+          padding: 0.25rem 0;
+
+          .p-dropdown-item {
+            padding: 0.5rem 1rem;
+            color: #374151;
+            font-size: 0.875rem;
+
+            &:hover {
+              background: #F3F4F6;
+            }
+
+            &.p-highlight {
+              background: #EDE9FE;
+              color: #8B5CF6;
+            }
+          }
+        }
       }
     }
   }
- }
+
+  // Estilos del diálogo
+  .dialog-container {
+    .p-dialog {
+      border-radius: 6px;
+      overflow: hidden;
+
+      .p-dialog-header {
+        padding: 1.25rem;
+        background: white;
+        border-bottom: 1px solid #E5E7EB;
+
+        .p-dialog-title {
+          font-size: 1.125rem;
+          font-weight: 600;
+          color: #111827;
+        }
+
+        .p-dialog-header-close {
+          width: 2rem;
+          height: 2rem;
+          border-radius: 9999px;
+
+          &:hover {
+            background: #F3F4F6;
+          }
+        }
+      }
+
+      .p-dialog-content {
+        padding: 1.25rem;
+        background: white;
+
+        .field {
+          margin-bottom: 1.25rem;
+
+          label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+          }
+
+          input, .p-dropdown {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #E5E7EB;
+            border-radius: 4px;
+
+            &:focus {
+              border-color: #8B5CF6;
+              box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+            }
+          }
+        }
+      }
+
+      .p-dialog-footer {
+        padding: 1.25rem;
+        background: #F9FAFB;
+        border-top: 1px solid #E5E7EB;
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+
+        .p-button {
+          &.p-button-text {
+            color: #6B7280;
+            border: none;
+            background: transparent;
+            padding: 0.5rem 1rem;
+
+            &:hover {
+              background: #F3F4F6;
+            }
+          }
+
+          &.p-button-primary {
+            background: #8B5CF6;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+
+            &:hover {
+              background: #7C3AED;
+            }
+          }
+        }
+      }
+    }
+  }
+}

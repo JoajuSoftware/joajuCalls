@@ -126,17 +126,19 @@
       <div class="field">
         <label for="team">Team</label>
         <p-dropdown
-          id="team"
-          [options]="teams"
-          [(ngModel)]="newAgent().team"
-          optionLabel="name"
-          optionValue="value"
-          placeholder="Selecciona un team"
-          [required]="true"
-          styleClass="custom-dropdown"
-          [style]="{'width': '100%'}"
-          appendTo="body"
-          [baseZIndex]="1000"
+        id="team"
+        [options]="teams"
+        [(ngModel)]="newAgent().team"
+        optionLabel="name"
+        optionValue="value"
+        placeholder="Selecciona un team"
+        [required]="true"
+        [style]="{
+          'width': '100%'
+        }"
+        styleClass="w-full custom-team-dropdown"
+        [panelStyle]="{'width': '100%'}"
+        appendTo="body"
         ></p-dropdown>
       </div>
     </div>

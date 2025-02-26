@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -8,9 +8,9 @@ import { DialogModule } from 'primeng/dialog';
 import { Table, TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
-import { UsuariosService } from './usuarios.service';
+import { UsuariosService } from './services/usuarios.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { createUsuario, CreateUsuarioResponse, updateUsuario, Usuario } from './usuario.interface';
+import { Usuario } from './interfaces/usuario.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessagesModule } from 'primeng/messages';
 import { finalize } from 'rxjs';
@@ -34,6 +34,7 @@ import { finalize } from 'rxjs';
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './usuarios.component.html',
+  styleUrls: ['./usuarios.component.scss']
 })
 export class UsuariosComponent {
   @ViewChild('dt') dt!: Table;
@@ -49,20 +50,21 @@ export class UsuariosComponent {
   rows: number = 10;
   first: number = 0;
   isSubmitting: boolean = false;
+  isEditMode: boolean = false;
+
+  private usuariosService: UsuariosService = inject(UsuariosService);
+  private messageService: MessageService = inject(MessageService);
+  private fb: FormBuilder = inject(FormBuilder)
 
   constructor(
-    private usuariosService: UsuariosService,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService,
-    private fb: FormBuilder
   ) {
     this.usuarioForm = this.fb.group({
       service: ['crea_usuario', Validators.required],
       usuario: ['', Validators.required],
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
-      crea_pass: ['', [Validators.required, Validators.minLength(6)]],
-      crea_pass2: ['', [Validators.required]],
+      crea_pass: [''],
+      crea_pass2: [''],
       acd_predef: ['4001', Validators.required]
     }, {
       validators: this.passwordMatchValidator
@@ -70,7 +72,18 @@ export class UsuariosComponent {
   }
 
   private passwordMatchValidator(g: FormGroup) {
-    return g.get('crea_pass')?.value === g.get('crea_pass2')?.value
+    const passControl = g.get('crea_pass');
+    const pass2Control = g.get('crea_pass2');
+    
+    if (!passControl || !pass2Control) return null;
+    
+    if (g.get('service')?.value === 'act_usuario' && 
+        (!passControl.value || passControl.value.length === 0) && 
+        (!pass2Control.value || pass2Control.value.length === 0)) {
+      return null;
+    }
+    
+    return passControl.value === pass2Control.value
       ? null
       : { 'mismatch': true };
   }
@@ -109,6 +122,17 @@ export class UsuariosComponent {
       crea_pass2: '',
       acd_predef: '4001'
     });
+
+    const passControl = this.usuarioForm.get('crea_pass');
+    const pass2Control = this.usuarioForm.get('crea_pass2');
+    
+    if (passControl && pass2Control) {
+      passControl.setValidators([Validators.required, Validators.minLength(6)]);
+      pass2Control.setValidators([Validators.required]);
+      passControl.updateValueAndValidity();
+      pass2Control.updateValueAndValidity();
+    }
+    
     this.submitted = false;
     this.usuarioDialog = true;
   }
@@ -119,6 +143,7 @@ export class UsuariosComponent {
   }
 
   editUsuario(usuario: Usuario) {
+    this.isEditMode = true;
     this.usuario = { ...usuario };
     this.usuarioForm.patchValue({
       service: 'act_usuario',
@@ -129,6 +154,17 @@ export class UsuariosComponent {
       crea_pass: '',
       crea_pass2: ''
     });
+
+    const passControl = this.usuarioForm.get('crea_pass');
+    const pass2Control = this.usuarioForm.get('crea_pass2');
+    
+    if (passControl && pass2Control) {
+      passControl.setValidators([Validators.minLength(6)]);
+      pass2Control.clearValidators();
+      passControl.updateValueAndValidity();
+      pass2Control.updateValueAndValidity();
+    }
+    
     this.usuarioDialog = true;
   }
 
@@ -137,8 +173,16 @@ export class UsuariosComponent {
    
     if (this.usuarioForm.valid) {
       this.isSubmitting = true;
-      const formValues = this.usuarioForm.value;
+      const formValues = {...this.usuarioForm.value};
       const formData = new FormData();
+
+      if (
+        (!formValues.crea_pass || formValues.crea_pass.trim() === '') && 
+        (!formValues.crea_pass2 || formValues.crea_pass2.trim() === '')
+      ) {
+        delete formValues.crea_pass;
+        delete formValues.crea_pass2;
+      }
    
       Object.keys(formValues).forEach(key => {
         formData.append(key, formValues[key]);
@@ -250,6 +294,10 @@ export class UsuariosComponent {
         });
       }
     }
+  }
+
+  applyFilterGlobal(event: any) {
+    this.dt?.filterGlobal(event.target.value, 'contains');
   }
 
   onInput(event: Event) {

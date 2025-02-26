@@ -1,8 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core"
 import { map, Observable } from "rxjs";
-import { environment } from "../../../environments/environtment";
-import { createUsuario, CreateUsuarioResponse, updateUsuario, UsuarioResponse } from "./usuario.interface";
+import { environment } from "../../../../environments/environtment";
+import { UsuarioResponse } from "../interfaces/usuario.interface";
 
 @Injectable({
     providedIn: "root"
@@ -16,7 +16,7 @@ export class UsuariosService {
     }
     
     createUsuario(formData: FormData): Observable<any> {
-        return this.http.post(this.apiUrl + '/usuarios', formData, {
+        return this.http.post(`${this.apiUrl}/usuarios`, formData, {
           responseType: 'text'
         }).pipe(
           map((response: string) => {

@@ -1,6 +1,7 @@
 import { Component, signal, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MessageService, ConfirmationService } from 'primeng/api';
 
 // PrimeNG Imports
 import { TableModule, Table } from 'primeng/table';
@@ -11,10 +12,15 @@ import { TooltipModule } from 'primeng/tooltip';
 import { DropdownModule } from 'primeng/dropdown';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
+import { ToastModule } from 'primeng/toast';
+import { ToolbarModule } from 'primeng/toolbar';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 // Service and Interface
-import { AgentesService } from '../agentes/service/agentes.service';
-import { Agent } from '../agentes/interface/agentes.interface';
+import { AgentesService } from './service/agentes.service';
+import { Agent } from './interface/agentes.interface';
+import { finalize } from 'rxjs';
 
 // Local Types
 interface TeamOption {
@@ -27,37 +33,41 @@ interface TeamOption {
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     TableModule,
-    ButtonModule,
-    InputTextModule,
     DialogModule,
-    TooltipModule,
-    DropdownModule,
+    ButtonModule,
+    ToastModule,
+    ToolbarModule,
+    ConfirmDialogModule,
+    InputTextModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ProgressSpinnerModule,
     MessagesModule,
-    MessageModule
+    MessageModule,
+    TooltipModule,
+    DropdownModule
   ],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './agentes.component.html',
   styleUrls: ['./agentes.component.scss'],
 })
 export class AgentesComponent {
   @ViewChild('dt') dt!: Table;
-
-  private agentesService = inject(AgentesService);
+  
+  agentForm: FormGroup;
+  agentDialog: boolean = false;
   agents = signal<Agent[]>([]);
-  dialogVisible = false;
-  isEditing = false;
+  agent!: Agent;
+  selectedAgents: Agent[] | null = null;
+  submitted: boolean = false;
+  isLoading: boolean = false;
+  totalRecords: number = 0;
+  rows: number = 10;
+  first: number = 0;
+  isSubmitting: boolean = false;
+  isEditMode: boolean = false;
   currentEditId = '';
-  messages: any[] = [];
-
-  newAgent = signal<Agent>({
-    id: '',
-    agente: '',
-    nombre: '',
-    exten: 0,
-    team: '',
-    estado: 'Desconectado',
-  });
 
   teams: TeamOption[] = [
     { name: 'Administrador', value: 'administrador' },
@@ -67,14 +77,33 @@ export class AgentesComponent {
     { name: 'Joaju', value: 'Joaju' },
   ];
 
+  private agentesService = inject(AgentesService);
+  private messageService = inject(MessageService);
+  private fb: FormBuilder = inject(FormBuilder);
+  
   constructor() {
-    this.getAgentes();
+    this.agentForm = this.fb.group({
+      service: ['crea_agente', Validators.required],
+      agente: ['', Validators.required],
+      nombre: ['', Validators.required],
+      exten: ['', Validators.required],
+      team: ['', Validators.required],
+      estado: ['Desconectado', Validators.required]
+    });
   }
 
-  getAgentes() {
+  ngOnInit() {
+    this.loadAgentes();
+  }
+
+  get agentFormControls(): { [key: string]: AbstractControl } {
+    return this.agentForm.controls;
+  }
+
+  loadAgentes() {
+    this.isLoading = true;
     this.agentesService.getAgentes().subscribe({
       next: (response) => {
-        console.log('Respuesta original:', response);
         const formattedAgents = response.mensaje.map((agent) => ({
           id: agent.id,
           agente: agent.agente,
@@ -83,145 +112,235 @@ export class AgentesComponent {
           team: agent.team,
           estado: agent.estado,
         }));
-        console.log('Agentes formateados:', formattedAgents);
+        
         this.agents.set(formattedAgents);
+        this.totalRecords = formattedAgents.length;
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error al obtener agentes:', error);
-        this.messages = [
-          { severity: 'error', summary: 'Error', detail: 'Error al obtener los agentes' }
-        ];
-      },
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los agentes',
+          life: 3000
+        });
+        this.isLoading = false;
+      }
     });
   }
 
-  applyFilterGlobal(event: any) {
-    this.dt?.filterGlobal(event.target.value, 'contains');
-  }
-
-  showCreateDialog() {
-    this.isEditing = false;
-    this.currentEditId = '';
-    this.newAgent.set({
-      id: '',
+  openNew() {
+    this.agent = {} as Agent;
+    this.agentForm.patchValue({
+      service: 'crea_agente',
       agente: '',
       nombre: '',
-      exten: 0,
+      exten: '',
       team: '',
-      estado: 'Desconectado',
+      estado: 'Desconectado'
     });
-    this.dialogVisible = true;
-    this.messages = [];
+    
+    this.submitted = false;
+    this.isEditMode = false;
+    this.currentEditId = '';
+    this.agentDialog = true;
   }
 
   hideDialog() {
-    this.dialogVisible = false;
-    this.isEditing = false;
+    this.agentDialog = false;
+    this.submitted = false;
+    this.isEditMode = false;
     this.currentEditId = '';
-    this.newAgent.set({
-      id: '',
-      agente: '',
-      nombre: '',
-      exten: 0,
-      team: '',
-      estado: 'Desconectado',
-    });
-    this.messages = [];
   }
 
   editAgent(agent: Agent) {
-    this.isEditing = true;
+    this.isEditMode = true;
+    this.agent = { ...agent };
     this.currentEditId = agent.id || '';
-    this.newAgent.set({
-      id: agent.id,
+    
+    this.agentForm.patchValue({
+      service: 'act_agente',
       agente: agent.agente,
       nombre: agent.nombre,
       exten: agent.exten,
       team: agent.team,
       estado: agent.estado
     });
-    this.dialogVisible = true;
-    this.messages = [];
+    
+    this.agentDialog = true;
   }
 
   saveAgent() {
-    const agent = this.newAgent();
-
-    if (agent.agente && agent.nombre && agent.team) {
-      if (this.isEditing) {
-        const updateData = {
-          service: 'update_agente',
-          n_agente: agent.agente,
-          des_agente: agent.nombre,
-          id_agente: this.currentEditId,
-          team: agent.team
-        };
-
-        this.agentesService.updateAgent(updateData).subscribe({
+    this.submitted = true;
+   
+    if (this.agentForm.valid) {
+      this.isSubmitting = true;
+      const formValues = {...this.agentForm.value};
+      const formData = new FormData();
+   
+      Object.keys(formValues).forEach(key => {
+        formData.append(key, formValues[key]);
+      });
+   
+      if (formValues.service === 'crea_agente') {
+        this.agentesService.createAgent(formData).pipe(
+          finalize(() => this.isSubmitting = false)
+        ).subscribe({
           next: (response) => {
-            console.log('Respuesta:', response);
-            if (response.err_code === '200') {
-              this.messages = [
-                { severity: 'success', summary: 'Éxito', detail: 'Agente actualizado correctamente' }
-              ];
-              this.hideDialog();
-              this.getAgentes();
-            } else if (response.err_code === '401') {
-              this.messages = [
-                { severity: 'error', summary: 'Error', detail: 'El agente no existe' }
-              ];
-              this.getAgentes();
+            if (response.err_code === "200") {
+              const newAgent: Agent = {
+                id: response.lastId || '',
+                agente: formValues.agente,
+                nombre: formValues.nombre,
+                exten: formValues.exten,
+                team: formValues.team,
+                estado: formValues.estado
+              };
+        
+              this.agents.update(currentAgents => [newAgent, ...currentAgents]);
+              
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: response.mensaje,
+                life: 3000
+              });
+        
+              this.agentDialog = false;
+              this.submitted = false;
+              this.agentForm.reset({
+                service: 'crea_agente',
+                estado: 'Desconectado'
+              });
             } else {
-              this.messages = [
-                { severity: 'error', summary: 'Error', detail: response.mensaje }
-              ];
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: response.mensaje,
+                life: 3000
+              });
             }
           },
           error: (error) => {
-            console.error('Error al actualizar agente:', error);
-            this.messages = [
-              { severity: 'error', summary: 'Error', detail: 'Error al actualizar el agente' }
-            ];
-            this.getAgentes();
+            console.error('Error en la petición:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al crear el agente',
+              life: 3000
+            });
           }
         });
-      } else {
-        const createData = {
-          service: 'add_agente',
-          n_agente: agent.agente,
-          des_agente: agent.nombre,
-          team: agent.team
-        };
-
-        this.agentesService.createAgent(createData).subscribe({
+      } else if (formValues.service === 'act_agente') {
+        formData.append('id', this.currentEditId);
+   
+        this.agentesService.updateAgent(formData).pipe(
+          finalize(() => this.isSubmitting = false)
+        ).subscribe({
           next: (response) => {
-            console.log('Respuesta:', response);
-            if (response.err_code === '200') {
-              this.messages = [
-                { severity: 'success', summary: 'Éxito', detail: 'Agente creado correctamente' }
-              ];
-              this.hideDialog();
-              this.getAgentes();
+            if (response.err_code === "200") {
+              this.agents.update(currentAgents => {
+                return currentAgents.map(a => {
+                  if (a.id === this.currentEditId) {
+                    return {
+                      ...a,
+                      agente: formValues.agente,
+                      nombre: formValues.nombre,
+                      exten: formValues.exten,
+                      team: formValues.team,
+                      estado: formValues.estado
+                    };
+                  }
+                  return a;
+                });
+              });
+              
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: response.mensaje,
+                life: 3000
+              });
+   
+              this.agentDialog = false;
+              this.submitted = false;
+              this.agentForm.reset({
+                service: 'crea_agente',
+                estado: 'Desconectado'
+              });
             } else {
-              this.messages = [
-                { severity: 'error', summary: 'Error', detail: response.mensaje }
-              ];
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: response.mensaje,
+                life: 3000
+              });
             }
           },
           error: (error) => {
-            console.error('Error al crear agente:', error);
-            this.messages = [
-              { severity: 'error', summary: 'Error', detail: 'Error al crear el agente' }
-            ];
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al actualizar el agente',
+              life: 3000
+            });
           }
         });
       }
     }
   }
 
-  deleteAgent(agent: Agent) {
-    this.agents.update((currentAgents) =>
-      currentAgents.filter((a) => a.agente !== agent.agente)
-    );
+  // deleteAgent(agent: Agent) {
+  //   this.confirmationService.confirm({
+  //     message: `¿Está seguro de eliminar al agente ${agent.nombre}?`,
+  //     header: 'Confirmar',
+  //     icon: 'pi pi-exclamation-triangle',
+  //     accept: () => {
+  //       this.isLoading = true;
+  //       this.agentesService.deleteAgent(agent.id).pipe(
+  //         finalize(() => this.isLoading = false)
+  //       ).subscribe({
+  //         next: (response) => {
+  //           if (response.err_code === "200") {
+  //             this.agents.update(currentAgents => 
+  //               currentAgents.filter(a => a.id !== agent.id)
+  //             );
+              
+  //             this.messageService.add({
+  //               severity: 'success',
+  //               summary: 'Éxito',
+  //               detail: 'Agente eliminado',
+  //               life: 3000
+  //             });
+  //           } else {
+  //             this.messageService.add({
+  //               severity: 'error',
+  //               summary: 'Error',
+  //               detail: response.mensaje,
+  //               life: 3000
+  //             });
+  //           }
+  //         },
+  //         error: (error) => {
+  //           this.messageService.add({
+  //             severity: 'error',
+  //             summary: 'Error',
+  //             detail: 'Error al eliminar el agente',
+  //             life: 3000
+  //           });
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
+  applyFilterGlobal(event: any) {
+    this.dt?.filterGlobal(event.target.value, 'contains');
+  }
+
+  onInput(event: Event) {
+    const searchValue = (event.target as HTMLInputElement).value;
+    this.dt.filterGlobal(searchValue, 'contains');
   }
 }

@@ -190,25 +190,17 @@
     }
 }
 
-.p-button.p-button-rounded {
-    &.p-button-warning {
-    background: #F59E0B;
-    border-color: #F59E0B;
+    .p-button.p-button-rounded {
+    &.p-message-success {
+        background: #DEF7EC;
+        border: 1px solid #31C48D;
+        color: #03543F;
+      }
 
-    &:hover {
-        background: #D97706;
-        border-color: #D97706;
+      &.p-message-error {
+        background: #FDE8E8;
+        border: 1px solid #F98080;
+        color: #9B1C1C;
+      }
     }
-    }
-
-    &.p-button-danger {
-    background: #EF4444;
-    border-color: #EF4444;
-
-    &:hover {
-        background: #DC2626;
-        border-color: #DC2626;
-    }
-    }
-}
 }

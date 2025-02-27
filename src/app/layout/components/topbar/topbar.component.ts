@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { joajuLogo } from '../../../shared/utilities/utils';
 
 @Component({
   selector: 'app-topbar',
@@ -13,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 export class TopbarComponent implements OnInit {
   userName: String = ''
   userRole: String = ''
+  joajuLogo = joajuLogo;
 
 
   ngOnInit() {

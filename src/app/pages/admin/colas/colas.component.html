@@ -1,1 +1,139 @@
-<p>colas works!</p>
+<div class="card">
+<!-- Sección del Encabezado -->
+<div class="flex justify-between items-center p-4 border-b bg-white">
+    <button
+    pButton
+    label="Crear Cola"
+    icon="pi pi-plus"
+    class="p-button-primary"
+    (click)="openNew()"
+    ></button>
+    <span class="p-input-icon-left">
+    <i class="pi pi-search"></i>
+    <input
+        pInputText
+        type="text"
+        (input)="applyFilterGlobal($event)"
+        placeholder="Buscar..."
+    />
+    </span>
+</div>
+
+<!-- Tabla -->
+<p-table
+    #dt
+    [value]="colas()"
+    [rows]="rows"
+    [paginator]="true"
+    [globalFilterFields]="['id', 'cola', 'n_cola']"
+    [rowHover]="true"
+    dataKey="id"
+    [showCurrentPageReport]="true"
+    [loading]="isLoading"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+    styleClass="p-datatable-sm"
+    [scrollable]="true"
+    [responsiveLayout]="'scroll'"
+>
+    <ng-template pTemplate="header">
+    <tr>
+        <th pSortableColumn="id" style="width: 10%">
+        ID <p-sortIcon field="id"></p-sortIcon>
+        </th>
+        <th pSortableColumn="cola" style="width: 20%">
+        Cola <p-sortIcon field="cola"></p-sortIcon>
+        </th>
+        <th pSortableColumn="n_cola" style="width: 50%">
+        Nombre <p-sortIcon field="n_cola"></p-sortIcon>
+        </th>
+        <th style="width: 20%; text-align: center">Acciones</th>
+    </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-cola>
+    <tr>
+        <td class="p-2" style="vertical-align: middle">{{cola.id}}</td>
+        <td class="p-2" style="vertical-align: middle">{{cola.cola}}</td>
+        <td class="p-2" style="vertical-align: middle">{{cola.n_cola}}</td>
+        <td class="p-2" style="text-align: center">
+        <div class="flex justify-center gap-2">
+            <button
+            pButton
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-sm p-button-warning"
+            (click)="editCola(cola)"
+            pTooltip="Modificar"
+            ></button>
+            <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-sm p-button-danger"
+            (click)="deleteCola(cola)"
+            pTooltip="Eliminar"
+            ></button>
+        </div>
+        </td>
+    </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+    <tr>
+        <td colspan="4" class="text-center p-4">No se encontraron colas.</td>
+    </tr>
+    </ng-template>
+    <ng-template pTemplate="loadingbody">
+    <tr>
+        <td colspan="4" class="text-center p-4">
+        <p-progressSpinner [style]="{width: '50px', height: '50px'}" styleClass="custom-spinner" strokeWidth="8" fill="var(--surface-ground)" animationDuration=".5s"></p-progressSpinner>
+        </td>
+    </tr>
+    </ng-template>
+</p-table>
+
+<!-- Diálogo para crear/editar cola -->
+<p-dialog [(visible)]="colaDialog" [style]="{width: '450px'}"
+    [header]="isEditMode ? 'Editar Cola' : 'Nueva Cola'" [modal]="true" styleClass="p-fluid">
+    <form [formGroup]="colaForm">
+    <div class="field">
+        <label for="cola">Número de Cola</label>
+        <input type="text" pInputText id="cola" formControlName="cola" required autofocus />
+        <small class="p-error" *ngIf="submitted && colaFormControls['cola'].errors?.['required']">
+        Número de cola es requerido.
+        </small>
+    </div>
+
+    <div class="field">
+        <label for="n_cola">Nombre de Cola</label>
+        <input type="text" pInputText id="n_cola" formControlName="n_cola" required />
+        <small class="p-error" *ngIf="submitted && colaFormControls['n_cola'].errors?.['required']">
+        Nombre de cola es requerido.
+        </small>
+    </div>
+    </form>
+
+    <div class="p-dialog-footer">
+    <button
+        pButton
+        icon="pi pi-times"
+        label="Cancelar"
+        class="p-button-text"
+        (click)="hideDialog()"
+    ></button>
+    <button
+        pButton
+        icon="pi pi-check"
+        label="Guardar"
+        class="p-button-primary"
+        [disabled]="isSubmitting"
+        (click)="saveCola()"
+    ></button>
+    </div>
+</p-dialog>
+
+<!-- Diálogo de confirmación para eliminar -->
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
+<p-toast></p-toast>
+</div>
+
+<!-- Indicador de carga -->
+<div *ngIf="isLoading" class="loading-overlay">
+    <p-progressSpinner strokeWidth="8" [style]="{width: '50px', height: '50px'}"></p-progressSpinner>
+</div>

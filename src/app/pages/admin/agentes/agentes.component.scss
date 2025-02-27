@@ -1,27 +1,132 @@
 :host ::ng-deep {
-  /* Estilos globales para forzar la fuente del dropdown */
-  .p-dropdown,
-  .p-dropdown-panel,
-  .p-dropdown-items-wrapper,
-  .p-dropdown-items,
-  .p-dropdown-item,
-  .p-dropdown-label {
-    * {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  .p-dialog {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+    .p-dialog-header {
+      padding: 1.25rem;
+      background: white;
+      border-bottom: 1px solid #E5E7EB;
+
+      .p-dialog-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #111827;
+      }
+
+      .p-dialog-header-close {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 9999px;
+
+        &:hover {
+          background: #F3F4F6;
+        }
+      }
     }
 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    font-size: 0.875rem !important;
-    line-height: 1.25 !important;
+    .p-dialog-content {
+      padding: 1.25rem;
+      background: white;
+
+      .field {
+        margin-bottom: 1.25rem;
+
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: 500;
+          color: #374151;
+          font-size: 0.875rem;
+        }
+
+        input, .p-dropdown {
+          width: 100%;
+          padding: 0.5rem 0.75rem;
+          border: 1px solid #E5E7EB;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          color: #374151;
+          background: #fff;
+          transition: all 0.2s ease;
+
+          &:hover {
+            border-color: #8B5CF6;
+          }
+
+          &:focus {
+            border-color: #8B5CF6;
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+            outline: none;
+          }
+        }
+
+        .p-dropdown {
+          .p-dropdown-label {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem !important;
+            color: #374151;
+
+            &.p-placeholder {
+              color: #9CA3AF;
+            }
+          }
+
+          .p-dropdown-trigger {
+            width: 2.5rem;
+            padding: 0 0.5rem;
+
+            .p-dropdown-trigger-icon {
+              color: #6B7280;
+              font-size: 0.875rem;
+            }
+          }
+        }
+      }
+    }
+
+    .p-dialog-footer {
+      padding: 1.25rem;
+      background: #F9FAFB;
+      border-top: 1px solid #E5E7EB;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+
+      .p-button {
+        font-size: 0.875rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+
+        &.p-button-text {
+          color: #6B7280;
+          background: transparent;
+
+          &:hover {
+            background: #F3F4F6;
+          }
+        }
+
+        &.p-button-primary {
+          background: #8B5CF6;
+          border: none;
+          color: white;
+
+          &:hover {
+            background: #7C3AED;
+          }
+        }
+      }
+    }
   }
 
   .card {
     background: #f9fafb;
     min-height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   }
 
-  // Estilos del botón principal
   .p-button.p-button-primary {
     background: #8B5CF6;
     border-color: #8B5CF6;
@@ -41,7 +146,6 @@
     }
   }
 
-  // Estilos del buscador
   .p-input-icon-left {
     position: relative;
 
@@ -74,7 +178,6 @@
     }
   }
 
-  // Estilos de la tabla
   .p-datatable {
     .p-datatable-header {
       background: #fff;
@@ -109,7 +212,6 @@
     }
   }
 
-  // Estilos de los botones de acción
   .action-buttons {
     display: flex;
     gap: 0.5rem;
@@ -140,7 +242,6 @@
     }
   }
 
-  // Estilos del paginador
   .p-paginator {
     background: #fff;
     padding: 0.75rem;
@@ -156,135 +257,6 @@
     }
   }
 
-  // Estilos del diálogo y formularios
-  .dialog-container {
-    .p-dialog {
-      border-radius: 0.5rem;
-      overflow: hidden;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-
-      .p-dialog-header {
-        padding: 1.25rem;
-        background: white;
-        border-bottom: 1px solid #E5E7EB;
-
-        .p-dialog-title {
-          font-size: 1.125rem;
-          font-weight: 600;
-          color: #111827;
-        }
-
-        .p-dialog-header-close {
-          width: 2rem;
-          height: 2rem;
-          border-radius: 9999px;
-
-          &:hover {
-            background: #F3F4F6;
-          }
-        }
-      }
-
-      .p-dialog-content {
-        padding: 1.25rem;
-        background: white;
-
-        .field {
-          margin-bottom: 1.25rem;
-
-          label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: #374151;
-            font-size: 0.875rem;
-          }
-
-          input, .p-dropdown {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #E5E7EB;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            color: #374151;
-            background: #fff;
-            transition: all 0.2s ease;
-
-            &:hover {
-              border-color: #8B5CF6;
-            }
-
-            &:focus {
-              border-color: #8B5CF6;
-              box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
-              outline: none;
-            }
-          }
-
-          // Estilos específicos para el dropdown
-          .p-dropdown {
-            .p-dropdown-label {
-              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-              padding: 0.5rem 0.75rem;
-              font-size: 0.875rem !important;
-              color: #374151;
-
-              &.p-placeholder {
-                color: #9CA3AF;
-              }
-            }
-
-            .p-dropdown-trigger {
-              width: 2.5rem;
-              padding: 0 0.5rem;
-
-              .p-dropdown-trigger-icon {
-                color: #6B7280;
-                font-size: 0.875rem;
-              }
-            }
-          }
-        }
-      }
-
-      .p-dialog-footer {
-        padding: 1.25rem;
-        background: #F9FAFB;
-        border-top: 1px solid #E5E7EB;
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.75rem;
-
-        .p-button {
-          font-size: 0.875rem;
-          padding: 0.5rem 1rem;
-          border-radius: 0.375rem;
-          font-weight: 500;
-
-          &.p-button-text {
-            color: #6B7280;
-            background: transparent;
-
-            &:hover {
-              background: #F3F4F6;
-            }
-          }
-
-          &.p-button-primary {
-            background: #8B5CF6;
-            border: none;
-            color: white;
-
-            &:hover {
-              background: #7C3AED;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // Estilos para mensajes
   .p-messages {
     margin-bottom: 1rem;
     border-radius: 0.375rem;
@@ -307,12 +279,10 @@
     }
   }
 
-  // Estilos específicos para el panel del dropdown
   .p-dropdown-panel {
     .p-dropdown-items-wrapper {
       .p-dropdown-items {
         .p-dropdown-item {
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
           font-size: 0.875rem !important;
 
           &:hover {
@@ -328,9 +298,7 @@
     }
   }
 
-  /* Selector global adicional con mayor especificidad */
   .p-dropdown-panel .p-dropdown-items .p-dropdown-item {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
     font-size: 0.875rem !important;
   }
 }

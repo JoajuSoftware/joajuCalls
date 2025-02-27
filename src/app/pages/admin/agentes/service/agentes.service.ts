@@ -26,36 +26,12 @@ export class AgentesService {
   }
 
   //Crear Agente
-  createAgent(data: {
-    service: string;
-    n_agente: string;
-    des_agente: string;
-    team: string;
-  }): Observable<any> {
-    const formData = new FormData();
-    formData.append('service', 'add_agente');
-    formData.append('n_agente', data.n_agente);
-    formData.append('des_agente', data.des_agente);
-    formData.append('team', data.team);
-
+  createAgent(formData: FormData): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/gestion_call`, formData);
   }
 
   // agentes.service.ts
-  updateAgent(data: {
-    service: string;
-    n_agente: string;
-    des_agente: string;
-    id_agente: string;
-    team: string;
-  }): Observable<any> {
-    const formData = new FormData();
-    formData.append('service', 'update_agente');
-    formData.append('n_agente', data.n_agente);
-    formData.append('des_agente', data.des_agente);
-    formData.append('id_agente', data.id_agente);
-    formData.append('team', data.team);
-
+  updateAgent(formData: FormData): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/gestion_call`, formData);
   }
 }

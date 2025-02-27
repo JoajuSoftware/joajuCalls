@@ -1,1 +1,228 @@
-<p>usuarios works!</p>
+
+<div class="card">    
+    <!-- Sección del Encabezado -->
+    <div class="flex justify-between items-center p-4 border-b bg-white">
+      <button
+        pButton
+        label="Crear Usuario"
+        icon="pi pi-plus"
+        class="p-button-primary"
+        (click)="openNew()"
+      ></button>
+      <span class="p-input-icon-left">
+        <i class="pi pi-search"></i>
+        <input
+          pInputText
+          type="text"
+          (input)="applyFilterGlobal($event)"
+          placeholder="Buscar..."
+        />
+      </span>
+    </div>
+
+    <p-table
+      #dt
+      [value]="usuarios"
+      [rows]="10"
+      [paginator]="true"
+      [globalFilterFields]="['agente', 'nombre', 'team', 'estado']"
+      [rowHover]="true"
+      dataKey="id"
+      [showCurrentPageReport]="true"
+      [paginatorDropdownAppendTo]="'body'"
+      [paginatorPosition]="'bottom'"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+      styleClass="p-datatable-sm"
+      [scrollable]="true"
+      [responsiveLayout]="'scroll'"
+    >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="id" class="w-1/6">
+          ID <p-sortIcon field="id"></p-sortIcon>
+        </th>
+        <th pSortableColumn="usuario" class="w-1/6">
+          Usuario <p-sortIcon field="usuario"></p-sortIcon>
+        </th>
+        <th pSortableColumn="nombre" class="w-1/6">
+          Nombre <p-sortIcon field="nombre"></p-sortIcon>
+        </th>
+        <th pSortableColumn="apellido" class="w-1/6">
+            Apellido <p-sortIcon field="apellido"></p-sortIcon>
+        </th>
+        <th pSortableColumn="exten" class="w-1/6">
+          Exten <p-sortIcon field="exten"></p-sortIcon>
+        </th>
+        <th pSortableColumn="team" class="w-1/6">
+          Team <p-sortIcon field="team"></p-sortIcon>
+        </th>
+        <th pSortableColumn="estado" class="w-1/6">
+          Estado <p-sortIcon field="estado"></p-sortIcon>
+        </th>
+        <th class="w-1/6">Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-usuario>
+      <tr>
+        <td class="p-2">{{usuario.id_usuario}}</td>
+        <td class="p-2">{{usuario.n_usuario}}</td>
+        <td class="p-2">{{usuario.nom}}</td>
+        <td class="p-2">{{usuario.ape}}</td>
+        <td class="p-2">{{usuario.nro_exten}}</td>
+        <td class="p-2">{{usuario.team}}</td>
+        <td class="p-2">{{usuario.activo}}</td>
+        <td class="p-2">
+          <div class="action-buttons">
+            <button
+              pButton
+              icon="pi pi-pencil"
+              class="p-button-rounded p-button-sm p-button-edit"
+              (click)="editUsuario(usuario)"
+              pTooltip="Modificar"
+            ></button>
+            <button
+              pButton
+              icon="pi pi-trash"
+              class="p-button-rounded p-button-sm p-button-delete"
+              pTooltip="Eliminar"
+              (click)="false"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+    <p-dialog 
+        [(visible)]="usuarioDialog" 
+        [style]="{ width: '600px' }" 
+        draggable="false"
+        header="Crear Usuario" 
+        [modal]="true" 
+        styleClass="p-fluid">
+        <form [formGroup]="usuarioForm" (ngSubmit)="saveUsuario()" class="grid">
+    
+            <div class="col-12 mb-3">
+                <label for="usuario" class="block text-base font-medium mb-2">Usuario</label>
+                <input 
+                  type="text" 
+                  pInputText 
+                  id="usuario" 
+                  formControlName="usuario" 
+                  class="w-full p-inputtext"
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['usuario'].invalid}"
+                  placeholder="Ingrese el nombre de usuario" />
+                  @if(submitted && usuarioFormControls['usuario'].invalid){
+                    <small class="p-error block mt-1">Este campo es requerido</small>
+                  }
+            </div>
+    
+            <div class="col-12 mb-3">
+                <label for="nombre" class="block text-base font-medium mb-2">Nombre</label>
+                <input 
+                    type="text" 
+                    pInputText 
+                    id="nombre" 
+                    formControlName="nombre" 
+                    class="w-full p-inputtext"
+                    [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['nombre'].invalid}"
+                    placeholder="Ingrese el nombre" />
+                @if(submitted && usuarioFormControls['nombre'].invalid){
+                    <small class="p-error block mt-1">Este campo es requerido</small>
+                }
+            </div>
+    
+            <div class="col-12 mb-3">
+                <label for="apellido" class="block text-base font-medium mb-2">Apellido</label>
+                <input 
+                    type="text" 
+                    pInputText 
+                    id="apellido" 
+                    formControlName="apellido" 
+                    class="w-full p-inputtext"
+                    [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['apellido'].invalid}"
+                    placeholder="Ingrese el apellido" />
+                @if(submitted && usuarioFormControls['apellido'].invalid){
+                    <small class="p-error block mt-1">Este campo es requerido</small>
+                }
+            </div>
+    
+            <div class="col-12 mb-3">
+                <label for="crea_pass" class="block text-base font-medium mb-2">
+                    Contraseña {{ isEditMode ? '(opcional)' : '' }}
+                </label>
+                <input 
+                    type="password" 
+                    pInputText 
+                    id="crea_pass" 
+                    formControlName="crea_pass" 
+                    class="w-full p-inputtext"
+                    [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['crea_pass'].invalid}"
+                    placeholder="Ingrese la contraseña" />
+                @if(submitted && usuarioFormControls['crea_pass'].invalid){
+                    <small class="p-error block mt-1">
+                        {{ isEditMode ? 'La contraseña debe tener al menos 6 caracteres' : 'Este campo es requerido y debe tener al menos 6 caracteres' }}
+                    </small>
+                }
+            </div>
+            
+            <div class="col-12 mb-3">
+                <label for="crea_pass2" class="block text-base font-medium mb-2">
+                    Confirmar Contraseña {{ isEditMode ? '(opcional)' : '' }}
+                </label>
+                <input 
+                    type="password" 
+                    pInputText 
+                    id="crea_pass2" 
+                    formControlName="crea_pass2" 
+                    class="w-full p-inputtext"
+                    [ngClass]="{'ng-invalid ng-dirty': submitted && (usuarioFormControls['crea_pass2'].invalid || usuarioForm.hasError('mismatch'))}"
+                    placeholder="Confirme la contraseña" />
+                @if(submitted && ((usuarioFormControls['crea_pass2'].invalid && !isEditMode) || usuarioForm.hasError('mismatch'))){
+                    <small class="p-error block mt-1">
+                        {{ usuarioForm.hasError('mismatch') ? 'Las contraseñas no coinciden' : 'Este campo es requerido' }}
+                    </small>
+                }
+            </div>
+            
+            <div class="col-12 mb-3">
+                <label for="acd_predef" class="block text-base font-medium mb-2">ACD Predefinido</label>
+                <input 
+                    type="text" 
+                    pInputText 
+                    id="acd_predef" 
+                    formControlName="acd_predef" 
+                    class="w-full p-inputtext"
+                    [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['acd_predef'].invalid}"
+                    placeholder="ACD por defecto 4001" />
+                @if(submitted && usuarioFormControls['acd_predef'].invalid){
+                    <small class="p-error block">Este campo es requerido</small>
+                }
+            </div>
+    
+            <div class="p-dialog-footer">
+              <button
+                pButton
+                icon="pi pi-times"
+                label="Cancelar"
+                class="p-button-text"
+                (click)="hideDialog()"
+              ></button>
+              <button
+                pButton
+                icon="pi pi-check"
+                label="Guardar"
+                class="p-button-primary"
+                (click)="saveUsuario()"
+              ></button>
+            </div>
+        </form>
+    </p-dialog>
+
+    <p-confirmDialog [style]="{ width: '450px' }" />
+</div>
+
+<!-- Indicador de carga -->
+<div *ngIf="isLoading" class="loading-overlay">
+  <p-progressSpinner strokeWidth="8" [style]="{width: '50px', height: '50px'}"></p-progressSpinner>
+</div>

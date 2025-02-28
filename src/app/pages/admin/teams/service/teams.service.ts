@@ -43,4 +43,31 @@ export class TeamsService {
 
     return this.http.post<any>(`${this.baseUrl}/gestion_call`, formData);
   }
+
+  getTeamColas(teamId: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/gestion_call`, {
+      params: {
+        service: 'listar_acl_colas',
+        id_teams: teamId
+      }
+    });
+  }
+
+  addColaToTeam(teamId: string, colaId: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('service', 'add_cola_team');
+    formData.append('id_team', teamId);
+    formData.append('cola', colaId);
+
+    return this.http.post<any>(`${this.baseUrl}/gestion_call`, formData);
+  }
+
+  removeColaFromTeam(teamId: string, colaId: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('service', 'delete_cola_team');
+    formData.append('id_team', teamId);
+    formData.append('cola', colaId);
+
+    return this.http.post<any>(`${this.baseUrl}/gestion_call`, formData);
+  }
 }

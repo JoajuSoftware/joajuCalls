@@ -20,7 +20,7 @@
     </span>
   </div>
 
-  <!-- Tabla -->
+  <!-- Tabla principal de equipos -->
   <p-table
     #dt
     [value]="teams()"
@@ -86,7 +86,8 @@
 
   <!-- Diálogo para crear/editar equipo -->
   <p-dialog [(visible)]="teamDialog" [style]="{width: '450px'}"
-    [header]="isEditMode ? 'Editar Equipo' : 'Nuevo Equipo'" [modal]="true" styleClass="p-fluid">
+    [header]="isEditMode ? 'Editar Equipo' : 'Nuevo Equipo'" [modal]="true" 
+    styleClass="p-fluid" [draggable]="false">
     <form [formGroup]="teamForm">
       <div class="field">
         <label for="n_team">Nombre</label>
@@ -94,6 +95,18 @@
         <small class="p-error" *ngIf="submitted && teamFormControls['n_team'].errors?.['required']">
           Nombre del equipo es requerido.
         </small>
+      </div>
+      
+      <!-- Botón para gestionar colas (solo visible en modo de edición) -->
+      <div class="field" *ngIf="isEditMode">
+        <button
+          pButton
+          type="button"
+          icon="pi pi-list"
+          label="Gestionar Colas Asociadas"
+          class="p-button-secondary mt-3"
+          (click)="openColasDialog()"
+        ></button>
       </div>
     </form>
 
@@ -112,6 +125,92 @@
         class="p-button-primary"
         [disabled]="isSubmitting"
         (click)="saveTeam()"
+      ></button>
+    </div>
+  </p-dialog>
+
+  <!-- Diálogo para gestionar colas asociadas al equipo -->
+  <p-dialog [(visible)]="colasDialog" [style]="{width: '650px'}"
+    [header]="'Gestionar Colas Asociadas a ' + team?.n_team" [modal]="true" 
+    styleClass="p-fluid" [draggable]="false">
+    
+    <div class="mb-3">
+      <div *ngIf="isLoadingColas" class="flex justify-center my-4">
+        <p-progressSpinner strokeWidth="4" [style]="{width: '50px', height: '50px'}"></p-progressSpinner>
+      </div>
+      
+      <div *ngIf="!isLoadingColas" class="flex justify-between items-center">
+        <h3 class="text-xl m-0">Colas disponibles</h3>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            pInputText
+            type="text"
+            (input)="applyColasFilterGlobal($event)"
+            placeholder="Buscar..."
+          />
+        </span>
+      </div>
+    </div>
+    
+    <p-table
+    #dtColas
+    [value]="availableColas()"
+    [rows]="5"
+    [paginator]="true"
+    [globalFilterFields]="['cola', 'n_cola']"
+    [rowHover]="true"
+    dataKey="cola"
+    styleClass="p-datatable-sm"
+    [loading]="isLoadingColas"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="cola" style="width: 20%">
+          Cola <p-sortIcon field="cola"></p-sortIcon>
+        </th>
+        <th pSortableColumn="n_cola" style="width: 60%">
+          Nombre <p-sortIcon field="n_cola"></p-sortIcon>
+        </th>
+        <th style="width: 20%; text-align: center">Acción</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-cola>
+      <tr [ngClass]="{'bg-green-50': isColaAssociated(cola)}">
+        <td class="p-2" style="vertical-align: middle">{{cola.cola}}</td>
+        <td class="p-2" style="vertical-align: middle">{{cola.n_cola}}</td>
+        <td class="p-2" style="text-align: center">
+          <button *ngIf="!isColaAssociated(cola)"
+            pButton
+            icon="pi pi-plus"
+            class="p-button-rounded p-button-sm p-button-success"
+            (click)="addCola(cola)"
+            pTooltip="Asociar cola"
+          ></button>
+          <button *ngIf="isColaAssociated(cola)"
+            pButton
+            icon="pi pi-times"
+            class="p-button-rounded p-button-sm p-button-danger"
+            (click)="removeCola(cola)"
+            pTooltip="Desasociar cola"
+          ></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="3" class="text-center p-4">No se encontraron colas disponibles.</td>
+      </tr>
+    </ng-template>
+    </p-table>
+  
+    <div class="p-dialog-footer">
+      <button
+        pButton
+        icon="pi pi-check"
+        label="Cerrar"
+        class="p-button-primary"
+        (click)="hideColasDialog()"
       ></button>
     </div>
   </p-dialog>

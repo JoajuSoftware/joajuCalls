@@ -19,7 +19,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 // Service and Interfaces
 import { TeamsService } from './service/teams.service';
 import { Team } from './interface/teams.interface';
-import { finalize } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
+import { ColasService } from '../colas/services/colas.service';
+import { Cola } from '../colas/interfaces/colas.interface';
 
 @Component({
   selector: 'app-teams',
@@ -46,14 +48,19 @@ import { finalize } from 'rxjs';
 })
 export class TeamsComponent {
   @ViewChild('dt') dt!: Table;
+  @ViewChild('dtColas') dtColas!: Table;
   
   teamForm: FormGroup;
   teamDialog: boolean = false;
+  colasDialog: boolean = false;
   teams = signal<Team[]>([]);
+  availableColas = signal<Cola[]>([]);
+  associatedColas = signal<string[]>([]);
   team!: Team;
   selectedTeams: Team[] | null = null;
   submitted: boolean = false;
   isLoading: boolean = false;
+  isLoadingColas: boolean = false;
   totalRecords: number = 0;
   rows: number = 10;
   first: number = 0;
@@ -63,6 +70,7 @@ export class TeamsComponent {
   messages: any[] = [];
 
   private teamsService = inject(TeamsService);
+  private colasService = inject(ColasService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
   private fb: FormBuilder = inject(FormBuilder);
@@ -153,13 +161,11 @@ export class TeamsComponent {
       const formValues = {...this.teamForm.value};
    
       if (formValues.service === 'crea_team') {
-        // Adaptar al formato que espera el servicio
         this.teamsService.createTeam(formValues.n_team).pipe(
           finalize(() => this.isSubmitting = false)
         ).subscribe({
           next: (response) => {
             if (response.err_code === "200") {
-              // Asumiendo que el servicio devuelve el ID del nuevo equipo en lastId
               const newTeam: Team = {
                 id_team: response.lastId || '',
                 n_team: formValues.n_team
@@ -199,7 +205,6 @@ export class TeamsComponent {
           }
         });
       } else if (formValues.service === 'act_team') {
-        // Adaptar al formato que espera el servicio para actualizar
         this.teamsService.updateTeam(this.currentEditId, formValues.n_team).pipe(
           finalize(() => this.isSubmitting = false)
         ).subscribe({
@@ -295,12 +300,149 @@ export class TeamsComponent {
     });
   }
 
+  openColasDialog() {
+    this.isLoadingColas = true;
+    this.colasDialog = true;
+    
+    forkJoin({
+      allColas: this.colasService.getColas(),
+      teamColas: this.teamsService.getTeamColas(this.currentEditId)
+    }).subscribe({
+      next: (results) => {
+        if (results.allColas.err_code === '200') {
+          this.availableColas.set(results.allColas.mensaje);
+          
+          if (results.teamColas.err_code === '200') {
+            const associatedColaExtens = results.teamColas.mensaje.map((cola: any) => cola.exten);
+            console.log('Colas asociadas:', associatedColaExtens);
+            this.associatedColas.set(associatedColaExtens);
+          } else {
+            this.associatedColas.set([]);
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Info',
+              detail: 'Este equipo no tiene colas asociadas',
+              life: 3000
+            });
+          }
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar las colas',
+            life: 3000
+          });
+        }
+        this.isLoadingColas = false;
+      },
+      error: (error) => {
+        console.error('Error cargando datos:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar las colas',
+          life: 3000
+        });
+        this.isLoadingColas = false;
+      }
+    });
+  }
+  
+  isColaAssociated(cola: Cola): boolean {
+    return this.associatedColas().includes(cola.cola);
+  }
+  
+  addCola(cola: Cola) {
+    this.isLoadingColas = true;
+    this.teamsService.addColaToTeam(this.currentEditId, cola.cola).subscribe({
+      next: (response) => {
+        if (response.err_code === '200') {
+          this.associatedColas.update(current => [...current, cola.cola]);
+          
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: `Cola ${cola.n_cola} asociada correctamente al equipo`,
+            life: 3000
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: response.mensaje || 'Error al asociar la cola',
+            life: 3000
+          });
+        }
+        this.isLoadingColas = false;
+      },
+      error: (error) => {
+        console.error('Error al asociar cola:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al asociar la cola',
+          life: 3000
+        });
+        this.isLoadingColas = false;
+      }
+    });
+  }
+  
+  removeCola(cola: Cola) {
+    this.confirmationService.confirm({
+      message: `¿Está seguro de eliminar la cola ${cola.n_cola} del equipo?`,
+      header: 'Confirmar',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.isLoadingColas = true;
+        this.teamsService.removeColaFromTeam(this.currentEditId, cola.cola).subscribe({
+          next: (response) => {
+            if (response.err_code === '200') {
+              this.associatedColas.update(current => 
+                current.filter(id => id !== cola.cola)
+              );
+              
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: `Cola ${cola.n_cola} desasociada correctamente del equipo`,
+                life: 3000
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: response.mensaje || 'Error al desasociar la cola',
+                life: 3000
+              });
+            }
+            this.isLoadingColas = false;
+          },
+          error: (error) => {
+            console.error('Error al desasociar cola:', error);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al desasociar la cola',
+              life: 3000
+            });
+            this.isLoadingColas = false;
+          }
+        });
+      }
+    });
+  }
+  
+
+  hideColasDialog() {
+    this.colasDialog = false;
+  }
+
   applyFilterGlobal(event: any) {
     this.dt?.filterGlobal(event.target.value, 'contains');
   }
 
-  onInput(event: Event) {
-    const searchValue = (event.target as HTMLInputElement).value;
-    this.dt.filterGlobal(searchValue, 'contains');
+  applyColasFilterGlobal(event: any) {
+    this.dtColas?.filterGlobal(event.target.value, 'contains');
   }
 }

@@ -188,6 +188,24 @@
                     </small>
                 }
             </div>
+
+            <div class="col-12 mb-3" *ngIf="isEditMode">
+              <label for="agente" class="block text-base font-medium mb-2">Agente</label>
+              <p-dropdown 
+                id="agente" 
+                [options]="agentes" 
+                formControlName="agente" 
+                optionLabel="nombre" 
+                optionValue="agente" 
+                placeholder="Seleccione un agente"
+                scrollHeight="200px"
+                [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['agente'].invalid}"
+                class="w-full"
+              ></p-dropdown>
+              <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['agente'].invalid">
+                Este campo es requerido
+              </small>
+            </div>
             
             <div class="col-12 mb-3">
                 <label for="acd_predef" class="block text-base font-medium mb-2">ACD Predefinido</label>

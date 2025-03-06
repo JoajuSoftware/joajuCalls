@@ -14,6 +14,9 @@ import { Usuario } from './interfaces/usuario.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessagesModule } from 'primeng/messages';
 import { finalize } from 'rxjs';
+import { Agent } from '../agentes/interface/agentes.interface';
+import { AgentesService } from '../agentes/service/agentes.service';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-usuarios',
@@ -30,7 +33,8 @@ import { finalize } from 'rxjs';
     FormsModule,
     ReactiveFormsModule,
     ProgressSpinnerModule,
-    MessagesModule
+    MessagesModule,
+    DropdownModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './usuarios.component.html',
@@ -41,6 +45,7 @@ export class UsuariosComponent {
   
   usuarioForm: FormGroup;
   usuarioDialog: boolean = false;
+  agentes: Agent[] = [];
   usuarios: Usuario[] = [];
   usuario!: Usuario;
   selectedUsuarios: Usuario[] | null = null;
@@ -52,6 +57,7 @@ export class UsuariosComponent {
   isSubmitting: boolean = false;
   isEditMode: boolean = false;
 
+  private agentesService = inject(AgentesService);
   private usuariosService: UsuariosService = inject(UsuariosService);
   private messageService: MessageService = inject(MessageService);
   private fb: FormBuilder = inject(FormBuilder)
@@ -67,6 +73,7 @@ export class UsuariosComponent {
       crea_pass2: [''],
       acd_predef: ['4001', Validators.required],
       nro_exten: [''],
+      agente: ['']
     }, {
       validators: this.passwordMatchValidator
     });
@@ -91,6 +98,7 @@ export class UsuariosComponent {
 
   ngOnInit() {
     this.loadUsuarios();
+    this.loadAgentes();
   }
 
   get usuarioFormControls(): { [key: string]: AbstractControl } {
@@ -112,6 +120,32 @@ export class UsuariosComponent {
     });
   }
 
+  loadAgentes() {
+    this.agentesService.getAgentes().subscribe({
+      next: (response) => {
+        const formattedAgents = response.mensaje.map((agent) => ({
+          id: agent.id,
+          agente: agent.agente,
+          nombre: agent.nombre,
+          exten: Number(agent.exten),
+          team: agent.team,
+          estado: agent.estado,
+        }));
+        
+        this.agentes = formattedAgents;
+      },
+      error: (error) => {
+        console.error('Error al obtener agentes:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los agentes',
+          life: 3000
+        });
+      }
+    });
+  }
+
   openNew() {
     this.usuario = {} as Usuario;
 
@@ -121,6 +155,12 @@ export class UsuariosComponent {
       nroExtenControl.updateValueAndValidity();
     }
 
+    const agenteControl = this.usuarioForm.get('agente');
+    if (agenteControl) {
+      agenteControl.setValidators([Validators.required]);
+      agenteControl.updateValueAndValidity();
+    }
+
     this.usuarioForm.patchValue({
       service: 'crea_usuario',
       usuario: '',
@@ -128,7 +168,9 @@ export class UsuariosComponent {
       apellido: '',
       crea_pass: '',
       crea_pass2: '',
-      acd_predef: '4001'
+      acd_predef: '4001',
+      nro_exten: this.usuario.nro_exten,
+      agente: this.usuario.nro_agente
     });
 
     const passControl = this.usuarioForm.get('crea_pass');
@@ -206,6 +248,7 @@ export class UsuariosComponent {
 
       if (!this.isEditMode) {
         delete formValues.nro_exten;
+        delete formValues.agente;
       } else {
         delete formValues.acd_predef;
       }  
@@ -292,6 +335,7 @@ export class UsuariosComponent {
                   nom: formValues.nombre,
                   ape: formValues.apellido,
                   acd_predef: formValues.acd_predef,
+                  nro_agente: formValues.agente,
                   nro_exten: formValues.nro_exten
                 };
               }

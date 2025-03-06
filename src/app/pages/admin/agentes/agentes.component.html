@@ -1,10 +1,9 @@
-<!-- agentes.component.html -->
 <div class="card">
   <!-- Sección del Encabezado -->
   <div class="flex justify-between items-center p-4 border-b bg-white">
     <button
       pButton
-      label="Crear Usuario"
+      label="Crear Agente"
       icon="pi pi-plus"
       class="p-button-primary"
       (click)="openNew()"
@@ -118,7 +117,7 @@
 
         <div class="field">
           <label for="estado">Estado</label>
-          <input type="text" pInputText id="estado" formControlName="estado" />
+          <input type="text" pInputText id="estado" formControlName="estado" readonly />
         </div>
       </form>
 

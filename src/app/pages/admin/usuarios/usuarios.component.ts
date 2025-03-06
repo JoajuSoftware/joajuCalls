@@ -17,6 +17,8 @@ import { finalize } from 'rxjs';
 import { Agent } from '../agentes/interface/agentes.interface';
 import { AgentesService } from '../agentes/service/agentes.service';
 import { DropdownModule } from 'primeng/dropdown';
+import { Cola } from '../colas/interfaces/colas.interface';
+import { ColasService } from '../colas/services/colas.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -46,6 +48,7 @@ export class UsuariosComponent {
   usuarioForm: FormGroup;
   usuarioDialog: boolean = false;
   agentes: Agent[] = [];
+  colas: Cola[] = [];
   usuarios: Usuario[] = [];
   usuario!: Usuario;
   selectedUsuarios: Usuario[] | null = null;
@@ -57,6 +60,7 @@ export class UsuariosComponent {
   isSubmitting: boolean = false;
   isEditMode: boolean = false;
 
+  private colasService = inject(ColasService);
   private agentesService = inject(AgentesService);
   private usuariosService: UsuariosService = inject(UsuariosService);
   private messageService: MessageService = inject(MessageService);
@@ -99,6 +103,7 @@ export class UsuariosComponent {
   ngOnInit() {
     this.loadUsuarios();
     this.loadAgentes();
+    this.loadColas();
   }
 
   get usuarioFormControls(): { [key: string]: AbstractControl } {
@@ -140,6 +145,35 @@ export class UsuariosComponent {
           severity: 'error',
           summary: 'Error',
           detail: 'Error al cargar los agentes',
+          life: 3000
+        });
+      }
+    });
+  }
+
+  loadColas() {
+    this.colasService.getColas().subscribe({
+      next: (response) => {
+        if (response.err_code === '200') {
+          this.colas = response.mensaje.map(cola => ({
+            ...cola,
+            displayName: `${cola.cola} - ${cola.n_cola}`
+          }));
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar las colas',
+            life: 3000
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener colas:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar las colas',
           life: 3000
         });
       }
@@ -249,9 +283,7 @@ export class UsuariosComponent {
       if (!this.isEditMode) {
         delete formValues.nro_exten;
         delete formValues.agente;
-      } else {
-        delete formValues.acd_predef;
-      }  
+      }
    
       Object.keys(formValues).forEach(key => {
         formData.append(key, formValues[key]);
@@ -320,7 +352,7 @@ export class UsuariosComponent {
         formData.append('id_perfil', this.usuario.id_perfil);
         formData.append('agente', this.usuario.nro_agente);
         formData.append('nro_exten', formValues.nro_exten);
-        formData.append('acd_predef', this.usuario.acd_predef);
+        formData.append('acd_predef', formValues.acd_predef);
    
         this.usuariosService.updateUsuario(formData).pipe(
           finalize(() => this.isSubmitting = false)

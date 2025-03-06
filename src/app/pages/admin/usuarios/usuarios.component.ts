@@ -65,7 +65,8 @@ export class UsuariosComponent {
       apellido: ['', Validators.required],
       crea_pass: [''],
       crea_pass2: [''],
-      acd_predef: ['4001', Validators.required]
+      acd_predef: ['4001', Validators.required],
+      nro_exten: [''],
     }, {
       validators: this.passwordMatchValidator
     });
@@ -113,6 +114,13 @@ export class UsuariosComponent {
 
   openNew() {
     this.usuario = {} as Usuario;
+
+    const nroExtenControl = this.usuarioForm.get('nro_exten');
+    if (nroExtenControl) {
+      nroExtenControl.clearValidators();
+      nroExtenControl.updateValueAndValidity();
+    }
+
     this.usuarioForm.patchValue({
       service: 'crea_usuario',
       usuario: '',
@@ -140,11 +148,19 @@ export class UsuariosComponent {
   hideDialog() {
     this.usuarioDialog = false;
     this.submitted = false;
+    this.isEditMode = false;
   }
 
   editUsuario(usuario: Usuario) {
     this.isEditMode = true;
     this.usuario = { ...usuario };
+
+    const nroExtenControl = this.usuarioForm.get('nro_exten');
+    if (nroExtenControl) {
+      nroExtenControl.setValidators([Validators.required]);
+      nroExtenControl.updateValueAndValidity();
+    }
+    
     this.usuarioForm.patchValue({
       service: 'act_usuario',
       usuario: usuario.n_usuario,
@@ -152,7 +168,8 @@ export class UsuariosComponent {
       apellido: usuario.ape,
       acd_predef: usuario.acd_predef,
       crea_pass: '',
-      crea_pass2: ''
+      crea_pass2: '',
+      nro_exten: usuario.nro_exten,
     });
 
     const passControl = this.usuarioForm.get('crea_pass');
@@ -174,6 +191,9 @@ export class UsuariosComponent {
     if (this.usuarioForm.valid) {
       this.isSubmitting = true;
       const formValues = {...this.usuarioForm.value};
+
+      delete formValues.estado;
+
       const formData = new FormData();
 
       if (
@@ -183,6 +203,12 @@ export class UsuariosComponent {
         delete formValues.crea_pass;
         delete formValues.crea_pass2;
       }
+
+      if (!this.isEditMode) {
+        delete formValues.nro_exten;
+      } else {
+        delete formValues.acd_predef;
+      }  
    
       Object.keys(formValues).forEach(key => {
         formData.append(key, formValues[key]);
@@ -250,7 +276,8 @@ export class UsuariosComponent {
         formData.append('id_usuario', this.usuario.id_usuario);
         formData.append('id_perfil', this.usuario.id_perfil);
         formData.append('agente', this.usuario.nro_agente);
-        formData.append('nro_exten', this.usuario.nro_exten);
+        formData.append('nro_exten', formValues.nro_exten);
+        formData.append('acd_predef', this.usuario.acd_predef);
    
         this.usuariosService.updateUsuario(formData).pipe(
           finalize(() => this.isSubmitting = false)
@@ -264,7 +291,8 @@ export class UsuariosComponent {
                   n_usuario: formValues.usuario,
                   nom: formValues.nombre,
                   ape: formValues.apellido,
-                  acd_predef: formValues.acd_predef
+                  acd_predef: formValues.acd_predef,
+                  nro_exten: formValues.nro_exten
                 };
               }
               

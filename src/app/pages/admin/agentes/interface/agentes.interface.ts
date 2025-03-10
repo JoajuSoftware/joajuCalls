@@ -5,7 +5,7 @@ export interface Agent {
   nombre: string;
   exten: number;
   team: string;
-  estado: string;
+  estado?: string;
 }
 
 // La interfaz que representa la respuesta cruda de cada agente desde la API

@@ -263,8 +263,7 @@ export class AgentesComponent {
                       agente: formValues.agente,
                       nombre: formValues.nombre,
                       exten: formValues.exten,
-                      team: formValues.team,
-                      estado: formValues.estado
+                      team: formValues.team
                     };
                   }
                   return a;
@@ -305,50 +304,6 @@ export class AgentesComponent {
       }
     }
   }
-
-  // deleteAgent(agent: Agent) {
-  //   this.confirmationService.confirm({
-  //     message: `¿Está seguro de eliminar al agente ${agent.nombre}?`,
-  //     header: 'Confirmar',
-  //     icon: 'pi pi-exclamation-triangle',
-  //     accept: () => {
-  //       this.isLoading = true;
-  //       this.agentesService.deleteAgent(agent.id).pipe(
-  //         finalize(() => this.isLoading = false)
-  //       ).subscribe({
-  //         next: (response) => {
-  //           if (response.err_code === "200") {
-  //             this.agents.update(currentAgents => 
-  //               currentAgents.filter(a => a.id !== agent.id)
-  //             );
-              
-  //             this.messageService.add({
-  //               severity: 'success',
-  //               summary: 'Éxito',
-  //               detail: 'Agente eliminado',
-  //               life: 3000
-  //             });
-  //           } else {
-  //             this.messageService.add({
-  //               severity: 'error',
-  //               summary: 'Error',
-  //               detail: response.mensaje,
-  //               life: 3000
-  //             });
-  //           }
-  //         },
-  //         error: (error) => {
-  //           this.messageService.add({
-  //             severity: 'error',
-  //             summary: 'Error',
-  //             detail: 'Error al eliminar el agente',
-  //             life: 3000
-  //           });
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
 
   applyFilterGlobal(event: any) {
     this.dt?.filterGlobal(event.target.value, 'contains');

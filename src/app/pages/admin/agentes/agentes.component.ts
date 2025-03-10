@@ -9,24 +9,22 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
-import { DropdownModule } from 'primeng/dropdown';
 import { MessagesModule } from 'primeng/messages';
 import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 import { ToolbarModule } from 'primeng/toolbar';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TagModule } from 'primeng/tag';
+import { SelectModule } from 'primeng/select';
 
 // Service and Interface
 import { AgentesService } from './service/agentes.service';
 import { Agent } from './interface/agentes.interface';
 import { finalize } from 'rxjs';
-
-// Local Types
-interface TeamOption {
-  name: string;
-  value: string;
-}
+import { TeamsService } from '../teams/service/teams.service';
+import { Team, TeamResponse } from '../teams/interface/teams.interface';
+import { ManageQueueComponent } from "./components/manage-queue/manage-queue.component";
 
 @Component({
   selector: 'app-agentes',
@@ -46,8 +44,10 @@ interface TeamOption {
     MessagesModule,
     MessageModule,
     TooltipModule,
-    DropdownModule
-  ],
+    TagModule,
+    SelectModule,
+    ManageQueueComponent
+],
   providers: [MessageService, ConfirmationService],
   templateUrl: './agentes.component.html',
   styleUrls: ['./agentes.component.scss'],
@@ -68,18 +68,13 @@ export class AgentesComponent {
   isSubmitting: boolean = false;
   isEditMode: boolean = false;
   currentEditId = '';
-
-  teams: TeamOption[] = [
-    { name: 'Administrador', value: 'administrador' },
-    { name: 'Ventas', value: 'ventas' },
-    { name: 'Cobranzas', value: 'cobranzas' },
-    { name: 'SAC', value: 'SAC' },
-    { name: 'Joaju', value: 'Joaju' },
-  ];
+  teams: Team[] = [];
+  showQueueTable: boolean = false;
 
   private agentesService = inject(AgentesService);
   private messageService = inject(MessageService);
   private fb: FormBuilder = inject(FormBuilder);
+  private teamsService: TeamsService = inject(TeamsService);
   
   constructor() {
     this.agentForm = this.fb.group({
@@ -94,10 +89,30 @@ export class AgentesComponent {
 
   ngOnInit() {
     this.loadAgentes();
+    this.getTeams();
   }
 
   get agentFormControls(): { [key: string]: AbstractControl } {
     return this.agentForm.controls;
+  }
+
+  getTeams():void {
+
+    this.teamsService.getTeams().subscribe({
+      next: (response) => {
+        this.teams = response.mensaje;
+      },
+      error: (error) => {
+        console.error('Error al obtener los teams:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los teams',
+          life: 3000
+        });
+      }
+    });
+
   }
 
   loadAgentes() {
@@ -298,4 +313,12 @@ export class AgentesComponent {
     const searchValue = (event.target as HTMLInputElement).value;
     this.dt.filterGlobal(searchValue, 'contains');
   }
+  selectedAgent!: Agent; 
+  manageQueue(agent: Agent) {
+    this.showQueueTable = true;
+    this.selectedAgent = agent;
+    
+
+  }
+
 }

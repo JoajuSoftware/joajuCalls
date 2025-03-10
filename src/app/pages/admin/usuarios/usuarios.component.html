@@ -44,6 +44,9 @@
         <th pSortableColumn="usuario" class="w-1/6">
           Usuario <p-sortIcon field="usuario"></p-sortIcon>
         </th>
+        <th pSortableColumn="agente" class="w-1/6">
+          Agente <p-sortIcon field="agente"></p-sortIcon>
+        </th>
         <th pSortableColumn="nombre" class="w-1/6">
           Nombre <p-sortIcon field="nombre"></p-sortIcon>
         </th>
@@ -66,11 +69,12 @@
       <tr>
         <td class="p-2">{{usuario.id_usuario}}</td>
         <td class="p-2">{{usuario.n_usuario}}</td>
+        <td class="p-2">{{usuario.nro_agente}}</td>
         <td class="p-2">{{usuario.nom}}</td>
         <td class="p-2">{{usuario.ape}}</td>
         <td class="p-2">{{usuario.nro_exten}}</td>
         <td class="p-2">{{usuario.team}}</td>
-        <td class="p-2">{{usuario.activo}}</td>
+        <td class="p-2">{{usuario.activo ? "Activo" : "Inactivo"}}</td>
         <td class="p-2">
           <div class="action-buttons">
             <button
@@ -146,6 +150,49 @@
                     <small class="p-error block mt-1">Este campo es requerido</small>
                 }
             </div>
+
+            <div class="col-12 mb-3" *ngIf="isEditMode">
+              <label for="agente" class="block text-base font-medium mb-2">Agente</label>
+              <p-dropdown 
+                id="agente" 
+                [options]="agentes" 
+                formControlName="agente" 
+                optionLabel="nombre" 
+                optionValue="agente" 
+                placeholder="Seleccione un agente"
+                scrollHeight="200px"
+                [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['agente'].invalid}"
+                class="w-full"
+              ></p-dropdown>
+              <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['agente'].invalid">
+                Este campo es requerido
+              </small>
+            </div>
+            
+            <div class="col-12 mb-3">
+              <label for="acd_predef" class="block text-base font-medium mb-2">Cola</label>
+              <p-dropdown 
+                id="acd_predef" 
+                [options]="colas" 
+                formControlName="acd_predef" 
+                optionLabel="n_cola" 
+                optionValue="cola" 
+                placeholder="Seleccione un ACD"
+                scrollHeight="200px"
+                [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['acd_predef'].invalid}"
+                class="w-full"
+              >
+                <ng-template pTemplate="selectedItem" let-cola>
+                  <div>{{cola.cola}} - {{cola.n_cola}}</div>
+                </ng-template>
+                <ng-template pTemplate="item" let-cola>
+                  <div>{{cola.cola}} - {{cola.n_cola}}</div>
+                </ng-template>
+              </p-dropdown>
+              <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['acd_predef'].invalid">
+                Este campo es requerido
+              </small>
+            </div>
     
             <div class="col-12 mb-3">
                 <label for="crea_pass" class="block text-base font-medium mb-2">
@@ -184,25 +231,26 @@
                     </small>
                 }
             </div>
-            
-            <div class="col-12 mb-3">
-                <label for="acd_predef" class="block text-base font-medium mb-2">ACD Predefinido</label>
-                <input 
-                    type="text" 
-                    pInputText 
-                    id="acd_predef" 
-                    formControlName="acd_predef" 
-                    class="w-full p-inputtext"
-                    [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['acd_predef'].invalid}"
-                    placeholder="ACD por defecto 4001" />
-                @if(submitted && usuarioFormControls['acd_predef'].invalid){
-                    <small class="p-error block">Este campo es requerido</small>
-                }
+
+            <div class="col-12 mb-3" *ngIf="isEditMode">
+              <label for="nro_exten" class="block text-base font-medium mb-2">Extensión</label>
+              <input 
+                  type="text" 
+                  pInputText 
+                  id="nro_exten" 
+                  formControlName="nro_exten" 
+                  class="w-full p-inputtext"
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['nro_exten'].invalid}"
+                  placeholder="Ingrese la extensión" />
+              <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['nro_exten'].invalid">
+                  Este campo es requerido
+              </small>
             </div>
     
             <div class="p-dialog-footer">
               <button
                 pButton
+                type="button"
                 icon="pi pi-times"
                 label="Cancelar"
                 class="p-button-text"

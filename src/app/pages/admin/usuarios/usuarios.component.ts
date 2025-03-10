@@ -14,6 +14,11 @@ import { Usuario } from './interfaces/usuario.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessagesModule } from 'primeng/messages';
 import { finalize } from 'rxjs';
+import { Agent } from '../agentes/interface/agentes.interface';
+import { AgentesService } from '../agentes/service/agentes.service';
+import { DropdownModule } from 'primeng/dropdown';
+import { Cola } from '../colas/interfaces/colas.interface';
+import { ColasService } from '../colas/services/colas.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -30,7 +35,8 @@ import { finalize } from 'rxjs';
     FormsModule,
     ReactiveFormsModule,
     ProgressSpinnerModule,
-    MessagesModule
+    MessagesModule,
+    DropdownModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './usuarios.component.html',
@@ -41,6 +47,8 @@ export class UsuariosComponent {
   
   usuarioForm: FormGroup;
   usuarioDialog: boolean = false;
+  agentes: Agent[] = [];
+  colas: Cola[] = [];
   usuarios: Usuario[] = [];
   usuario!: Usuario;
   selectedUsuarios: Usuario[] | null = null;
@@ -52,6 +60,8 @@ export class UsuariosComponent {
   isSubmitting: boolean = false;
   isEditMode: boolean = false;
 
+  private colasService = inject(ColasService);
+  private agentesService = inject(AgentesService);
   private usuariosService: UsuariosService = inject(UsuariosService);
   private messageService: MessageService = inject(MessageService);
   private fb: FormBuilder = inject(FormBuilder)
@@ -65,7 +75,9 @@ export class UsuariosComponent {
       apellido: ['', Validators.required],
       crea_pass: [''],
       crea_pass2: [''],
-      acd_predef: ['4001', Validators.required]
+      acd_predef: ['4001', Validators.required],
+      nro_exten: [''],
+      agente: ['']
     }, {
       validators: this.passwordMatchValidator
     });
@@ -90,6 +102,8 @@ export class UsuariosComponent {
 
   ngOnInit() {
     this.loadUsuarios();
+    this.loadAgentes();
+    this.loadColas();
   }
 
   get usuarioFormControls(): { [key: string]: AbstractControl } {
@@ -111,8 +125,76 @@ export class UsuariosComponent {
     });
   }
 
+  loadAgentes() {
+    this.agentesService.getAgentes().subscribe({
+      next: (response) => {
+        const formattedAgents = response.mensaje.map((agent) => ({
+          id: agent.id,
+          agente: agent.agente,
+          nombre: agent.nombre,
+          exten: Number(agent.exten),
+          team: agent.team,
+          estado: agent.estado,
+        }));
+        
+        this.agentes = formattedAgents;
+      },
+      error: (error) => {
+        console.error('Error al obtener agentes:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los agentes',
+          life: 3000
+        });
+      }
+    });
+  }
+
+  loadColas() {
+    this.colasService.getColas().subscribe({
+      next: (response) => {
+        if (response.err_code === '200') {
+          this.colas = response.mensaje.map(cola => ({
+            ...cola,
+            displayName: `${cola.cola} - ${cola.n_cola}`
+          }));
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar las colas',
+            life: 3000
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener colas:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar las colas',
+          life: 3000
+        });
+      }
+    });
+  }
+
   openNew() {
     this.usuario = {} as Usuario;
+
+    const nroExtenControl = this.usuarioForm.get('nro_exten');
+    if (nroExtenControl) {
+      nroExtenControl.clearValidators();
+      nroExtenControl.updateValueAndValidity();
+    }
+
+    const agenteControl = this.usuarioForm.get('agente');
+    if (agenteControl) {
+      agenteControl.setValidators([Validators.required]);
+      agenteControl.updateValueAndValidity();
+    }
+
     this.usuarioForm.patchValue({
       service: 'crea_usuario',
       usuario: '',
@@ -120,7 +202,9 @@ export class UsuariosComponent {
       apellido: '',
       crea_pass: '',
       crea_pass2: '',
-      acd_predef: '4001'
+      acd_predef: '4001',
+      nro_exten: this.usuario.nro_exten,
+      agente: this.usuario.nro_agente
     });
 
     const passControl = this.usuarioForm.get('crea_pass');
@@ -140,11 +224,19 @@ export class UsuariosComponent {
   hideDialog() {
     this.usuarioDialog = false;
     this.submitted = false;
+    this.isEditMode = false;
   }
 
   editUsuario(usuario: Usuario) {
     this.isEditMode = true;
     this.usuario = { ...usuario };
+
+    const nroExtenControl = this.usuarioForm.get('nro_exten');
+    if (nroExtenControl) {
+      nroExtenControl.setValidators([Validators.required]);
+      nroExtenControl.updateValueAndValidity();
+    }
+    
     this.usuarioForm.patchValue({
       service: 'act_usuario',
       usuario: usuario.n_usuario,
@@ -152,7 +244,8 @@ export class UsuariosComponent {
       apellido: usuario.ape,
       acd_predef: usuario.acd_predef,
       crea_pass: '',
-      crea_pass2: ''
+      crea_pass2: '',
+      nro_exten: usuario.nro_exten,
     });
 
     const passControl = this.usuarioForm.get('crea_pass');
@@ -174,6 +267,9 @@ export class UsuariosComponent {
     if (this.usuarioForm.valid) {
       this.isSubmitting = true;
       const formValues = {...this.usuarioForm.value};
+
+      delete formValues.estado;
+
       const formData = new FormData();
 
       if (
@@ -182,6 +278,11 @@ export class UsuariosComponent {
       ) {
         delete formValues.crea_pass;
         delete formValues.crea_pass2;
+      }
+
+      if (!this.isEditMode) {
+        delete formValues.nro_exten;
+        delete formValues.agente;
       }
    
       Object.keys(formValues).forEach(key => {
@@ -250,7 +351,8 @@ export class UsuariosComponent {
         formData.append('id_usuario', this.usuario.id_usuario);
         formData.append('id_perfil', this.usuario.id_perfil);
         formData.append('agente', this.usuario.nro_agente);
-        formData.append('nro_exten', this.usuario.nro_exten);
+        formData.append('nro_exten', formValues.nro_exten);
+        formData.append('acd_predef', formValues.acd_predef);
    
         this.usuariosService.updateUsuario(formData).pipe(
           finalize(() => this.isSubmitting = false)
@@ -264,7 +366,9 @@ export class UsuariosComponent {
                   n_usuario: formValues.usuario,
                   nom: formValues.nombre,
                   ape: formValues.apellido,
-                  acd_predef: formValues.acd_predef
+                  acd_predef: formValues.acd_predef,
+                  nro_agente: formValues.agente,
+                  nro_exten: formValues.nro_exten
                 };
               }
               

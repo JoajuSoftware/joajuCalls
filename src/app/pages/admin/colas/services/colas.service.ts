@@ -11,12 +11,18 @@ export class ColasService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
 
+  private url = 'https://cloudpbx.joaju.net/api/agentes?service=agente_consulta&agente='
+
   getColas(): Observable<ColasApiResponse> {
     return this.http.get<ColasApiResponse>(`${this.baseUrl}/gestion_call`, {
       params: {
         service: 'listar_colas',
       },
     });
+  }
+
+  getUserQueues(username: string): Observable<any> {
+    return this.http.get(`${this.baseUrl}/agentes?service=agente_consulta&agente=${username}`);
   }
 
   createCola(numeroCola: string, nombreCola: string): Observable<any> {
@@ -44,5 +50,13 @@ export class ColasService {
     formData.append('id', idCola);
 
     return this.http.post<any>(`${this.baseUrl}/gestion_call`, formData);
+  }
+
+  addAgentToQueue(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/agente`, data);
+  }
+
+  deleteAgentFromQueue(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/agente`, data);
   }
 }

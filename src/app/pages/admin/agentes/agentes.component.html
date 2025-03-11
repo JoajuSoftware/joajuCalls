@@ -26,7 +26,7 @@
     [rows]="rows"
     [paginator]="true"
     [globalFilterFields]="['agente', 'nombre', 'exten', 'team', 'estado']"
-    [tableStyle]="{'min-width': '75rem'}"
+    [tableStyle]="{'min-width': '65rem'}"
     [rowHover]="true"
     dataKey="id"
     [showCurrentPageReport]="true"
@@ -37,6 +37,7 @@
   >
     <ng-template pTemplate="header">
       <tr>
+        <th pSortableColumn="id">ID </th>
         <th pSortableColumn="agente">Agente <p-sortIcon field="agente"></p-sortIcon></th>
         <th pSortableColumn="nombre">Nombre <p-sortIcon field="nombre"></p-sortIcon></th>
         <th pSortableColumn="exten">Extensión <p-sortIcon field="exten"></p-sortIcon></th>
@@ -46,12 +47,26 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-agent>
-      <tr>
+      <tr class="text-sm text-center">
+        <td class="font-bold" >{{agent.id}}</td>
         <td>{{agent.agente}}</td>
         <td>{{agent.nombre}}</td>
         <td>{{agent.exten}}</td>
         <td>{{agent.team}}</td>
-        <td>{{agent.estado}}</td>
+        <td class="text-xs">
+          <ng-content>
+            @if(agent.estado === 'Desconectado') {
+              <p-tag severity="danger" value="{{agent.estado.slice(0, 6) + '...'}}" />
+            } 
+            @else if(agent.estado === 'Conectado') {
+              <p-tag severity="success" value="{{agent.estado}}" />
+            }
+            @else {
+              <p-tag severity="info" value="{{agent.estado}}" />
+            }
+          </ng-content>
+        </td>
+          <!-- </ng-template> -->
         <td>
           <div class="action-buttons">
             <button
@@ -63,10 +78,11 @@
             ></button>
             <button
               pButton
-              icon="pi pi-trash"
-              class="p-button-rounded p-button-sm p-button-delete"
-              pTooltip="Eliminar"
-              (click)="false"
+              icon="pi pi-plus"
+              class="p-button-rounded p-button-sm p-button-info"
+              pTooltip="Agregar cola"
+              tooltipPosition="left"
+              (click)="manageQueue(agent)"
             ></button>
           </div>
         </td>
@@ -108,17 +124,15 @@
         </div>
 
         <div class="field">
-          <label for="team">Equipo</label>
-          <p-dropdown id="team" [options]="teams" formControlName="team" optionLabel="name" optionValue="value" placeholder="Seleccione un equipo"></p-dropdown>
+          <label for="team">Team</label>
+          <p-select id="team" appendTo="body" [options]="teams" formControlName="team" optionLabel="n_team" optionValue="value" placeholder="Seleccione un equipo"></p-select>
           <small class="p-error" *ngIf="submitted && agentFormControls['team'].errors?.['required']">
             Equipo es requerido.
           </small>
         </div>
 
-        <div class="field">
-          <label for="estado">Estado</label>
-          <input type="text" pInputText id="estado" formControlName="estado" readonly />
-        </div>
+
+  main
       </form>
 
     <div class="p-dialog-footer">
@@ -149,3 +163,16 @@
 <div *ngIf="isLoading" class="loading-overlay">
   <p-progressSpinner strokeWidth="8" [style]="{width: '50px', height: '50px'}"></p-progressSpinner>
 </div>
+
+<p-dialog [draggable]="false" [(visible)]="showQueueTable" [style]="{width: '750px'}" [breakpoints]="{'960px': '75vw', '640px': '90vw'}">
+  <ng-template #header >
+    <h3></h3>
+  </ng-template>
+  @if(selectedAgent != undefined) {
+
+    <app-manage-queue [user]="selectedAgent"></app-manage-queue>
+  } @else {
+    <p>No tenemos opciones que mostrar</p>
+  }
+
+</p-dialog>

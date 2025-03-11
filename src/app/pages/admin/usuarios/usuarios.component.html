@@ -193,6 +193,18 @@
                 Este campo es requerido
               </small>
             </div>
+
+            <div class="col-12 mb-3" *ngIf="isEditMode">
+              <label for="activo" class="block text-base font-medium mb-2">Estado</label>
+              <div class="flex align-items-center">
+                <p-checkbox 
+                  id="activo" 
+                  formControlName="activo" 
+                  [binary]="true">
+                </p-checkbox>
+                <label for="activo" class="ml-2">{{ usuarioForm.get('activo')?.value ? 'Activo' : 'Inactivo' }}</label>
+              </div>
+            </div>
     
             <div class="col-12 mb-3">
                 <label for="crea_pass" class="block text-base font-medium mb-2">

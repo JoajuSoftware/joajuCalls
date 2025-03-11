@@ -14,6 +14,7 @@ import { Usuario } from './interfaces/usuario.interface';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessagesModule } from 'primeng/messages';
 import { finalize } from 'rxjs';
+import { CheckboxModule } from 'primeng/checkbox';
 import { Agent } from '../agentes/interface/agentes.interface';
 import { AgentesService } from '../agentes/service/agentes.service';
 import { DropdownModule } from 'primeng/dropdown';
@@ -36,7 +37,8 @@ import { ColasService } from '../colas/services/colas.service';
     ReactiveFormsModule,
     ProgressSpinnerModule,
     MessagesModule,
-    DropdownModule
+    DropdownModule,
+    CheckboxModule
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './usuarios.component.html',
@@ -77,7 +79,8 @@ export class UsuariosComponent {
       crea_pass2: [''],
       acd_predef: ['4001', Validators.required],
       nro_exten: [''],
-      agente: ['']
+      agente: [''],
+      activo: [true]
     }, {
       validators: this.passwordMatchValidator
     });
@@ -204,7 +207,8 @@ export class UsuariosComponent {
       crea_pass2: '',
       acd_predef: '4001',
       nro_exten: this.usuario.nro_exten,
-      agente: this.usuario.nro_agente
+      agente: this.usuario.nro_agente,
+      activo: true
     });
 
     const passControl = this.usuarioForm.get('crea_pass');
@@ -236,6 +240,8 @@ export class UsuariosComponent {
       nroExtenControl.setValidators([Validators.required]);
       nroExtenControl.updateValueAndValidity();
     }
+
+    const activoValue = usuario.activo === '1';
     
     this.usuarioForm.patchValue({
       service: 'act_usuario',
@@ -246,6 +252,8 @@ export class UsuariosComponent {
       crea_pass: '',
       crea_pass2: '',
       nro_exten: usuario.nro_exten,
+      agente: usuario.nro_agente,
+      activo: activoValue
     });
 
     const passControl = this.usuarioForm.get('crea_pass');
@@ -267,6 +275,10 @@ export class UsuariosComponent {
     if (this.usuarioForm.valid) {
       this.isSubmitting = true;
       const formValues = {...this.usuarioForm.value};
+
+      if (this.isEditMode && formValues.activo !== undefined) {
+        formValues.activo = formValues.activo ? '1' : '0';
+      }      
 
       delete formValues.estado;
 
@@ -353,6 +365,10 @@ export class UsuariosComponent {
         formData.append('agente', this.usuario.nro_agente);
         formData.append('nro_exten', formValues.nro_exten);
         formData.append('acd_predef', formValues.acd_predef);
+
+        if (formValues.activo !== undefined) {
+          formData.append('activo', formValues.activo);
+        }
    
         this.usuariosService.updateUsuario(formData).pipe(
           finalize(() => this.isSubmitting = false)

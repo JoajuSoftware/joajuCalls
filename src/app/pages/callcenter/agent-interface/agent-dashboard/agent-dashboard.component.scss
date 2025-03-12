@@ -1,0 +1,150 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
+  overflow: auto;
+}
+
+.top-section {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.dial-pad-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 25%;
+  min-width: 250px;
+  
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.right-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.call-data-row {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  
+  .call-data-area {
+    flex: 1;
+  }
+  
+  .disconnect-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @media (max-width: 992px) {
+    flex-direction: column;
+    align-items: stretch;
+    
+    .disconnect-wrapper {
+      margin-top: -10px;
+    }
+  }
+}
+
+.contacts-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  min-height: 700px;
+}
+
+.component-box {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  
+  &.dial-pad-area {
+    height: 450px;
+  }
+  
+  &.call-data-area {
+    height: 215px;
+    background-color: #b8e0ff;
+  }
+  
+  &.pause-area {
+    height: 215px;
+  }
+  
+  &.contact-list-area {
+    height: 400px;
+  }
+  
+  &.managed-contacts-area {
+    flex: 1;
+    min-height: 200px;
+  }
+}
+
+::ng-deep {
+  .disconnect-btn {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    
+    &:hover {
+      background-color: #ff4f4f;
+    }
+    
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+  
+  .dial-pad-container,
+  .call-data-container,
+  .pause-container,
+  .contact-list-container,
+  .contact-manage-container {
+    border: none;
+    border-radius: 0;
+    height: 100%;
+  }
+  
+  .pause-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+    .pause-option-btn {
+      padding: 10px;
+      background-color: #f2f2f2;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      text-align: left;
+      cursor: pointer;
+      
+      &:hover {
+        background-color: #e8e8e8;
+      }
+    }
+  }
+}

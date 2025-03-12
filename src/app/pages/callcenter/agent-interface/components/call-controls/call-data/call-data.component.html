@@ -1,0 +1,36 @@
+<div class="call-data-container">
+    <h2>Datos de la llamada:</h2>
+    
+    @if (callInfo(); as info) {
+      <div class="call-details">
+        <div class="info-row">
+          <span class="label">Número:</span>
+          <span class="value">{{ info.number }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Inicio:</span>
+          <span class="value">{{ formatTime(info.startTime) }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Duración:</span>
+          <span class="value">{{ info.duration }}</span>
+        </div>
+        @if (info.caller) {
+          <div class="info-row">
+            <span class="label">Contacto:</span>
+            <span class="value">{{ info.caller }}</span>
+          </div>
+        }
+        <div class="info-row">
+          <span class="label">Estado:</span>
+          <span class="value status" [class]="info.status">
+            {{ getStatusText(info.status) }}
+          </span>
+        </div>
+      </div>
+    } @else {
+      <div class="no-call">
+        <p>No hay llamada en curso</p>
+      </div>
+    }
+</div>

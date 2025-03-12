@@ -1,0 +1,51 @@
+<div class="dial-pad-container">
+  <div class="dial-pad-display">
+    <div class="agent-info" *ngIf="currentCall()">
+      <span class="agent-name">{{ currentCall()?.agentName }}</span>
+      <span class="call-duration">{{ callDuration() }}</span>
+    </div>
+    <div class="number-display">
+      {{ displayNumber() }}
+    </div>
+  </div>
+
+  <div class="dial-pad-buttons">
+    <div class="dial-pad-row" *ngFor="let row of keypadButtons">
+      <button 
+        *ngFor="let btn of row" 
+        class="dial-pad-button"
+        [class.active]="activeButton() === btn.value"
+        (click)="handleButtonPress(btn.value)">
+        {{ btn.label }}
+      </button>
+    </div>
+    <div class="dial-pad-row">
+      <button 
+        class="dial-pad-button"
+        [class.active]="activeButton() === '*'"
+        (click)="handleButtonPress('*')">
+        *
+      </button>
+      <button 
+        class="dial-pad-button"
+        [class.active]="activeButton() === '0'"
+        (click)="handleButtonPress('0')">
+        0
+      </button>
+      <button 
+        class="dial-pad-button"
+        [class.active]="activeButton() === '#'"
+        (click)="handleButtonPress('#')">
+        #
+      </button>
+    </div>
+    <div class="dial-pad-row">
+      <button 
+        class="dial-pad-button call-button"
+        [class.active-call]="isCallActive()"
+        (click)="toggleCall()">
+        <span class="call-icon"></span>
+      </button>
+    </div>
+  </div>
+</div>

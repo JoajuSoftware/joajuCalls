@@ -1,0 +1,25 @@
+<div class="pause-container">
+    <h2>Pausa</h2>
+    
+    @if (!isPaused()) {
+      <div class="pause-options">
+        @for (option of pauseOptions; track option.id) {
+          <button 
+            class="pause-option-btn"
+            (click)="activatePause(option.id)">
+            {{ option.label }}
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="paused-status">
+        <div class="pause-info">
+          <span class="pause-type">{{ getCurrentPauseLabel() }}</span>
+          <span class="pause-time">{{ pauseTime() }}</span>
+        </div>
+        <button class="return-btn" (click)="deactivatePause()">
+          Volver a disponible
+        </button>
+      </div>
+    }
+</div>

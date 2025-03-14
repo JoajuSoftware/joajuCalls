@@ -123,3 +123,21 @@
 .transfer-icon::before {
   content: '↗️';
 }
+
+.delete-button {
+  background-color: #f8d7da;
+  color: #721c24;
+  
+  &:hover {
+    background-color: #f5c6cb;
+  }
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.pi-backspace:before {
+  content: "\e92a";
+}

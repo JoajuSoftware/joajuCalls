@@ -8,7 +8,7 @@
       {{ displayNumber() }}
     </div>
   </div>
-
+  
   <div class="dial-pad-buttons">
     <div class="dial-pad-row" *ngFor="let row of keypadButtons">
       <button 
@@ -40,6 +40,12 @@
       </button>
     </div>
     <div class="dial-pad-row">
+      <button 
+        class="dial-pad-button delete-button"
+        [disabled]="displayNumber().length === 0"
+        (click)="deleteLastDigit()">
+        <i class="pi pi-backspace"></i>
+      </button>
       <button 
         class="dial-pad-button call-button"
         [class.active-call]="isCallActive()"

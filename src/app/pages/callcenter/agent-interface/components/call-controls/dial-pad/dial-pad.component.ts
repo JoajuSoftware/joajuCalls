@@ -1,12 +1,17 @@
-import { Component, EventEmitter, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DialPadService } from './services/dial-pad.service';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-dial-pad',
   standalone: true,
   templateUrl: './dial-pad.component.html',
   styleUrl: './dial-pad.component.scss',
-  imports: [CommonModule]
+  imports: [
+    CommonModule,
+    ButtonModule
+  ]
 })
 export class DialPadComponent {
   keypadButtons = [
@@ -34,6 +39,7 @@ export class DialPadComponent {
   isOnHold = signal<boolean>(false);
   currentCall = signal<any | null>(null);
   callDuration = signal<string>('00:00');
+  private dialPadService = inject(DialPadService);
   
   private durationInterval: any;
 
@@ -49,10 +55,44 @@ export class DialPadComponent {
     }, 200);
   }
 
+  deleteLastDigit(): void {
+    if (this.displayNumber().length > 0) {
+      this.displayNumber.update(current => current.slice(0, -1));
+    }
+  }
+
   toggleCall(): void {
     const newState = !this.isCallActive();
     this.isCallActive.set(newState);
     this.callStatusChange.emit(newState);
+
+    const userDataString = sessionStorage.getItem('userData');
+    if (!userDataString) {
+      console.error('No user data found in session storage');
+      return;
+    }
+  
+    const userData = JSON.parse(userDataString);
+    
+    const agent_call = {
+      agent: userData.agente,
+      nro_cliente: this.displayNumber(),
+      cola: userData.acd_predef || '4001',
+      tipo_call: 'Manual',
+      id_call: '0',
+      campana: '0'
+    };
+
+    if (this.isCallActive()){
+      this.dialPadService.call(agent_call).subscribe({
+        next: () => {
+          console.log('Call successful');
+        },
+        error: (error) => {
+          console.error('Error making call', error);
+        }
+      })
+    }
     
     if (newState) {
       this.startCall();

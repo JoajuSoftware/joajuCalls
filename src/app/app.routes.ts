@@ -17,8 +17,9 @@ import { CrearCarteraComponent } from './pages/utilidades/preview/crear-cartera/
 
 import { LoginComponent } from './auth/login/login.component';
 import { authGuard } from './guards/auth.guard';
-import { AgentInterfaceComponent } from './pages/callcenter/agent-interface/agent-interface.component';
 import { AgentDashboardComponent } from './pages/callcenter/agent-interface/agent-dashboard/agent-dashboard.component';
+import { LoginAgentComponent } from './pages/callcenter/login-agent/login-agent.component';
+import { loginAgentGuard } from './guards/loginAgent.guard';
 
 export const routes: Routes = [
   {
@@ -51,7 +52,12 @@ export const routes: Routes = [
 
       // SECCIÓN CALLCENTER
       {
+        path: 'loginAgent',
+        component: LoginAgentComponent
+      },
+      {
         path: 'callcenter',
+        canActivate: [loginAgentGuard],
         children: [
           { path: 'dashboard', component: AgentDashboardComponent },
         ],

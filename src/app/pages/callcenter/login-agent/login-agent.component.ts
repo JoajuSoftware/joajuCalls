@@ -1,15 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { AuthService } from '../../../shared/services/auth.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
 import { MessageService } from 'primeng/api';
 import { joajuLogo } from '../../../shared/utilities/utils';
+import { LoginAgentService } from './services/login-agent.service';
 
 @Component({
   selector: 'app-login-agent',
@@ -32,13 +32,14 @@ export class LoginAgentComponent {
   loading = false;
   joajuLogo = joajuLogo;
 
-  constructor(
-    private authService: AuthService,
-    private messageService: MessageService, 
-    private fb: FormBuilder
-  ) {
+  //services
+  private messageService: MessageService = inject(MessageService); 
+  private fb: FormBuilder = inject(FormBuilder);
+  private loginAgentService: LoginAgentService = inject(LoginAgentService);
+
+  constructor() {
     this.loginForm = this.fb.group({
-      agent: new FormControl('', {
+      agente: new FormControl('', {
         validators: Validators.required,
         updateOn: 'change'
       }),
@@ -50,7 +51,24 @@ export class LoginAgentComponent {
     if (this.loginForm.valid) {
       this.loading = true;
       const credentials = this.loginForm.value;
-      // Logica de login de consola  
+      
+      this.loginAgentService.signIn(credentials).subscribe({
+        next: () => {
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Éxito', 
+            detail: "Inicio de sesión éxitoso"
+          });
+        },
+        error: (err) => {
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error',
+            detail: "Error al iniciar sesión"
+          });
+          console.error(err);
+        }
+      });
     } else {
       this.messageService.add({ 
         severity: 'error', 

@@ -1,4 +1,6 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { LoginAgentService } from '../../../../login-agent/services/login-agent.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-disconnect-button',
@@ -26,9 +28,26 @@ import { Component, Output, EventEmitter } from '@angular/core';
   `]
 })
 export class DisconnectButtonComponent {
-  @Output() disconnect = new EventEmitter<void>();
-  
+  private loginAgentService: LoginAgentService = inject(LoginAgentService);
+  private messageService: MessageService = inject(MessageService);
+
   onDisconnect(): void {
-    this.disconnect.emit();
+    this.loginAgentService.logout().subscribe({
+      next: () => {
+        this.messageService.add({ 
+          severity: 'success', 
+          summary: 'Éxito', 
+          detail: "Cierre de sesión éxitoso"
+        });
+      },
+      error: (err) => {
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error',
+          detail: "Error al cerrar sesión"
+        });
+        console.error(err);
+      }
+    });
   }
 }

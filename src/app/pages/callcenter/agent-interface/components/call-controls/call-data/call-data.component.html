@@ -1,36 +1,35 @@
 <div class="call-data-container">
-    <h2>Datos de la llamada:</h2>
-    
-    @if (callInfo(); as info) {
-      <div class="call-details">
-        <div class="info-row">
-          <span class="label">Número:</span>
-          <span class="value">{{ info.number }}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Inicio:</span>
-          <span class="value">{{ formatTime(info.startTime) }}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Duración:</span>
-          <span class="value">{{ info.duration }}</span>
-        </div>
-        @if (info.caller) {
-          <div class="info-row">
-            <span class="label">Contacto:</span>
-            <span class="value">{{ info.caller }}</span>
-          </div>
-        }
-        <div class="info-row">
-          <span class="label">Estado:</span>
-          <span class="value status" [class]="info.status">
-            {{ getStatusText(info.status) }}
-          </span>
-        </div>
+  <h2 class="section-title">Datos de la llamada:</h2>
+  
+  <ng-container *ngIf="callInfo() && callInfo().number; else noCallInfo">
+    <div class="call-info">
+      <div class="info-row">
+        <span class="info-label">Número:</span>
+        <span class="info-value">{{ callInfo().number }}</span>
       </div>
-    } @else {
-      <div class="no-call">
-        <p>No hay llamada en curso</p>
+      
+      <div class="info-row">
+        <span class="info-label">Hora de inicio:</span>
+        <span class="info-value">{{ formatTime(callInfo().startTime) }}</span>
       </div>
-    }
+      
+      <div class="info-row">
+        <span class="info-label">Duración:</span>
+        <span class="info-value">{{ callInfo().duration }}</span>
+      </div>
+      
+      <div class="info-row">
+        <span class="info-label">Estado:</span>
+        <span class="info-value status" [ngClass]="callInfo().status">
+          {{ getStatusText(callInfo().status) }}
+        </span>
+      </div>
+    </div>
+  </ng-container>
+  
+  <ng-template #noCallInfo>
+    <div class="no-call-message">
+      No hay llamada en curso
+    </div>
+  </ng-template>
 </div>

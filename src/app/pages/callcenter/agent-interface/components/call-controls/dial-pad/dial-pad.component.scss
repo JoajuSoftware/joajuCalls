@@ -1,8 +1,7 @@
 .dial-pad-container {
   width: 280px;
-  border: 2px solid #333;
   border-radius: 24px;
-  padding: 5px 20px 2px 20px;
+  padding: 5px 20px 20px 20px;
   background-color: #f8f9fa;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -49,11 +48,30 @@
   gap: 12px;
 }
 
+/* Nueva estructura para la fila de acción */
+.action-row {
+  display: flex;
+  position: relative;
+  height: 60px;
+  margin-top: 12px;
+}
+
+.center-wrapper {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.right-wrapper {
+  position: absolute;
+  right: 0;
+}
+
 .dial-pad-button {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 2px solid #555;
+  border: 1px solid #eaeaea;
   background-color: transparent;
   font-size: 20px;
   display: flex;
@@ -74,63 +92,23 @@
 }
 
 .call-button {
-  background-color: #a5f3a5;
-  position: relative;
+  background-color: #41dd5b;
+  border-color: #41dd41;
 }
 
 .call-button:hover {
-  background-color: #8ee68e;
+  background-color: #57db57;
 }
 
 .call-button.active-call {
   background-color: #ff6b6b;
-}
-
-.call-icon::before {
-  content: '📞';
-}
-
-.call-controls {
-  display: flex;
-  justify-content: space-around;
-  margin-top: 8px;
-}
-
-.control-button {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.control-button.muted {
-  background-color: #ff9e9e;
-}
-
-.mute-icon::before {
-  content: '🎤';
-}
-
-.hold-icon::before {
-  content: '⏸️';
-}
-
-.transfer-icon::before {
-  content: '↗️';
+  border-color: #ff6b6b;
 }
 
 .delete-button {
-  background-color: #f8d7da;
-  color: #721c24;
-  
-  &:hover {
-    background-color: #f5c6cb;
-  }
+  color: #838383;
+  background-color: transparent;
+  border-color: #eaeaea;
   
   &:disabled {
     opacity: 0.5;
@@ -138,6 +116,14 @@
   }
 }
 
-.pi-backspace:before {
-  content: "\e92a";
+@media (max-width: 320px) {
+  .dial-pad-container {
+    width: 100%;
+    border-radius: 16px;
+  }
+  
+  .dial-pad-button {
+    width: 55px;
+    height: 55px;
+  }
 }

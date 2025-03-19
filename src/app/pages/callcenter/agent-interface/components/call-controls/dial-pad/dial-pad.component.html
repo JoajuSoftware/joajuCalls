@@ -1,9 +1,5 @@
 <div class="dial-pad-container">
   <div class="dial-pad-display">
-    <div class="agent-info" *ngIf="currentCall()">
-      <span class="agent-name">{{ currentCall()?.agentName }}</span>
-      <span class="call-duration">{{ callDuration() }}</span>
-    </div>
     <div class="number-display">
       {{ displayNumber() }}
     </div>
@@ -39,19 +35,28 @@
         #
       </button>
     </div>
-    <div class="dial-pad-row">
-      <button 
-        class="dial-pad-button delete-button"
-        [disabled]="displayNumber().length === 0"
-        (click)="deleteLastDigit()">
-        <i class="pi pi-backspace"></i>
-      </button>
-      <button 
-        class="dial-pad-button call-button"
-        [class.active-call]="isCallActive()"
-        (click)="toggleCall()">
-        <span class="call-icon"></span>
-      </button>
+    
+    <!-- Fila de acción con botones de llamada y borrar -->
+    <div class="action-row">
+      <div class="center-wrapper">
+        <button 
+          class="dial-pad-button call-button"
+          [class.active-call]="isCallActive()"
+          (click)="toggleCall()">
+          <span class="call-icon">
+            <i class="pi pi-phone" style="font-size: 1.5rem; color: #fff"></i>
+          </span>
+        </button>
+      </div>
+      
+      <div class="right-wrapper">
+        <button 
+          class="dial-pad-button delete-button"
+          [disabled]="displayNumber().length === 0"
+          (click)="deleteLastDigit()">
+          <i class="pi pi-delete-left" style="font-size: 1.5rem; color: #838383"></i>
+        </button>
+      </div>
     </div>
   </div>
 </div>

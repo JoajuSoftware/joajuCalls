@@ -1,54 +1,67 @@
-<div class="contact-manage-container">
-    <h2>Contactos gestionados</h2>
+<div class="contact-list-container">
+  <h2>Lista de contactos gestionados</h2>
+  
+  <p-table 
+    #dt 
+    [value]="contactsManaged()" 
+    [paginator]="true" 
+    [rows]="5"
+    [rowHover]="true"
+    [globalFilterFields]="['name', 'phone']"
+    styleClass="p-datatable-sm"
+    [scrollable]="true"
+    responsiveLayout="scroll"
+    [tableStyle]="{'min-width': '50rem'}"
+    emptyMessage="No hay contactos gestionados">
     
-    <div class="search-container">
-      <span class="p-input-icon-left">
-        <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Buscar..." />
-      </span>
-    </div>
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Id</th>
+        <th>Id_camp</th>
+        <th>Nombre</th>
+        <th>Número</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
     
-    <p-table 
-      #dt 
-      [value]="contacts()" 
-      [paginator]="true" 
-      [rows]="5"
-      [rowHover]="true"
-      [globalFilterFields]="['name', 'phone']"
-      styleClass="p-datatable-sm"
-      [scrollable]="true"
-      responsiveLayout="scroll"
-      [tableStyle]="{'min-width': '50rem'}"
-      emptyMessage="No hay contactos pendientes para llamar">
-      
-      <ng-template pTemplate="header">
-        <tr>
-          <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
-          <th pSortableColumn="phone">Teléfono <p-sortIcon field="phone"></p-sortIcon></th>
-          <th pSortableColumn="status">Estado <p-sortIcon field="status"></p-sortIcon></th>
-          <th>Acciones</th>
-        </tr>
-      </ng-template>
-      
-      <ng-template pTemplate="body" let-contact>
-        <tr [ngClass]="'status-' + contact.status">
-          <td>{{contact.name}}</td>
-          <td>{{contact.phone}}</td>
-          <td>
-            <p-tag 
-              [value]="getStatusLabel(contact.status)" >
-            </p-tag>
-          </td>
-          <td>
-            <button 
-              pButton 
-              icon="pi pi-phone" 
-              class="p-button-sm p-button-success"
-              (click)="callContact(contact)" 
-              [disabled]="isAnyCallActive() || contact.status === 'completed'"
-              pTooltip="Llamar">
-            </button>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
+    <ng-template pTemplate="body" let-contact>
+      <tr [ngClass]="'status-' + contact.status">
+        <td>{{contact.id}}</td>
+        <td>{{contact.id_camp}}</td>
+        <td>{{contact.nom_camp}}</td>
+        <td>{{contact.numero}}</td>
+        <td>{{contact.stat}}</td>
+        <td>
+          <button 
+            pButton 
+            icon="pi pi-eye" 
+            class="p-button-sm p-button-warn"
+            (click)="viewContactDetail(contact)"
+            pTooltip="Ver detalle">
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </div>
+
+<p-dialog
+  header="Detalles del contacto"
+  [modal]="true"
+  [(visible)]="openContactManageModal"
+  [style]="{ width: '50rem' }"
+  [draggable]="false"
+  >
+  <p><strong>Id:</strong> {{selectManageContact?.id}}</p>
+  <p><strong>Id_camp:</strong> {{selectManageContact?.id_camp}}</p>
+  <p><strong>Teléfono:</strong> {{selectManageContact?.numero}}</p>
+  <p><strong>Estado:</strong> {{selectManageContact?.stat}}</p>
+  <p><strong>cc_id:</strong> {{selectManageContact?.cc_id}}</p>
+  <p><strong>h_call:</strong> {{selectManageContact?.h_call}}</p>
+  <p><strong>Dato 1:</strong> {{selectManageContact?.data_1}}</p>
+  <p><strong>Dato 2:</strong> {{selectManageContact?.data_2}}</p>
+  <p><strong>Dato 3:</strong> {{selectManageContact?.data_3}}</p>
+  <p><strong>Dato 4:</strong> {{selectManageContact?.data_4}}</p>
+  <p><strong>Dato 5:</strong> {{selectManageContact?.data_5}}</p>
+</p-dialog>

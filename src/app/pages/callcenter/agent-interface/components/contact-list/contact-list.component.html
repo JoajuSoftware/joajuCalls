@@ -1,12 +1,6 @@
 <div class="contact-list-container">
     <h2>Lista de contactos a llamar</h2>
     
-    <div class="search-container">
-      <span class="p-input-icon-left">
-        <input pInputText type="text" (input)="applyFilterGlobal($event, 'contains')" placeholder="Buscar..." />
-      </span>
-    </div>
-    
     <p-table 
       #dt 
       [value]="contacts()" 
@@ -22,29 +16,36 @@
       
       <ng-template pTemplate="header">
         <tr>
-          <th pSortableColumn="name">Nombre <p-sortIcon field="name"></p-sortIcon></th>
-          <th pSortableColumn="phone">Teléfono <p-sortIcon field="phone"></p-sortIcon></th>
-          <th pSortableColumn="status">Estado <p-sortIcon field="status"></p-sortIcon></th>
+          <th>Id</th>
+          <th>Id_camp</th>
+          <th>Nombre</th>
+          <th>Cola</th>
+          <th>Teléfono</th>
+          <th>Estado</th>
           <th>Acciones</th>
         </tr>
       </ng-template>
       
       <ng-template pTemplate="body" let-contact>
         <tr [ngClass]="'status-' + contact.status">
-          <td>{{contact.name}}</td>
-          <td>{{contact.phone}}</td>
+          <td>{{contact.id}}</td>
+          <td>{{contact.id_camp}}</td>
+          <td>{{contact.nom_camp}}</td>
+          <td>{{contact.cola}}</td>
+          <td>{{contact.numero}}</td>
+          <td>{{contact.stat}}</td>
           <td>
-            <p-tag 
-              [value]="getStatusLabel(contact.status)" >
-            </p-tag>
-          </td>
-          <td>
+            <button 
+              pButton 
+              icon="pi pi-eye" 
+              class="p-button-sm p-button-warn mr-2"
+              (click)="viewContactDetail(contact)"
+              pTooltip="Ver detalle">
+            </button>
             <button 
               pButton 
               icon="pi pi-phone" 
               class="p-button-sm p-button-success"
-              (click)="callContact(contact)" 
-              [disabled]="isAnyCallActive() || contact.status === 'completed'"
               pTooltip="Llamar">
             </button>
           </td>
@@ -52,3 +53,23 @@
       </ng-template>
     </p-table>
 </div>
+  
+<p-dialog
+  header="Detalles del contacto"
+  [modal]="true"
+  [(visible)]="openModal"
+  [style]="{ width: '50rem' }"
+  [draggable]="false"
+>
+  <p><strong>Id:</strong> {{selectContact.id}}</p>
+  <p><strong>Id_camp:</strong> {{selectContact.id_camp}}</p>
+  <p><strong>Nombre:</strong> {{selectContact.nom_camp}}</p>
+  <p><strong>Cola:</strong> {{selectContact.cola}}</p>
+  <p><strong>Teléfono:</strong> {{selectContact.numero}}</p>
+  <p><strong>Estado:</strong> {{selectContact.stat}}</p>
+  <p><strong>Dato 1:</strong> {{selectContact.data_1}}</p>
+  <p><strong>Dato 2:</strong> {{selectContact.data_2}}</p>
+  <p><strong>Dato 3:</strong> {{selectContact.data_3}}</p>
+  <p><strong>Dato 4:</strong> {{selectContact.data_4}}</p>
+  <p><strong>Dato 5:</strong> {{selectContact.data_5}}</p>
+</p-dialog>

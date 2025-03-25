@@ -9,13 +9,6 @@ import { contactItem, contactListResponse } from './interfaces/contactList.inter
 import { ContactListService } from './services/contactList.service';
 import { DialogModule } from 'primeng/dialog';
 
-interface Contact {
-  id: string;
-  name: string;
-  phone: string;
-  status: 'pending' | 'attempted' | 'completed';
-}
-
 @Component({
   selector: 'app-contact-list',
   standalone: true,

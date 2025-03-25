@@ -86,7 +86,6 @@ export class PausePanelComponent implements OnInit {
     this.pauseService.checkAgentStatus(userData.agente).subscribe({
       next: (response: checkAgentStatusResponse) => {
         this.isLoading.set(false);
-        console.log('Respuesta completa:', JSON.stringify(response, null, 2));
         
         if (response.err_code === '200' && Array.isArray(response.mensaje)) {
           const agenteInfo = response.mensaje.find(item => item.agente === userData.agente);

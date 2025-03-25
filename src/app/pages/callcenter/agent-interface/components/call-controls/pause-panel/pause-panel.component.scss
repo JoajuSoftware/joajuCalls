@@ -4,7 +4,10 @@
     padding: 15px;
     height: 100%;
     background-color: white;
-    overflow-y: scroll;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   h2 {
@@ -69,4 +72,15 @@
     &:hover {
       background-color: #45a049;
     }
+}
+
+::ng-deep {
+  .p-dropdown {
+    height: 40px;
+    width: 800px !important;
+  }
+
+  .p-select-list-container{
+    width: 800px;
+  }
 }

@@ -31,7 +31,7 @@ export class LoginAgentService {
 
         return this.http.post<any>(`${this.apiUrl}/agentes`, formData).pipe(
             tap(response => {
-                if (response && response.err_code === "200" || response && response.err_code === "202") {
+                if (response && response.err_code === "200" || response && response.err_code === "202" || response && response.err_code === "201") {
                     sessionStorage.setItem('loginAgent', JSON.stringify(loginAgent));
                     this.isLoginAgentAuth.next(true);
                     this.router.navigate(['/callcenter/dashboard']);

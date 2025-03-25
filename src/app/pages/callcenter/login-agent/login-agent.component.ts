@@ -53,12 +53,20 @@ export class LoginAgentComponent {
       const credentials = this.loginForm.value;
       
       this.loginAgentService.signIn(credentials).subscribe({
-        next: () => {
-          this.messageService.add({ 
-            severity: 'success', 
-            summary: 'Éxito', 
-            detail: "Inicio de sesión éxitoso"
-          });
+        next: (response: any) => {
+          if (response.err_code === "302"){
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: 'Error', 
+              detail: "No se encuentra el usuario"
+            });
+          } else {
+            this.messageService.add({ 
+              severity: 'success', 
+              summary: 'Éxito', 
+              detail: "Inicio de sesión éxitoso"
+            });
+          }
         },
         error: (err) => {
           this.messageService.add({ 

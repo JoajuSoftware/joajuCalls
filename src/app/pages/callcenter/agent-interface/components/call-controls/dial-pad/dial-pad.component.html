@@ -1,4 +1,4 @@
-<div class="dial-pad-container">
+<div class="dial-pad-container" [class.disabled]="this._isPaused()">
   <div class="dial-pad-display">
     <div class="number-display">
       {{ displayNumber() }}
@@ -42,7 +42,9 @@
         <button 
           class="dial-pad-button call-button"
           [class.active-call]="isCallActive()"
-          (click)="toggleCall()">
+          [disabled]="displayNumber().length === 0"
+          (click)="toggleCall()"
+          [disabled]="isPaused">
           <span class="call-icon">
             <i class="pi pi-phone" style="font-size: 1.5rem; color: #fff"></i>
           </span>

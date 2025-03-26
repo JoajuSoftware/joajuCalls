@@ -331,7 +331,6 @@ export class PausePanelComponent implements OnInit {
   
   getCurrentPauseLabel(): string {
     const label = this.pauseReason();
-    console.log('getCurrentPauseLabel devuelve:', label);
     return label || 'Pausa activa';
   }
 }

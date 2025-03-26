@@ -4,7 +4,8 @@
       <div class="component-box dial-pad-area">
         <app-dial-pad
           (callStatusChange)="handleCallStatusChange($event)"
-          (numberDialed)="handleNumberDialed($event)">
+          (numberDialed)="handleNumberDialed($event)"
+          [isPaused]="isPaused()">
         </app-dial-pad>
       </div>
     </div>

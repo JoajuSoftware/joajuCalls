@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output, signal } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialPadService } from './services/dial-pad.service';
 import { ButtonModule } from 'primeng/button';
@@ -32,6 +32,7 @@ export class DialPadComponent {
     ]
   ];
 
+  
   displayNumber = signal<string>('');
   isCallActive = signal<boolean>(false);
   activeButton = signal<string | null>(null);
@@ -42,11 +43,20 @@ export class DialPadComponent {
   private dialPadService = inject(DialPadService);
   
   private durationInterval: any;
-
+  
   @Output() callStatusChange = new EventEmitter<boolean>();
   @Output() numberDialed = new EventEmitter<string>();
+  @Input() set isPaused(value: boolean) {
+    this._isPaused.set(value);
+  }
+
+  _isPaused = signal<boolean>(false);
 
   handleButtonPress(value: string): void {
+    if (this._isPaused()) {
+      return;
+    }
+
     this.activeButton.set(value);
     this.displayNumber.update(current => current + value);
     
@@ -56,12 +66,20 @@ export class DialPadComponent {
   }
 
   deleteLastDigit(): void {
+    if (this._isPaused()) {
+      return;
+    }
+
     if (this.displayNumber().length > 0) {
       this.displayNumber.update(current => current.slice(0, -1));
     }
   }
 
   toggleCall(): void {
+    if (this._isPaused()) {
+      return;
+    }
+
     const newState = !this.isCallActive();
     this.isCallActive.set(newState);
     this.callStatusChange.emit(newState);

@@ -25,6 +25,7 @@ export class AgentDashboardComponent {
   
   currentNumber = signal<string>('');
   isCallActive = signal<boolean>(false);
+  isPaused = signal<boolean>(false);
 
   handlePhoneNumber(phoneNumber: string): void {
     this.dialPad.displayNumber.set(phoneNumber);
@@ -47,6 +48,8 @@ export class AgentDashboardComponent {
   }
   
   handlePauseStatusChange(isPaused: boolean): void {
+    this.isPaused.set(isPaused);
+    
     if (isPaused && this.isCallActive()) {
       this.dialPad.endCall();
       this.isCallActive.set(false);

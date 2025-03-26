@@ -67,7 +67,7 @@
   flex-direction: column;
   gap: 20px;
   flex: 1;
-  min-height: 700px;
+  height: auto;
 }
 
 .component-box {
@@ -91,12 +91,19 @@
   }
   
   &.contact-list-area {
-    height: 400px;
+    height: 350px;
   }
   
   &.managed-contacts-area {
     flex: 1;
     min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    
+    app-contact-manage {
+      height: 100%;
+      display: block;
+    }
   }
 }
 
@@ -128,6 +135,26 @@
     border: none;
     border-radius: 0;
     height: 100%;
+  }
+  
+  .contact-manage-container {
+    display: flex;
+    flex-direction: column;
+    
+    .card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .table-container {
+      flex: 1;
+      overflow: auto;
+    }
+  }
+
+  .contact-list-container{
+    height: auto !important;
   }
   
   .pause-options {

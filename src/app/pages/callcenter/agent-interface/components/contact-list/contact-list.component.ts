@@ -4,7 +4,6 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule } from 'primeng/inputtext';
-import { TagModule } from 'primeng/tag';
 import { contactItem, contactListResponse } from './interfaces/contactList.interface';
 import { ContactListService } from './services/contactList.service';
 import { DialogModule } from 'primeng/dialog';
@@ -27,6 +26,8 @@ export class ContactListComponent implements OnInit{
   contacts = signal<contactItem[]>([]);
   openModal = signal<boolean>(false);
   selectContact: contactItem;
+  @Output() phoneNumber = new EventEmitter<string>();
+
   private contactListService: ContactListService = inject(ContactListService);
   
   ngOnInit(): void {
@@ -43,5 +44,13 @@ export class ContactListComponent implements OnInit{
   viewContactDetail(contact: contactItem): void {
     this.selectContact = contact;
     this.openModal.set(true);
+  }
+
+  callContact(phoneNumber: string): void {
+    this.sendPhoneNumber(phoneNumber);
+  }
+
+  sendPhoneNumber(phoneNumber: string): void {
+    this.phoneNumber.emit(phoneNumber);
   }
 }

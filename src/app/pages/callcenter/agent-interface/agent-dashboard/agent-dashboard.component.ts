@@ -25,6 +25,10 @@ export class AgentDashboardComponent {
   
   currentNumber = signal<string>('');
   isCallActive = signal<boolean>(false);
+
+  handlePhoneNumber(phoneNumber: string): void {
+    this.dialPad.displayNumber.set(phoneNumber);
+  }
   
   handleCallStatusChange(isActive: boolean): void {
     this.isCallActive.set(isActive);

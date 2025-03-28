@@ -20,6 +20,13 @@ import { AgentesService } from '../agentes/service/agentes.service';
 import { DropdownModule } from 'primeng/dropdown';
 import { Cola } from '../colas/interfaces/colas.interface';
 import { ColasService } from '../colas/services/colas.service';
+import { TeamsService } from '../teams/service/teams.service';
+import { Team } from '../teams/interface/teams.interface';
+
+interface Perfil {
+  id_perfil: string;
+  n_perfil: string;
+}
 
 @Component({
   selector: 'app-usuarios',
@@ -51,6 +58,12 @@ export class UsuariosComponent {
   usuarioDialog: boolean = false;
   agentes: Agent[] = [];
   colas: Cola[] = [];
+  teams: Team[] = [];
+  perfiles: Perfil[] = [
+    { id_perfil: "1", n_perfil: "admin" },
+    { id_perfil: "3", n_perfil: "agente" },
+    { id_perfil: "2", n_perfil: "supervisor" }
+  ];
   usuarios: Usuario[] = [];
   usuario!: Usuario;
   selectedUsuarios: Usuario[] | null = null;
@@ -64,15 +77,16 @@ export class UsuariosComponent {
 
   private colasService = inject(ColasService);
   private agentesService = inject(AgentesService);
+  private teamsService = inject(TeamsService);
   private usuariosService: UsuariosService = inject(UsuariosService);
   private messageService: MessageService = inject(MessageService);
-  private fb: FormBuilder = inject(FormBuilder)
+  private fb: FormBuilder = inject(FormBuilder);
 
-  constructor(
-  ) {
+  constructor() {
     this.usuarioForm = this.fb.group({
       service: ['crea_usuario', Validators.required],
       usuario: ['', Validators.required],
+      id_usuario: [''],
       nombre: ['', Validators.required],
       apellido: ['', Validators.required],
       crea_pass: [''],
@@ -80,6 +94,8 @@ export class UsuariosComponent {
       acd_predef: ['4001', Validators.required],
       nro_exten: [''],
       agente: [''],
+      id_team: ['', Validators.required],
+      id_perfil: ['', Validators.required],
       activo: [true]
     }, {
       validators: this.passwordMatchValidator
@@ -107,6 +123,7 @@ export class UsuariosComponent {
     this.loadUsuarios();
     this.loadAgentes();
     this.loadColas();
+    this.loadTeams();
   }
 
   get usuarioFormControls(): { [key: string]: AbstractControl } {
@@ -124,6 +141,12 @@ export class UsuariosComponent {
       error: (error) => {
         console.error('Error cargando usuarios:', error);
         this.isLoading = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los usuarios',
+          life: 3000
+        });
       }
     });
   }
@@ -183,8 +206,35 @@ export class UsuariosComponent {
     });
   }
 
+  loadTeams() {
+    this.teamsService.getTeams().subscribe({
+      next: (response) => {
+        if (response.err_code === '200') {
+          this.teams = response.mensaje;
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar los equipos',
+            life: 3000
+          });
+        }
+      },
+      error: (error) => {
+        console.error('Error al obtener equipos:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los equipos',
+          life: 3000
+        });
+      }
+    });
+  }
+
   openNew() {
     this.usuario = {} as Usuario;
+    this.isEditMode = false;
 
     const nroExtenControl = this.usuarioForm.get('nro_exten');
     if (nroExtenControl) {
@@ -194,20 +244,23 @@ export class UsuariosComponent {
 
     const agenteControl = this.usuarioForm.get('agente');
     if (agenteControl) {
-      agenteControl.setValidators([Validators.required]);
+      agenteControl.clearValidators();
       agenteControl.updateValueAndValidity();
     }
 
     this.usuarioForm.patchValue({
       service: 'crea_usuario',
       usuario: '',
+      id_usuario: '',
       nombre: '',
       apellido: '',
       crea_pass: '',
       crea_pass2: '',
       acd_predef: '4001',
-      nro_exten: this.usuario.nro_exten,
-      agente: this.usuario.nro_agente,
+      nro_exten: '',
+      agente: '',
+      id_team: '',
+      id_perfil: '',
       activo: true
     });
 
@@ -246,6 +299,7 @@ export class UsuariosComponent {
     this.usuarioForm.patchValue({
       service: 'act_usuario',
       usuario: usuario.n_usuario,
+      id_usuario: usuario.id_usuario,
       nombre: usuario.nom,
       apellido: usuario.ape,
       acd_predef: usuario.acd_predef,
@@ -253,6 +307,8 @@ export class UsuariosComponent {
       crea_pass2: '',
       nro_exten: usuario.nro_exten,
       agente: usuario.nro_agente,
+      id_team: usuario.id_team,
+      id_perfil: usuario.id_perfil,
       activo: activoValue
     });
 
@@ -276,11 +332,7 @@ export class UsuariosComponent {
       this.isSubmitting = true;
       const formValues = {...this.usuarioForm.value};
 
-      if (this.isEditMode && formValues.activo !== undefined) {
-        formValues.activo = formValues.activo ? '1' : '0';
-      }      
-
-      delete formValues.estado;
+      formValues.activo = formValues.activo ? '1' : '0';
 
       const formData = new FormData();
 
@@ -298,7 +350,9 @@ export class UsuariosComponent {
       }
    
       Object.keys(formValues).forEach(key => {
-        formData.append(key, formValues[key]);
+        if (formValues[key] !== null && formValues[key] !== undefined) {
+          formData.append(key, formValues[key]);
+        }
       });
    
       if (formValues.service === 'crea_usuario') {
@@ -306,31 +360,30 @@ export class UsuariosComponent {
           finalize(() => this.isSubmitting = false)
         ).subscribe({
           next: (response) => {
-            console.log('Respuesta procesada:', response);
-        
             if (response.err_code === "200") {
-              this.usuarioDialog = false;
+              const teamNombre = this.teams.find(t => t.id_team === formValues.id_team)?.n_team || '';
+              const perfilNombre = this.perfiles.find(p => p.id_perfil === formValues.id_perfil)?.n_perfil || '';
 
               const newUser: Usuario = {
                 id_usuario: response.lastId || '',
                 n_usuario: formValues.usuario,
-                team: "1",
+                team: teamNombre,
                 nro_exten: "0",
                 nro_agente: "0",
                 nom: formValues.nombre,
                 ape: formValues.apellido,
                 acd_predef: formValues.acd_predef,
-                n_perfil: "admin",
-                id_perfil: "1",
-                activo: "1",
-                id_team: "1"
+                n_perfil: perfilNombre,
+                id_perfil: formValues.id_perfil,
+                activo: formValues.activo,
+                id_team: formValues.id_team
               };
         
               this.usuarios.unshift(newUser);
               this.messageService.add({
                 severity: 'success',
                 summary: 'Éxito',
-                detail: response.mensaje,
+                detail: response.mensaje || 'Usuario creado correctamente',
                 life: 3000
               });
         
@@ -338,13 +391,14 @@ export class UsuariosComponent {
               this.submitted = false;
               this.usuarioForm.reset({
                 service: 'crea_usuario',
-                acd_predef: '4001'
+                acd_predef: '4001',
+                activo: true
               });
             } else {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: response.mensaje,
+                detail: response.mensaje || 'Error al crear el usuario',
                 life: 3000
               });
             }
@@ -361,20 +415,15 @@ export class UsuariosComponent {
         });
       } else if (formValues.service === 'act_usuario') {
         formData.append('id_usuario', this.usuario.id_usuario);
-        formData.append('id_perfil', this.usuario.id_perfil);
-        formData.append('agente', this.usuario.nro_agente);
-        formData.append('nro_exten', formValues.nro_exten);
-        formData.append('acd_predef', formValues.acd_predef);
-
-        if (formValues.activo !== undefined) {
-          formData.append('activo', formValues.activo);
-        }
    
         this.usuariosService.updateUsuario(formData).pipe(
           finalize(() => this.isSubmitting = false)
         ).subscribe({
           next: (response) => {
             if (response.err_code === "200") {
+              const teamNombre = this.teams.find(t => t.id_team === formValues.id_team)?.n_team || '';
+              const perfilNombre = this.perfiles.find(p => p.id_perfil === formValues.id_perfil)?.n_perfil || '';
+              
               const index = this.usuarios.findIndex(u => u.id_usuario === this.usuario.id_usuario);
               if (index !== -1) {
                 this.usuarios[index] = {
@@ -384,14 +433,19 @@ export class UsuariosComponent {
                   ape: formValues.apellido,
                   acd_predef: formValues.acd_predef,
                   nro_agente: formValues.agente,
-                  nro_exten: formValues.nro_exten
+                  nro_exten: formValues.nro_exten,
+                  id_team: formValues.id_team,
+                  team: teamNombre,
+                  id_perfil: formValues.id_perfil,
+                  n_perfil: perfilNombre,
+                  activo: formValues.activo
                 };
               }
               
               this.messageService.add({
                 severity: 'success',
                 summary: 'Éxito',
-                detail: response.mensaje,
+                detail: response.mensaje || 'Usuario actualizado correctamente',
                 life: 3000
               });
    
@@ -399,7 +453,15 @@ export class UsuariosComponent {
               this.submitted = false;
               this.usuarioForm.reset({
                 service: 'crea_usuario',
-                acd_predef: '4001'
+                acd_predef: '4001',
+                activo: true
+              });
+            } else {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: response.mensaje || 'Error al actualizar el usuario',
+                life: 3000
               });
             }
           },

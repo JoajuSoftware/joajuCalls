@@ -59,27 +59,4 @@ export class UsuariosService {
     updateUsuario(formData: FormData): Observable<any>{
         return this.http.post(`${this.apiUrl}/usuarios`, formData)
     }
-    
-    // deleteTag(tagId: number): Observable<any>{
-    //     return this.http.delete(`${this.apiUrl}/support/Tag/${tagId}/`)
-    //     .pipe(
-    //         catchError(this.handleError)
-    //     );
-    // }
-
-    // deleteSelectedTags(tagIds: any[]): Observable<any>{
-    //     return this.http.delete(`${this.apiUrl}/support/Tag/DeleteSelected/`, {
-    //         body: { "tag_ids": tagIds }
-    //     })
-    //     .pipe(
-    //         catchError(this.handleError)
-    //     );
-    // }
-
-    // searchTag(searchTag: string): Observable<any>{
-    //     return this.http.get(`${this.apiUrl}/support/Tag/?name=${searchTag}`)
-    //     .pipe(
-    //         catchError(this.handleError)
-    //     );
-    // }
 }

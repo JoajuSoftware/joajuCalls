@@ -1,0 +1,64 @@
+<div class="dial-pad-container" [class.disabled]="this._isPaused()">
+  <div class="dial-pad-display">
+    <div class="number-display">
+      {{ displayNumber() }}
+    </div>
+  </div>
+  
+  <div class="dial-pad-buttons">
+    <div class="dial-pad-row" *ngFor="let row of keypadButtons">
+      <button 
+        *ngFor="let btn of row" 
+        class="dial-pad-button"
+        [class.active]="activeButton() === btn.value"
+        (click)="handleButtonPress(btn.value)">
+        {{ btn.label }}
+      </button>
+    </div>
+    <div class="dial-pad-row">
+      <button 
+        class="dial-pad-button"
+        [class.active]="activeButton() === '*'"
+        (click)="handleButtonPress('*')">
+        *
+      </button>
+      <button 
+        class="dial-pad-button"
+        [class.active]="activeButton() === '0'"
+        (click)="handleButtonPress('0')">
+        0
+      </button>
+      <button 
+        class="dial-pad-button"
+        [class.active]="activeButton() === '#'"
+        (click)="handleButtonPress('#')">
+        #
+      </button>
+    </div>
+    
+    <!-- Fila de acción con botones de llamada y borrar -->
+    <div class="action-row">
+      <div class="center-wrapper">
+        <button 
+          class="dial-pad-button call-button"
+          [class.active-call]="isCallActive()"
+          [disabled]="displayNumber().length === 0"
+          (click)="toggleCall()"
+          [disabled]="isPaused">
+          <span class="call-icon">
+            <i class="pi pi-phone" style="font-size: 1.5rem; color: #fff"></i>
+          </span>
+        </button>
+      </div>
+      
+      <div class="right-wrapper">
+        <button 
+          class="dial-pad-button delete-button"
+          [disabled]="displayNumber().length === 0"
+          (click)="deleteLastDigit()">
+          <i class="pi pi-delete-left" style="font-size: 1.5rem; color: #838383"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

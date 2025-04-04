@@ -1,0 +1,40 @@
+<div class="login-container-parent">
+    <div class="login-form-side">
+        <div class="logo-container">
+            <img [src]="joajuLogo" alt="Joaju" class="logo-img" />
+            <span class="company-name">Consola</span>
+        </div>
+  
+        <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form-container">
+            <div class="input-wrapper">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-user"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        pInputText
+                        formControlName="agente"
+                        placeholder="Agente"
+                    />
+                </p-inputGroup>
+            </div>
+  
+            <div class="input-wrapper">
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <i class="pi pi-lock"></i>
+                    </p-inputGroupAddon>
+                    <input
+                        formControlName="extension"
+                        placeholder="Extensión"
+                        [style]="{width: '100%', display: 'flex'}"
+                    >
+                </p-inputGroup>
+            </div>
+  
+            <button type="submit" class="login-button">
+                Iniciar Sesión
+            </button>
+        </form>
+    </div>
+</div>

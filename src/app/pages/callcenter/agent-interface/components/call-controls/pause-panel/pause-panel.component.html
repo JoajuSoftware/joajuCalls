@@ -1,0 +1,91 @@
+<div class="pause-container">
+  <h2>Pausa</h2>
+  
+  @if (!isPaused()) {
+    <div class="pause-options">
+      <div class="w-full">
+        <p-dropdown 
+          [options]="pauseOptions" 
+          [(ngModel)]="selectedPauseOption" 
+          optionLabel="label" 
+          placeholder="Seleccionar motivo de pausa"
+          [style]="{'width': '100%'}"
+          appendTo="body"
+          class="mb-3 w-full">
+        </p-dropdown>
+      </div>
+      
+      <div class="w-full">
+        <button 
+          pButton 
+          label="Activar Pausa" 
+          icon="pi pi-pause" 
+          class="p-button-primary"
+          style="width: 100%;"
+          [disabled]="!selectedPauseOption"
+          (click)="showPasswordDialog(selectedPauseOption?.id || '')">
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="paused-status">
+      <div class="pause-info">
+        <span class="pause-type">{{ getCurrentPauseLabel() }}</span>
+      </div>
+      <div class="w-full">
+        <button 
+          pButton
+          label="Volver a disponible" 
+          icon="pi pi-play"
+          class="p-button-success"
+          style="width: 100%;"
+          (click)="deactivatePause()">
+        </button>
+      </div>
+    </div>
+  }
+
+  <p-dialog 
+    [visible]="displayPasswordDialog()" 
+    (visibleChange)="displayPasswordDialog.set($event)"
+    [modal]="true"
+    [closable]="true"
+    [draggable]="false"
+    [resizable]="false"
+    [style]="{width: '400px'}"
+    header="Confirmar pausa"
+    [closeOnEscape]="true">
+    
+    <div class="password-form">
+      <div class="p-field mb-3">
+        <label for="password" class="block mb-2">Contraseña</label>
+        <input 
+          type="password" 
+          id="password" 
+          pInputText 
+          [(ngModel)]="agentPass"
+          class="w-full"
+          (keyup.enter)="confirmPause()"/>
+        
+        @if (passwordError()) {
+          <small class="p-error block mt-1">{{ passwordError() }}</small>
+        }
+      </div>
+    </div>
+    
+    <ng-template pTemplate="footer">
+      <button 
+        pButton 
+        label="Cancelar" 
+        icon="pi pi-times" 
+        class="p-button-text" 
+        (click)="displayPasswordDialog.set(false)"></button>
+      <button 
+        pButton 
+        label="Confirmar" 
+        icon="pi pi-check" 
+        class="p-button-primary" 
+        (click)="confirmPause()"></button>
+    </ng-template>
+  </p-dialog>
+</div>

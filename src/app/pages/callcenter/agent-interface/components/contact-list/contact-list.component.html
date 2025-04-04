@@ -1,0 +1,76 @@
+<div class="contact-list-container">
+    <h2>Lista de contactos a llamar</h2>
+    
+    <p-table 
+      #dt 
+      [value]="contacts()" 
+      [paginator]="true" 
+      [rows]="5"
+      [rowHover]="true"
+      [globalFilterFields]="['name', 'phone']"
+      styleClass="p-datatable-sm"
+      [scrollable]="true"
+      responsiveLayout="scroll"
+      [tableStyle]="{'min-width': '50rem'}"
+      emptyMessage="No hay contactos pendientes para llamar">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Id</th>
+          <th>Id_camp</th>
+          <th>Nombre</th>
+          <th>Cola</th>
+          <th>Teléfono</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </ng-template>
+      
+      <ng-template pTemplate="body" let-contact>
+        <tr [ngClass]="'status-' + contact.status">
+          <td>{{contact.id}}</td>
+          <td>{{contact.id_camp}}</td>
+          <td>{{contact.nom_camp}}</td>
+          <td>{{contact.cola}}</td>
+          <td>{{contact.numero}}</td>
+          <td>{{contact.stat}}</td>
+          <td>
+            <button 
+              pButton 
+              icon="pi pi-eye" 
+              class="p-button-sm p-button-warn mr-2"
+              (click)="viewContactDetail(contact)"
+              pTooltip="Ver detalle">
+            </button>
+            <button 
+              pButton 
+              icon="pi pi-phone" 
+              class="p-button-sm p-button-success"
+              (click)="callContact(contact.numero)"
+              pTooltip="Llamar">
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+</div>
+  
+<p-dialog
+  header="Detalles del contacto"
+  [modal]="true"
+  [(visible)]="openModal"
+  [style]="{ width: '50rem' }"
+  [draggable]="false"
+>
+  <p><strong>Id:</strong> {{selectContact?.id}}</p>
+  <p><strong>Id_camp:</strong> {{selectContact?.id_camp}}</p>
+  <p><strong>Nombre:</strong> {{selectContact?.nom_camp}}</p>
+  <p><strong>Cola:</strong> {{selectContact?.cola}}</p>
+  <p><strong>Teléfono:</strong> {{selectContact?.numero}}</p>
+  <p><strong>Estado:</strong> {{selectContact?.stat}}</p>
+  <p><strong>Dato 1:</strong> {{selectContact?.data_1}}</p>
+  <p><strong>Dato 2:</strong> {{selectContact?.data_2}}</p>
+  <p><strong>Dato 3:</strong> {{selectContact?.data_3}}</p>
+  <p><strong>Dato 4:</strong> {{selectContact?.data_4}}</p>
+  <p><strong>Dato 5:</strong> {{selectContact?.data_5}}</p>
+</p-dialog>

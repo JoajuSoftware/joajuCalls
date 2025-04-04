@@ -1,276 +1,329 @@
-
 <div class="card">    
-    <!-- Sección del Encabezado -->
-    <div class="flex justify-between items-center p-4 border-b bg-white">
-      <button
-        pButton
-        label="Crear Usuario"
-        icon="pi pi-plus"
-        class="p-button-primary"
-        (click)="openNew()"
-      ></button>
-      <span class="p-input-icon-left">
-        <i class="pi pi-search"></i>
-        <input
-          pInputText
-          type="text"
-          (input)="applyFilterGlobal($event)"
-          placeholder="Buscar..."
-        />
-      </span>
-    </div>
+  <!-- Sección del Encabezado -->
+  <div class="flex justify-between items-center p-4 border-b bg-white">
+    <button
+      pButton
+      label="Crear Usuario"
+      icon="pi pi-plus"
+      class="p-button-primary"
+      (click)="openNew()"
+    ></button>
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input
+        pInputText
+        type="text"
+        (input)="applyFilterGlobal($event)"
+        placeholder="Buscar..."
+      />
+    </span>
+  </div>
 
-    <p-table
-      #dt
-      [value]="usuarios"
-      [rows]="10"
-      [paginator]="true"
-      [globalFilterFields]="['agente', 'nombre', 'team', 'estado']"
-      [rowHover]="true"
-      dataKey="id"
-      [showCurrentPageReport]="true"
-      [paginatorDropdownAppendTo]="'body'"
-      [paginatorPosition]="'bottom'"
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
-      styleClass="p-datatable-sm"
-      [scrollable]="true"
-      [responsiveLayout]="'scroll'"
-    >
-    <ng-template pTemplate="header">
-      <tr>
-        <th pSortableColumn="id" class="w-1/6">
-          ID <p-sortIcon field="id"></p-sortIcon>
-        </th>
-        <th pSortableColumn="usuario" class="w-1/6">
-          Usuario <p-sortIcon field="usuario"></p-sortIcon>
-        </th>
-        <th pSortableColumn="agente" class="w-1/6">
-          Agente <p-sortIcon field="agente"></p-sortIcon>
-        </th>
-        <th pSortableColumn="nombre" class="w-1/6">
-          Nombre <p-sortIcon field="nombre"></p-sortIcon>
-        </th>
-        <th pSortableColumn="apellido" class="w-1/6">
-            Apellido <p-sortIcon field="apellido"></p-sortIcon>
-        </th>
-        <th pSortableColumn="exten" class="w-1/6">
-          Exten <p-sortIcon field="exten"></p-sortIcon>
-        </th>
-        <th pSortableColumn="team" class="w-1/6">
-          Team <p-sortIcon field="team"></p-sortIcon>
-        </th>
-        <th pSortableColumn="estado" class="w-1/6">
-          Estado <p-sortIcon field="estado"></p-sortIcon>
-        </th>
-        <th class="w-1/6">Acciones</th>
-      </tr>
-    </ng-template>
-    <ng-template pTemplate="body" let-usuario>
-      <tr>
-        <td class="p-2">{{usuario.id_usuario}}</td>
-        <td class="p-2">{{usuario.n_usuario}}</td>
-        <td class="p-2">{{usuario.nro_agente}}</td>
-        <td class="p-2">{{usuario.nom}}</td>
-        <td class="p-2">{{usuario.ape}}</td>
-        <td class="p-2">{{usuario.nro_exten}}</td>
-        <td class="p-2">{{usuario.team}}</td>
-        <td class="p-2">{{usuario.activo ? "Activo" : "Inactivo"}}</td>
-        <td class="p-2">
-          <div class="action-buttons">
-            <button
-              pButton
-              icon="pi pi-pencil"
-              class="p-button-rounded p-button-sm p-button-edit"
-              (click)="editUsuario(usuario)"
-              pTooltip="Modificar"
-            ></button>
-            <button
-              pButton
-              icon="pi pi-trash"
-              class="p-button-rounded p-button-sm p-button-delete"
-              pTooltip="Eliminar"
-              (click)="false"
-            ></button>
+  <p-table
+    #dt
+    [value]="usuarios"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['n_usuario', 'nom', 'ape', 'nro_agente', 'nro_exten', 'team', 'n_perfil']"
+    [rowHover]="true"
+    dataKey="id_usuario"
+    [showCurrentPageReport]="true"
+    [paginatorDropdownAppendTo]="'body'"
+    [paginatorPosition]="'bottom'"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+    styleClass="p-datatable-sm"
+    [scrollable]="true"
+    [responsiveLayout]="'scroll'"
+  >
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="id_usuario" class="w-1/12">
+        ID <p-sortIcon field="id_usuario"></p-sortIcon>
+      </th>
+      <th pSortableColumn="n_usuario" class="w-1/12">
+        Usuario <p-sortIcon field="n_usuario"></p-sortIcon>
+      </th>
+      <th pSortableColumn="nro_agente" class="w-1/12">
+        Agente <p-sortIcon field="nro_agente"></p-sortIcon>
+      </th>
+      <th pSortableColumn="nom" class="w-1/12">
+        Nombre <p-sortIcon field="nom"></p-sortIcon>
+      </th>
+      <th pSortableColumn="ape" class="w-1/12">
+          Apellido <p-sortIcon field="ape"></p-sortIcon>
+      </th>
+      <th pSortableColumn="nro_exten" class="w-1/12">
+        Exten <p-sortIcon field="nro_exten"></p-sortIcon>
+      </th>
+      <th pSortableColumn="team" class="w-1/12">
+        Team <p-sortIcon field="team"></p-sortIcon>
+      </th>
+      <th pSortableColumn="n_perfil" class="w-1/12">
+        Perfil <p-sortIcon field="n_perfil"></p-sortIcon>
+      </th>
+      <th pSortableColumn="activo" class="w-1/12">
+        Estado <p-sortIcon field="activo"></p-sortIcon>
+      </th>
+      <th class="w-1/12">Acciones</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-usuario>
+    <tr>
+      <td class="p-2">{{usuario.id_usuario}}</td>
+      <td class="p-2">{{usuario.n_usuario}}</td>
+      <td class="p-2">{{usuario.nro_agente}}</td>
+      <td class="p-2">{{usuario.nom}}</td>
+      <td class="p-2">{{usuario.ape}}</td>
+      <td class="p-2">{{usuario.nro_exten}}</td>
+      <td class="p-2">{{usuario.team}}</td>
+      <td class="p-2">{{usuario.n_perfil}}</td>
+      <td class="p-2">{{usuario.activo === '1' ? "Activo" : "Inactivo"}}</td>
+      <td class="p-2">
+        <div class="action-buttons">
+          <button
+            pButton
+            icon="pi pi-pencil"
+            class="p-button-rounded p-button-sm p-button-edit"
+            (click)="editUsuario(usuario)"
+            pTooltip="Modificar"
+          ></button>
+          <button
+            pButton
+            icon="pi pi-trash"
+            class="p-button-rounded p-button-sm p-button-delete"
+            pTooltip="Eliminar"
+            (click)="false"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+  <p-dialog 
+      [(visible)]="usuarioDialog" 
+      [style]="{ width: '600px' }" 
+      draggable="false"
+      [header]="isEditMode ? 'Editar Usuario' : 'Crear Usuario'"
+      [modal]="true" 
+      styleClass="p-fluid">
+      <form [formGroup]="usuarioForm" (ngSubmit)="saveUsuario()" class="grid">
+  
+          <div class="col-12 mb-3">
+              <label for="usuario" class="block text-base font-medium mb-2">Usuario</label>
+              <input 
+                type="text" 
+                pInputText 
+                id="usuario" 
+                formControlName="usuario" 
+                class="w-full p-inputtext"
+                [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['usuario'].invalid}"
+                placeholder="Ingrese el nombre de usuario" />
+                @if(submitted && usuarioFormControls['usuario'].invalid){
+                  <small class="p-error block mt-1">Este campo es requerido</small>
+                }
           </div>
-        </td>
-      </tr>
-    </ng-template>
-  </p-table>
-
-    <p-dialog 
-        [(visible)]="usuarioDialog" 
-        [style]="{ width: '600px' }" 
-        draggable="false"
-        header="Crear Usuario" 
-        [modal]="true" 
-        styleClass="p-fluid">
-        <form [formGroup]="usuarioForm" (ngSubmit)="saveUsuario()" class="grid">
-    
-            <div class="col-12 mb-3">
-                <label for="usuario" class="block text-base font-medium mb-2">Usuario</label>
-                <input 
-                  type="text" 
-                  pInputText 
-                  id="usuario" 
-                  formControlName="usuario" 
-                  class="w-full p-inputtext"
-                  [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['usuario'].invalid}"
-                  placeholder="Ingrese el nombre de usuario" />
-                  @if(submitted && usuarioFormControls['usuario'].invalid){
-                    <small class="p-error block mt-1">Este campo es requerido</small>
-                  }
-            </div>
-    
-            <div class="col-12 mb-3">
-                <label for="nombre" class="block text-base font-medium mb-2">Nombre</label>
-                <input 
-                    type="text" 
-                    pInputText 
-                    id="nombre" 
-                    formControlName="nombre" 
-                    class="w-full p-inputtext"
-                    [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['nombre'].invalid}"
-                    placeholder="Ingrese el nombre" />
-                @if(submitted && usuarioFormControls['nombre'].invalid){
-                    <small class="p-error block mt-1">Este campo es requerido</small>
-                }
-            </div>
-    
-            <div class="col-12 mb-3">
-                <label for="apellido" class="block text-base font-medium mb-2">Apellido</label>
-                <input 
-                    type="text" 
-                    pInputText 
-                    id="apellido" 
-                    formControlName="apellido" 
-                    class="w-full p-inputtext"
-                    [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['apellido'].invalid}"
-                    placeholder="Ingrese el apellido" />
-                @if(submitted && usuarioFormControls['apellido'].invalid){
-                    <small class="p-error block mt-1">Este campo es requerido</small>
-                }
-            </div>
-
-            <div class="col-12 mb-3" *ngIf="isEditMode">
-              <label for="agente" class="block text-base font-medium mb-2">Agente</label>
-              <p-dropdown 
-                id="agente" 
-                [options]="agentes" 
-                formControlName="agente" 
-                optionLabel="nombre" 
-                optionValue="agente" 
-                placeholder="Seleccione un agente"
-                scrollHeight="200px"
-                [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['agente'].invalid}"
-                class="w-full"
-              ></p-dropdown>
-              <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['agente'].invalid">
-                Este campo es requerido
-              </small>
-            </div>
-            
-            <div class="col-12 mb-3">
-              <label for="acd_predef" class="block text-base font-medium mb-2">Cola</label>
-              <p-dropdown 
-                id="acd_predef" 
-                [options]="colas" 
-                formControlName="acd_predef" 
-                optionLabel="n_cola" 
-                optionValue="cola" 
-                placeholder="Seleccione un ACD"
-                scrollHeight="200px"
-                [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['acd_predef'].invalid}"
-                class="w-full"
-              >
-                <ng-template pTemplate="selectedItem" let-cola>
-                  <div>{{cola.cola}} - {{cola.n_cola}}</div>
-                </ng-template>
-                <ng-template pTemplate="item" let-cola>
-                  <div>{{cola.cola}} - {{cola.n_cola}}</div>
-                </ng-template>
-              </p-dropdown>
-              <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['acd_predef'].invalid">
-                Este campo es requerido
-              </small>
-            </div>
-    
-            <div class="col-12 mb-3">
-                <label for="crea_pass" class="block text-base font-medium mb-2">
-                    Contraseña {{ isEditMode ? '(opcional)' : '' }}
-                </label>
-                <input 
-                    type="password" 
-                    pInputText 
-                    id="crea_pass" 
-                    formControlName="crea_pass" 
-                    class="w-full p-inputtext"
-                    [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['crea_pass'].invalid}"
-                    placeholder="Ingrese la contraseña" />
-                @if(submitted && usuarioFormControls['crea_pass'].invalid){
-                    <small class="p-error block mt-1">
-                        {{ isEditMode ? 'La contraseña debe tener al menos 6 caracteres' : 'Este campo es requerido y debe tener al menos 6 caracteres' }}
-                    </small>
-                }
-            </div>
-            
-            <div class="col-12 mb-3">
-                <label for="crea_pass2" class="block text-base font-medium mb-2">
-                    Confirmar Contraseña {{ isEditMode ? '(opcional)' : '' }}
-                </label>
-                <input 
-                    type="password" 
-                    pInputText 
-                    id="crea_pass2" 
-                    formControlName="crea_pass2" 
-                    class="w-full p-inputtext"
-                    [ngClass]="{'ng-invalid ng-dirty': submitted && (usuarioFormControls['crea_pass2'].invalid || usuarioForm.hasError('mismatch'))}"
-                    placeholder="Confirme la contraseña" />
-                @if(submitted && ((usuarioFormControls['crea_pass2'].invalid && !isEditMode) || usuarioForm.hasError('mismatch'))){
-                    <small class="p-error block mt-1">
-                        {{ usuarioForm.hasError('mismatch') ? 'Las contraseñas no coinciden' : 'Este campo es requerido' }}
-                    </small>
-                }
-            </div>
-
-            <div class="col-12 mb-3" *ngIf="isEditMode">
-              <label for="nro_exten" class="block text-base font-medium mb-2">Extensión</label>
+  
+          <div class="col-12 mb-3">
+              <label for="nombre" class="block text-base font-medium mb-2">Nombre</label>
               <input 
                   type="text" 
                   pInputText 
-                  id="nro_exten" 
-                  formControlName="nro_exten" 
+                  id="nombre" 
+                  formControlName="nombre" 
                   class="w-full p-inputtext"
-                  [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['nro_exten'].invalid}"
-                  placeholder="Ingrese la extensión" />
-              <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['nro_exten'].invalid">
-                  Este campo es requerido
-              </small>
-            </div>
-    
-            <div class="p-dialog-footer">
-              <button
-                pButton
-                type="button"
-                icon="pi pi-times"
-                label="Cancelar"
-                class="p-button-text"
-                (click)="hideDialog()"
-              ></button>
-              <button
-                pButton
-                icon="pi pi-check"
-                label="Guardar"
-                class="p-button-primary"
-                (click)="saveUsuario()"
-              ></button>
-            </div>
-        </form>
-    </p-dialog>
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['nombre'].invalid}"
+                  placeholder="Ingrese el nombre" />
+              @if(submitted && usuarioFormControls['nombre'].invalid){
+                  <small class="p-error block mt-1">Este campo es requerido</small>
+              }
+          </div>
+  
+          <div class="col-12 mb-3">
+              <label for="apellido" class="block text-base font-medium mb-2">Apellido</label>
+              <input 
+                  type="text" 
+                  pInputText 
+                  id="apellido" 
+                  formControlName="apellido" 
+                  class="w-full p-inputtext"
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['apellido'].invalid}"
+                  placeholder="Ingrese el apellido" />
+              @if(submitted && usuarioFormControls['apellido'].invalid){
+                  <small class="p-error block mt-1">Este campo es requerido</small>
+              }
+          </div>
 
-    <p-confirmDialog [style]="{ width: '450px' }" />
+          <!-- Selección de Perfil -->
+          <div class="col-12 mb-3">
+            <label for="id_perfil" class="block text-base font-medium mb-2">Perfil</label>
+            <p-dropdown 
+              id="id_perfil" 
+              [options]="perfiles" 
+              formControlName="id_perfil" 
+              optionLabel="n_perfil" 
+              optionValue="id_perfil" 
+              placeholder="Seleccione un perfil"
+              scrollHeight="200px"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['id_perfil'].invalid}"
+              class="w-full"
+            ></p-dropdown>
+            <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['id_perfil'].invalid">
+              Este campo es requerido
+            </small>
+          </div>
+
+          <!-- Selección de Team -->
+          <div class="col-12 mb-3">
+            <label for="id_team" class="block text-base font-medium mb-2">Equipo</label>
+            <p-dropdown 
+              id="id_team" 
+              [options]="teams" 
+              formControlName="id_team" 
+              optionLabel="n_team" 
+              optionValue="id_team" 
+              placeholder="Seleccione un equipo"
+              scrollHeight="200px"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['id_team'].invalid}"
+              class="w-full"
+            ></p-dropdown>
+            <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['id_team'].invalid">
+              Este campo es requerido
+            </small>
+          </div>
+
+          <div class="col-12 mb-3" *ngIf="isEditMode">
+            <label for="agente" class="block text-base font-medium mb-2">Agente</label>
+            <p-dropdown 
+              id="agente" 
+              [options]="agentes" 
+              formControlName="agente" 
+              optionLabel="nombre" 
+              optionValue="agente" 
+              placeholder="Seleccione un agente"
+              scrollHeight="200px"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['agente'].invalid}"
+              class="w-full"
+            ></p-dropdown>
+            <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['agente'].invalid">
+              Este campo es requerido
+            </small>
+          </div>
+          
+          <div class="col-12 mb-3">
+            <label for="acd_predef" class="block text-base font-medium mb-2">Cola</label>
+            <p-dropdown 
+              id="acd_predef" 
+              [options]="colas" 
+              formControlName="acd_predef" 
+              optionLabel="n_cola" 
+              optionValue="cola" 
+              placeholder="Seleccione un ACD"
+              scrollHeight="200px"
+              [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['acd_predef'].invalid}"
+              class="w-full"
+            >
+              <ng-template pTemplate="selectedItem" let-cola>
+                <div>{{cola.cola}} - {{cola.n_cola}}</div>
+              </ng-template>
+              <ng-template pTemplate="item" let-cola>
+                <div>{{cola.cola}} - {{cola.n_cola}}</div>
+              </ng-template>
+            </p-dropdown>
+            <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['acd_predef'].invalid">
+              Este campo es requerido
+            </small>
+          </div>
+
+          <div class="col-12 mb-3">
+            <label for="activo" class="block text-base font-medium mb-2">Estado</label>
+            <div class="flex align-items-center">
+              <p-checkbox 
+                id="activo" 
+                formControlName="activo" 
+                [binary]="true">
+              </p-checkbox>
+              <label for="activo" class="ml-2">{{ usuarioForm.get('activo')?.value ? 'Activo' : 'Inactivo' }}</label>
+            </div>
+          </div>
+  
+          <div class="col-12 mb-3">
+              <label for="crea_pass" class="block text-base font-medium mb-2">
+                  Contraseña {{ isEditMode ? '(opcional)' : '' }}
+              </label>
+              <input 
+                  type="password" 
+                  pInputText 
+                  id="crea_pass" 
+                  formControlName="crea_pass" 
+                  class="w-full p-inputtext"
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['crea_pass'].invalid}"
+                  placeholder="Ingrese la contraseña" />
+              @if(submitted && usuarioFormControls['crea_pass'].invalid){
+                  <small class="p-error block mt-1">
+                      {{ isEditMode ? 'La contraseña debe tener al menos 6 caracteres' : 'Este campo es requerido y debe tener al menos 6 caracteres' }}
+                  </small>
+              }
+          </div>
+          
+          <div class="col-12 mb-3">
+              <label for="crea_pass2" class="block text-base font-medium mb-2">
+                  Confirmar Contraseña {{ isEditMode ? '(opcional)' : '' }}
+              </label>
+              <input 
+                  type="password" 
+                  pInputText 
+                  id="crea_pass2" 
+                  formControlName="crea_pass2" 
+                  class="w-full p-inputtext"
+                  [ngClass]="{'ng-invalid ng-dirty': submitted && (usuarioFormControls['crea_pass2'].invalid || usuarioForm.hasError('mismatch'))}"
+                  placeholder="Confirme la contraseña" />
+              @if(submitted && ((usuarioFormControls['crea_pass2'].invalid && !isEditMode) || usuarioForm.hasError('mismatch'))){
+                  <small class="p-error block mt-1">
+                      {{ usuarioForm.hasError('mismatch') ? 'Las contraseñas no coinciden' : 'Este campo es requerido' }}
+                  </small>
+              }
+          </div>
+
+          <div class="col-12 mb-3" *ngIf="isEditMode">
+            <label for="nro_exten" class="block text-base font-medium mb-2">Extensión</label>
+            <input 
+                type="text" 
+                pInputText 
+                id="nro_exten" 
+                formControlName="nro_exten" 
+                class="w-full p-inputtext"
+                [ngClass]="{'ng-invalid ng-dirty': submitted && usuarioFormControls['nro_exten'].invalid}"
+                placeholder="Ingrese la extensión" />
+            <small class="p-error block mt-1" *ngIf="submitted && usuarioFormControls['nro_exten'].invalid">
+                Este campo es requerido
+            </small>
+          </div>
+  
+          <div class="p-dialog-footer">
+            <button
+              pButton
+              type="button"
+              icon="pi pi-times"
+              label="Cancelar"
+              class="p-button-text"
+              (click)="hideDialog()"
+            ></button>
+            <button
+              pButton
+              icon="pi pi-check"
+              label="Guardar"
+              class="p-button-primary"
+              (click)="saveUsuario()"
+            ></button>
+          </div>
+      </form>
+  </p-dialog>
+
+  <p-confirmDialog [style]="{ width: '450px' }" />
 </div>
 
 <!-- Indicador de carga -->
 <div *ngIf="isLoading" class="loading-overlay">
-  <p-progressSpinner strokeWidth="8" [style]="{width: '50px', height: '50px'}"></p-progressSpinner>
+<p-progressSpinner strokeWidth="8" [style]="{width: '50px', height: '50px'}"></p-progressSpinner>
 </div>

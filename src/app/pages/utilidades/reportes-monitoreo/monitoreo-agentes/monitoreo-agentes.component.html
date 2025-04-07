@@ -1,1 +1,52 @@
-<p>monitoreo-agentes works!</p>
+<section>
+  @if(agents().length > 0){
+  <p-table
+    [columns]="headers()"
+    [paginator]="true"
+    [rows]="10"
+    stripedRows
+    [value]="agents()"
+    [tableStyle]="{ 'min-width': '60em' }"
+  >
+    <ng-template #header let-columns>
+      <tr class="bg-green-200 text-white">
+        @for( column of columns; track column) {
+        <th>
+          {{ column }}
+        </th>
+        }
+      </tr>
+    </ng-template>
+    <ng-template #body let-data let-column>
+      <tr class="text-sm hover:!bg-indigo-50 hover:text-indigo-600">
+        <td class="!text-center font-bold">
+          {{ data.id }}
+        </td>
+        <td>
+          {{ data.nombre }}
+        </td>
+        <td>
+          {{ data.agente }}
+        </td>
+        <td>
+          {{ data.exten }}
+        </td>
+        <td>
+          {{ data.team }}
+        </td>
+        <td>
+          <ng-content>
+            @if(data.estado === 'Desconectado') {
+            <p-tag severity="danger" value="{{ data.estado }}" />
+            } @else if(data.estado === 'Conectado') {
+            <p-tag severity="success" value="{{ data.estado }}" />
+            } @else {
+            <p-tag severity="info" value="{{ data.estado }}" />
+            }
+          </ng-content>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+  }
+</section>

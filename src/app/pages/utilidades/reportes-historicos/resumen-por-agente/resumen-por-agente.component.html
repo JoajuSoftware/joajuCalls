@@ -1,1 +1,95 @@
-<p>resumen-por-agente works!</p>
+<section class="flex flex-col justify-content-center align-items-center">
+  <article class="mx-auto text-center p-2 bg-white border border-indigo-600" >
+    <form [formGroup]="data" class="flex gap-6 justify-content-between align-items-center" action="">
+      <div class="form-group" >
+        <p-floatlabel  variant="on">
+          <p-date-picker formControlName="initDate" dataType="string" size="small" variant="filled" inputformat="dd-mm-yy" dateFormat="yy-mm-dd" />
+          <label for="on_label">Fecha de inicio</label>
+        </p-floatlabel>
+      </div>
+      <div class="form-group">
+
+        <p-floatlabel variant="on">
+          <p-date-picker formControlName="endDate" dataType="string" size="small" variant="filled" inputformat="dd-mm-yy" dateFormat="yy-mm-dd" /> 
+          <label for="on_label">Fecha de fin</label>
+        </p-floatlabel>
+        
+      </div>
+      <div class="form-group">
+        <!-- <label for="queues">Cola</label> -->
+        <p-multiselect [options]="queues()" appendTo="body" optionLabel="n_cola" placeholder="Seleccione una cola" formControlName="selectedQueue"></p-multiselect>
+      </div>
+      <p-button (onClick)="submitForm()" type="submit" label="Buscar" icon="pi pi-search" form="form"></p-button>
+    </form>
+  </article>
+</section>
+
+<section class="mt-4"> 
+
+  @if(agentsData().length > 0){  
+
+  <p-table [columns]="headers()" stripedRows [value]="agentsData()" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template #header let-columns >
+        <tr class="bg-green-200 text-white">
+        @for( column of columns; track column) {
+          <th>             
+            {{column}}
+          </th>
+        }
+        
+        </tr>
+    </ng-template>
+    <ng-template #body let-data let-column>
+        <tr class="text-sm">
+          <td class="!text-center">
+              {{ data.agente }}
+          </td>
+          <td >
+              {{ data.n_agente }}
+          </td>
+          <td class="!text-center">
+              {{ data.cola }}
+          </td>
+          <td class="!text-center">
+              {{ data.terminada}}
+          </td>
+          <td class="!text-center">
+              {{ data.activas }}
+          </td>
+          <td class="!text-center">
+              {{ data.dur_mayor_15 }}
+          </td>
+          <td class="!text-center">
+              {{ data.dur_min_15 }}
+          </td>
+          <td class="!text-center">
+              {{ data.dur_mayor_60 }}
+          </td>
+          <td  class="!text-center">
+              {{ data.dur_min_60 }}
+          </td>
+          <td class="!text-center" >
+              {{ data.wait_max_15 }}
+          </td>
+          <td  class="!text-center">
+              {{ data.wait_min_15 }}
+          </td>
+          <td  class="!text-center">
+              {{ data.dur_avg }}
+          </td>
+          <td class="!text-center">
+              {{ data.conversacion }}
+          </td>
+          <td >
+              {{ data.dur_min }}
+          </td>
+          <td class="font-semibold">
+              {{ data.dur_max }}
+          </td>
+          
+        </tr>
+    </ng-template>
+</p-table>
+  }
+</section>
+  

@@ -37,49 +37,51 @@
       </h3>
       <div class="mt-2 space-y-1">
         <!--ADMIN DROPDOWN-->
-        <div>
-          <a
-            href="#"
-            (click)="toggleDropdown($event)"
-            class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer no-underline"
-          >
-            <i class="pi pi-users text-xl"></i>
-            Admin
-            <i
-              [class.pi-chevron-down]="!isDropdownOpen"
-              [class.pi-chevron-up]="isDropdownOpen"
-              class="pi text-xl ml-auto transition-transform duration-300"
-            ></i>
-          </a>
-          @if(isDropdownOpen) {
-          <div class="pl-6 space-y-1">
+        @if (userData.perfil !== 'agente') {
+          <div>
             <a
-              routerLink="/admin/usuarios"
-              routerLinkActive="text-indigo-600"
-              class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-              >Usuarios</a
+              href="#"
+              (click)="toggleDropdown($event)"
+              class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer no-underline"
             >
-            <a
-              routerLink="/admin/colas"
-              routerLinkActive="text-indigo-600"
-              class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-              >Colas</a
-            >
-            <a
-              routerLink="/admin/agentes"
-              routerLinkActive="text-indigo-600"
-              class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-              >Agentes</a
-            >
-            <a
-              routerLink="/admin/teams"
-              routerLinkActive="text-indigo-600"
-              class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-              >Teams</a
-            >
+              <i class="pi pi-users text-xl"></i>
+              Admin
+              <i
+                [class.pi-chevron-down]="!isDropdownOpen"
+                [class.pi-chevron-up]="isDropdownOpen"
+                class="pi text-xl ml-auto transition-transform duration-300"
+              ></i>
+            </a>
+            @if(isDropdownOpen) {
+            <div class="pl-6 space-y-1">
+              <a
+                routerLink="/admin/usuarios"
+                routerLinkActive="text-indigo-600"
+                class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                >Usuarios</a
+              >
+              <a
+                routerLink="/admin/colas"
+                routerLinkActive="text-indigo-600"
+                class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                >Colas</a
+              >
+              <a
+                routerLink="/admin/agentes"
+                routerLinkActive="text-indigo-600"
+                class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                >Agentes</a
+              >
+              <a
+                routerLink="/admin/teams"
+                routerLinkActive="text-indigo-600"
+                class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                >Teams</a
+              >
+            </div>
+            }
           </div>
-          }
-        </div>
+        }
 
         <!-- CALL CENTER DROPDOWN-->
         <div>
@@ -108,132 +110,134 @@
         </div>
 
         <!-- UTILIDADES DROPDOWN -->
-        <div>
-          <a
-            (click)="toggleUtilidades($event)"
-            class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer"
-          >
-            <i class="pi pi-wrench text-xl"></i>
-            Utilidades
-            <i
-              [class.pi-chevron-down]="!isUtilidadesOpen"
-              [class.pi-chevron-up]="isUtilidadesOpen"
-              class="pi text-xl ml-auto transition-transform duration-300"
-            ></i>
-          </a>
-
-          @if(isUtilidadesOpen) {
-          <div class="pl-6 space-y-1">
-            <!-- REPORTE HISTORICO -->
-            <div>
-              <a
-                (click)="toggleReporteHistorico($event)"
-                class="flex items-center justify-between px-3 py-2 text-gray-600 hover:text-indigo-600 cursor-pointer"
-              >
-                <span>Reporte Histórico</span>
-                <i
-                  [class.pi-chevron-down]="!isReporteHistoricoOpen"
-                  [class.pi-chevron-up]="isReporteHistoricoOpen"
-                  class="pi scale-75 ml-auto transition-transform duration-300"
-                ></i>
-              </a>
-
-              @if(isReporteHistoricoOpen) {
-              <div class="pl-4 space-y-1">
+        @if (userData.perfil !== 'agente') {
+          <div>
+            <a
+              (click)="toggleUtilidades($event)"
+              class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer"
+            >
+              <i class="pi pi-wrench text-xl"></i>
+              Utilidades
+              <i
+                [class.pi-chevron-down]="!isUtilidadesOpen"
+                [class.pi-chevron-up]="isUtilidadesOpen"
+                class="pi text-xl ml-auto transition-transform duration-300"
+              ></i>
+            </a>
+  
+            @if(isUtilidadesOpen) {
+            <div class="pl-6 space-y-1">
+              <!-- REPORTE HISTORICO -->
+              <div>
                 <a
-                  routerLink="/utilidades/reportes-historicos/call-detalle"
-                  routerLinkActive="text-indigo-600"
-                  class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-                  >Call Detalle</a
+                  (click)="toggleReporteHistorico($event)"
+                  class="flex items-center justify-between px-3 py-2 text-gray-600 hover:text-indigo-600 cursor-pointer"
                 >
-                <a
-                  routerLink="/utilidades/reportes-historicos/resumen-por-agente"
-                  routerLinkActive="text-indigo-600"
-                  class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-                  >Resumen por Agente</a
-                >
-                <a
-                  routerLink="/utilidades/reportes-historicos/resumen-por-cola"
-                  routerLinkActive="text-indigo-600"
-                  class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-                  >Resumen por Cola</a
-                >
-                <a
-                  routerLink="/utilidades/reportes-historicos/conexion-agentes"
-                  routerLinkActive="text-indigo-600"
-                  class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-                  >Conexión Agentes</a
-                >
+                  <span>Reporte Histórico</span>
+                  <i
+                    [class.pi-chevron-down]="!isReporteHistoricoOpen"
+                    [class.pi-chevron-up]="isReporteHistoricoOpen"
+                    class="pi scale-75 ml-auto transition-transform duration-300"
+                  ></i>
+                </a>
+  
+                @if(isReporteHistoricoOpen) {
+                <div class="pl-4 space-y-1">
+                  <a
+                    routerLink="/utilidades/reportes-historicos/call-detalle"
+                    routerLinkActive="text-indigo-600"
+                    class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                    >Call Detalle</a
+                  >
+                  <a
+                    routerLink="/utilidades/reportes-historicos/resumen-por-agente"
+                    routerLinkActive="text-indigo-600"
+                    class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                    >Resumen por Agente</a
+                  >
+                  <a
+                    routerLink="/utilidades/reportes-historicos/resumen-por-cola"
+                    routerLinkActive="text-indigo-600"
+                    class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                    >Resumen por Cola</a
+                  >
+                  <a
+                    routerLink="/utilidades/reportes-historicos/conexion-agentes"
+                    routerLinkActive="text-indigo-600"
+                    class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                    >Conexión Agentes</a
+                  >
+                </div>
+                }
               </div>
-              }
-            </div>
-
-            <!-- REPORTES MONITORES -->
-            <div>
-              <a
-                (click)="toggleReporteMonitoreo($event)"
-                class="flex items-center justify-between px-3 py-2 text-gray-600 hover:text-indigo-600 cursor-pointer"
-              >
-                <span>Reportes Monitoreos</span>
-                <i
-                  [class.pi-chevron-down]="!isReporteMonitoreoOpen"
-                  [class.pi-chevron-up]="isReporteMonitoreoOpen"
-                  class="pi scale-75 ml-auto transition-transform duration-300"
-                ></i>
-              </a>
-
-              @if(isReporteMonitoreoOpen) {
-              <div class="pl-4 space-y-1">
+  
+              <!-- REPORTES MONITORES -->
+              <div>
                 <a
-                  routerLink="/utilidades/reportes-monitoreo/monitoreo-agentes"
-                  routerLinkActive="text-indigo-600"
-                  class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-                  >Monitoreo por Agentes</a
+                  (click)="toggleReporteMonitoreo($event)"
+                  class="flex items-center justify-between px-3 py-2 text-gray-600 hover:text-indigo-600 cursor-pointer"
                 >
-                <a
-                  routerLink="/utilidades/reportes-monitoreo/monitoreo-por-cola"
-                  routerLinkActive="text-indigo-600"
-                  class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-                  >Monitoreo por Cola</a
-                >
+                  <span>Reportes Monitoreos</span>
+                  <i
+                    [class.pi-chevron-down]="!isReporteMonitoreoOpen"
+                    [class.pi-chevron-up]="isReporteMonitoreoOpen"
+                    class="pi scale-75 ml-auto transition-transform duration-300"
+                  ></i>
+                </a>
+  
+                @if(isReporteMonitoreoOpen) {
+                <div class="pl-4 space-y-1">
+                  <a
+                    routerLink="/utilidades/reportes-monitoreo/monitoreo-agentes"
+                    routerLinkActive="text-indigo-600"
+                    class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                    >Monitoreo por Agentes</a
+                  >
+                  <a
+                    routerLink="/utilidades/reportes-monitoreo/monitoreo-por-cola"
+                    routerLinkActive="text-indigo-600"
+                    class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                    >Monitoreo por Cola</a
+                  >
+                </div>
+                }
               </div>
-              }
-            </div>
-
-            <!-- PREVIEW -->
-            <div>
-              <a
-                (click)="togglePreview($event)"
-                class="flex items-center justify-between px-3 py-2 text-gray-600 hover:text-indigo-600 cursor-pointer"
-              >
-                <span>Preview</span>
-                <i
-                  [class.pi-chevron-down]="!isPreviewOpen"
-                  [class.pi-chevron-up]="isPreviewOpen"
-                  class="pi scale-75 ml-auto transition-transform duration-300"
-                ></i>
-              </a>
-
-              @if(isPreviewOpen) {
-              <div class="pl-4 space-y-1">
+  
+              <!-- PREVIEW -->
+              <div>
                 <a
-                  routerLink="/utilidades/preview/listar-carteras"
-                  routerLinkActive="text-indigo-600"
-                  class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-                  >Listar Carteras</a
+                  (click)="togglePreview($event)"
+                  class="flex items-center justify-between px-3 py-2 text-gray-600 hover:text-indigo-600 cursor-pointer"
                 >
-                <a
-                  routerLink="/utilidades/preview/crear-cartera"
-                  routerLinkActive="text-indigo-600"
-                  class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
-                  >Crear Cartera</a
-                >
+                  <span>Preview</span>
+                  <i
+                    [class.pi-chevron-down]="!isPreviewOpen"
+                    [class.pi-chevron-up]="isPreviewOpen"
+                    class="pi scale-75 ml-auto transition-transform duration-300"
+                  ></i>
+                </a>
+  
+                @if(isPreviewOpen) {
+                <div class="pl-4 space-y-1">
+                  <a
+                    routerLink="/utilidades/preview/listar-carteras"
+                    routerLinkActive="text-indigo-600"
+                    class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                    >Listar Carteras</a
+                  >
+                  <a
+                    routerLink="/utilidades/preview/crear-cartera"
+                    routerLinkActive="text-indigo-600"
+                    class="block px-3 py-2 text-gray-600 hover:text-indigo-600 no-underline"
+                    >Crear Cartera</a
+                  >
+                </div>
+                }
               </div>
-              }
             </div>
+            }
           </div>
-          }
-        </div>
+        }
       </div>
     </div>
   </div>

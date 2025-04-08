@@ -5,7 +5,6 @@ import { UsuariosComponent } from './pages/admin/usuarios/usuarios.component';
 import { ColasComponent } from './pages/admin/colas/colas.component';
 import { AgentesComponent } from './pages/admin/agentes/agentes.component';
 import { TeamsComponent } from './pages/admin/teams/teams.component';
-import { ConsolaComponent } from './pages/callcenter/consola/consola.component';
 import { CallDetalleComponent } from './pages/utilidades/reportes-historicos/call-detalle/call-detalle.component';
 import { ResumenPorAgenteComponent } from './pages/utilidades/reportes-historicos/resumen-por-agente/resumen-por-agente.component';
 import { ResumenPorColaComponent } from './pages/utilidades/reportes-historicos/resumen-por-cola/resumen-por-cola.component';
@@ -20,6 +19,7 @@ import { authGuard } from './guards/auth.guard';
 import { AgentDashboardComponent } from './pages/callcenter/agent-interface/agent-dashboard/agent-dashboard.component';
 import { LoginAgentComponent } from './pages/callcenter/login-agent/login-agent.component';
 import { loginAgentGuard } from './guards/loginAgent.guard';
+import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -48,6 +48,8 @@ export const routes: Routes = [
           { path: 'teams', component: TeamsComponent },
           { path: '', redirectTo: 'usuarios', pathMatch: 'full' },
         ],
+        canActivate: [roleGuard],
+        data: { requiredRole: ['admin', 'supervisor'] }
       },
 
       // SECCIÓN CALLCENTER
@@ -81,6 +83,8 @@ export const routes: Routes = [
           { path: 'preview/listar-carteras', component: ListarCarterasComponent },
           { path: 'preview/crear-cartera', component: CrearCarteraComponent }
         ],
+        canActivate: [roleGuard],
+        data: { requiredRole: ['admin', 'supervisor'] }
       },
     ],
   },

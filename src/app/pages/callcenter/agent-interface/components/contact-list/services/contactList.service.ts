@@ -11,7 +11,7 @@ export class ContactListService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
 
-  getProxCall(agente: string = 'chvaldez'): Observable<contactListResponse> {
+  getProxCall(agente: string): Observable<contactListResponse> {
     
     return this.http.get<contactListResponse>(`${this.baseUrl}/calls_preview`, {
       params: {

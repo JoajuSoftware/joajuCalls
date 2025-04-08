@@ -1,5 +1,5 @@
 // sidebar.component.ts
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../shared/services/auth.service';
@@ -20,6 +20,7 @@ export class SidebarComponent {
   isReporteHistoricoOpen = false;
   isReporteMonitoreoOpen = false;
   isPreviewOpen = false;
+  userData = JSON.parse(sessionStorage.getItem('userData') || '{}') 
   authService: AuthService = inject(AuthService);
 
   toggleDropdown(event: Event) {

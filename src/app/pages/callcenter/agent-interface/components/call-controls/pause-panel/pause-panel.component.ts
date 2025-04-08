@@ -140,19 +140,6 @@ export class PausePanelComponent implements OnInit {
     });
   }
 
-  private getLabelForPause(pausaText: string): string {
-    if (!pausaText) return 'Pausa activa';
-    
-    const upperReason = pausaText.toUpperCase();
-    for (const option of this.pauseOptions) {
-      if (upperReason.includes(option.label)) {
-        return option.label;
-      }
-    }
-    
-    return pausaText;
-  }
-
   showPasswordDialog(pauseId: string): void {
     if (!pauseId) return;
     
@@ -199,12 +186,23 @@ export class PausePanelComponent implements OnInit {
     this.pauseService.pause(pauseData).subscribe({
       next: (response: any) => {
         this.isLoading.set(false);
+        console.log('Respuesta del servidor:', response);
         
-        if (response.err_code === '200') {
+        // Verificar primero si el mensaje es "Agente vacio"
+        if (response.mensaje === 'Agente vacio') {
+          console.log('Agente vacío detectado');
+          this.handlePauseError(response);
+        } 
+        // Luego verificar el código de error
+        else if (response.err_code === '200') {
           this.handleSuccessfulPause(response, pauseId);
-        } else if (response.err_code === 'parcial') {
+        }
+        else if (response.err_code === 'parcial') {
           this.handlePartialSuccess(response, pauseId);
-        } else {
+        }
+        // Cualquier otro caso se maneja como error
+        else {
+          console.log('Error desconocido: ', response);
           this.handlePauseError(response);
         }
       },
@@ -256,15 +254,18 @@ export class PausePanelComponent implements OnInit {
   }
   
   private handlePauseError(response: any): void {
-    this.isPaused.set(false);
-    this.currentPause.set('');
-    this.pauseReason.set('');
+    console.log('Manejando error de pausa:', response);
     
     this.messageService.add({
       severity: 'error',
       summary: 'Error',
-      detail: response.estado || response.mensaje || 'Error al activar la pausa'
+      detail: response.mensaje || 'Error al activar la pausa'
     });
+  
+    // Limpiamos el estado después de mostrar el mensaje de error
+    this.isPaused.set(false);
+    this.currentPause.set('');
+    this.pauseReason.set('');
   }
   
   deactivatePause(): void {

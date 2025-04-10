@@ -1,15 +1,17 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { BehaviorSubject, Observable, throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { environment } from "../../environments/environtment";
+import { LoginAgentService } from "../../pages/callcenter/login-agent/services/login-agent.service";
 
 @Injectable({
     providedIn: "root"
 })
 export class AuthService {
     public isAuth = new BehaviorSubject<boolean>(false);
+    private loginAgentService: LoginAgentService = inject(LoginAgentService);
     apiUrl: string = environment.apiUrl;
 
     constructor(private router: Router, private http: HttpClient) {
@@ -50,6 +52,16 @@ export class AuthService {
     }
 
     logout() {
+        if (sessionStorage.getItem('loginAgent')) {
+            this.loginAgentService.logout().subscribe({
+                next: (response) => {
+                    console.log('Logout agent successful', response);
+                },
+                error: (err) => {
+                    console.error('Logout agent failed', err);
+                }
+            });
+        }
         sessionStorage.removeItem('userData');
         this.isAuth.next(false);
         this.router.navigate(['/login']);

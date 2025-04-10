@@ -29,9 +29,16 @@ export class ContactManageComponent {
   private contactManageService: ContactManageService = inject(ContactManageService);
   
   ngOnInit(): void {
-    this.contactManageService.getListGestionesDia().subscribe({
+    const userData = JSON.parse(sessionStorage.getItem('userData') || '{}')
+
+    this.contactManageService.getListGestionesDia(userData.agente).subscribe({
       next: (response: ContactResponse) => {
-        this.contactsManaged.set(response.mensaje);
+        if (Array.isArray(response.mensaje)) {
+          this.contactsManaged.set(response.mensaje);
+        } else {
+          this.contactsManaged.set([]);
+          console.log('server: ', response.mensaje);
+        }
       },
       error: (error) => {
         console.error(error);

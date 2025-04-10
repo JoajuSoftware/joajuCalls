@@ -20,7 +20,7 @@ export class ContactManageService {
     return `${year}-${month}-${day}`;
   }
 
-  getListGestionesDia(agente: string = 'chvaldez'): Observable<ContactResponse> {
+  getListGestionesDia(agente: string): Observable<ContactResponse> {
     const formattedDate = this.getCurrentFormattedDate();
     
     return this.http.get<ContactResponse>(`${this.baseUrl}/calls_preview`, {

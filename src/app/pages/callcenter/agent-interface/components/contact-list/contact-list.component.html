@@ -1,58 +1,62 @@
 <div class="contact-list-container">
     <h2>Lista de contactos a llamar</h2>
     
-    <p-table 
-      #dt 
-      [value]="contacts()" 
-      [paginator]="true" 
-      [rows]="5"
-      [rowHover]="true"
-      [globalFilterFields]="['name', 'phone']"
-      styleClass="p-datatable-sm"
-      [scrollable]="true"
-      responsiveLayout="scroll"
-      [tableStyle]="{'min-width': '50rem'}"
-      emptyMessage="No hay contactos pendientes para llamar">
-      
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Id</th>
-          <th>Id_camp</th>
-          <th>Nombre</th>
-          <th>Cola</th>
-          <th>Teléfono</th>
-          <th>Estado</th>
-          <th>Acciones</th>
-        </tr>
-      </ng-template>
-      
-      <ng-template pTemplate="body" let-contact>
-        <tr [ngClass]="'status-' + contact.status">
-          <td>{{contact.id}}</td>
-          <td>{{contact.id_camp}}</td>
-          <td>{{contact.nom_camp}}</td>
-          <td>{{contact.cola}}</td>
-          <td>{{contact.numero}}</td>
-          <td>{{contact.stat}}</td>
-          <td>
-            <button 
-              pButton 
-              icon="pi pi-eye" 
-              class="p-button-sm p-button-warn mr-2"
-              (click)="viewContactDetail(contact)"
-              pTooltip="Ver detalle">
-            </button>
-            <button 
-              pButton 
-              icon="pi pi-phone" 
-              class="p-button-sm p-button-success"
-              (click)="callContact(contact.numero)"
-              pTooltip="Llamar">
-            </button>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
+    @if (contacts().length === 0) {
+      <p class="text-xl text-center">No hay contactos a llamar</p>
+    } @else {
+      <p-table 
+        #dt 
+        [value]="contacts()" 
+        [paginator]="false" 
+        [rows]="5"
+        [rowHover]="true"
+        [globalFilterFields]="['name', 'phone']"
+        styleClass="p-datatable-sm"
+        [scrollable]="true"
+        responsiveLayout="scroll"
+        [tableStyle]="{'min-width': '50rem'}"
+        emptyMessage="No hay contactos pendientes para llamar">
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Id</th>
+            <th>Id_camp</th>
+            <th>Nombre</th>
+            <th>Cola</th>
+            <th>Teléfono</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        
+        <ng-template pTemplate="body" let-contact>
+          <tr [ngClass]="'status-' + contact.status">
+            <td>{{contact.id}}</td>
+            <td>{{contact.id_camp}}</td>
+            <td>{{contact.nom_camp}}</td>
+            <td>{{contact.cola}}</td>
+            <td>{{contact.numero}}</td>
+            <td>{{contact.stat}}</td>
+            <td>
+              <button 
+                pButton 
+                icon="pi pi-eye" 
+                class="p-button-sm p-button-warn mr-2"
+                (click)="viewContactDetail(contact)"
+                pTooltip="Ver detalle">
+              </button>
+              <button 
+                pButton 
+                icon="pi pi-phone" 
+                class="p-button-sm p-button-success"
+                (click)="callContact(contact.numero)"
+                pTooltip="Llamar">
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    }
 </div>
   
 <p-dialog

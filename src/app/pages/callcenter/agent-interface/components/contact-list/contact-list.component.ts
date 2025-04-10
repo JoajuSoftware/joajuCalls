@@ -31,7 +31,9 @@ export class ContactListComponent implements OnInit{
   private contactListService: ContactListService = inject(ContactListService);
   
   ngOnInit(): void {
-    this.contactListService.getProxCall().subscribe({
+    const userData = JSON.parse(sessionStorage.getItem('userData') || '{}')
+
+    this.contactListService.getProxCall(userData.agente).subscribe({
       next: (response: contactListResponse) => {
         this.contacts.set(response.mensaje);
       },

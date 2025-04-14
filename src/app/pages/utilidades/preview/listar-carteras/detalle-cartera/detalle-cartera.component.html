@@ -1,0 +1,103 @@
+<p-table
+  #detalleCarteraTable
+  [value]="detalleCartera()"
+  [rows]="rows"
+  [paginator]="true"
+  [globalFilterFields]="[
+    'id_camp'
+  ]"
+  [rowHover]="true"
+  dataKey="id_camp"
+  [showCurrentPageReport]="true"
+  [loading]="isLoading"
+  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+  styleClass="p-datatable-sm"
+  [scrollable]="true"
+  [responsiveLayout]="'scroll'"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="id_camp" style="width: 8%">
+        ID <p-sortIcon field="id_camp"></p-sortIcon>
+      </th>
+      <th pSortableColumn="nom_camp" style="width: 20%">
+        Nombre Cartera <p-sortIcon field="nom_camp"></p-sortIcon>
+      </th>
+      <th pSortableColumn="cola" style="width: 10%">
+        Cola <p-sortIcon field="cola"></p-sortIcon>
+      </th>
+      <th pSortableColumn="agente" style="width: 15%">
+        Agente <p-sortIcon field="agente"></p-sortIcon>
+      </th>
+      <th pSortableColumn="numero" style="width: 12%">
+        Número <p-sortIcon field="numero"></p-sortIcon>
+      </th>
+      <th pSortableColumn="fecha" style="width: 10%">
+        Fecha <p-sortIcon field="fecha"></p-sortIcon>
+      </th>
+      <th pSortableColumn="h_call" style="width: 10%">
+        H_call <p-sortIcon field="h_call"></p-sortIcon>
+      </th>
+      <th pSortableColumn="stat" style="width: 10%">
+        Stat <p-sortIcon field="stat"></p-sortIcon>
+      </th>
+      <th pSortableColumn="data_1" style="width: 10%">
+        data_1 <p-sortIcon field="data_1"></p-sortIcon>
+      </th>
+      <th pSortableColumn="data_2" style="width: 10%">
+        data_2 <p-sortIcon field="data_2"></p-sortIcon>
+      </th>
+      <th pSortableColumn="data_3" style="width: 10%">
+        data_3 <p-sortIcon field="data_3"></p-sortIcon>
+      </th>
+      <th pSortableColumn="data_4" style="width: 10%">
+        data_4 <p-sortIcon field="data_4"></p-sortIcon>
+      </th>
+      <th pSortableColumn="data_5" style="width: 10%">
+        data_5 <p-sortIcon field="data_5"></p-sortIcon>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-cartera>
+    <tr>
+      <td class="p-2" style="vertical-align: middle">{{ cartera.id_camp }}</td>
+      <td class="p-2" style="vertical-align: middle">
+        {{ cartera.nom_camp }}
+      </td>
+      <td class="p-2" style="vertical-align: middle">{{ cartera.cola }}</td>
+      <td class="p-2" style="vertical-align: middle">{{ cartera.agente }}</td>
+      <td class="p-2 text-center" style="vertical-align: middle">
+        {{ cartera.numero }}
+      </td>
+      <td class="p-2 text-center" style="vertical-align: middle">
+        {{ cartera.fecha }}
+      </td>
+      <td class="p-2 text-center" style="vertical-align: middle">
+        {{ cartera.h_call }}
+      </td>
+      <td class="p-2 text-center" style="vertical-align: middle">
+        {{ cartera.stat }}
+      </td>
+      <td class="p-2 text-center" style="vertical-align: middle">
+        {{ cartera.data_1 }}
+      </td>
+      <td class="p-2 text-center" style="vertical-align: middle">
+        {{ cartera.data_2 }}
+      </td>
+      <td class="p-2 text-center" style="vertical-align: middle">
+        {{ cartera.data_3 }}
+      </td>
+      <td class="p-2 text-center" style="vertical-align: middle">
+        {{ cartera.data_4 }}
+      </td>
+      <td class="p-2 text-center" style="vertical-align: middle">
+        {{ cartera.data_5 }}
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="8" class="text-center p-4">No se encontró detalle de la cartera.</td>
+    </tr>
+  </ng-template>
+</p-table>

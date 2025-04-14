@@ -16,6 +16,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { ColasService } from '../../../admin/colas/services/colas.service';
 import { Cartera } from './interfaces/cartera.interface';
 import { CarteraService } from './services/cartera.service';
+import { DetalleCarteraComponent } from "./detalle-cartera/detalle-cartera.component";
 
 interface SelectOption {
   value: string;
@@ -39,8 +40,9 @@ interface SelectOption {
     ToastModule,
     ToolbarModule,
     ProgressSpinnerModule,
-    MultiSelectModule
-  ],
+    MultiSelectModule,
+    DetalleCarteraComponent
+],
   providers: [MessageService],
   templateUrl: './listar-carteras.component.html',
   styleUrl: './listar-carteras.component.scss'
@@ -54,7 +56,7 @@ export class ListarCarterasComponent implements OnInit {
   
   isLoading: boolean = false;
   detallesDialog: boolean = false;
-  selectedCartera: Cartera | null = null;
+  selectedCartera: string | null = null;
   colasOptions: SelectOption[] = [];
   selectedColas: SelectOption[] = [];
   carteras = signal<Cartera[]>([]);
@@ -193,7 +195,7 @@ export class ListarCarterasComponent implements OnInit {
   }
   
   verDetalles(cartera: Cartera) {
-    this.selectedCartera = cartera;
+    this.selectedCartera = cartera.id_camp;
     this.detallesDialog = true;
   }
   

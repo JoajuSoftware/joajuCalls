@@ -126,50 +126,13 @@
 
   <p-dialog
     [(visible)]="detallesDialog"
-    [style]="{ width: '500px' }"
+    [style]="{ width: '1400px' }"
     header="Detalles de Cartera"
+    [draggable]="false"
     [modal]="true"
     styleClass="p-fluid"
   >
-    <div *ngIf="selectedCartera">
-      <div class="grid">
-        <div class="col-4 font-semibold">ID:</div>
-        <div class="col-8">{{ selectedCartera.id_camp }}</div>
-      </div>
-      <div class="grid mt-2">
-        <div class="col-4 font-semibold">Nombre:</div>
-        <div class="col-8">{{ selectedCartera.nom_camp }}</div>
-      </div>
-      <div class="grid mt-2">
-        <div class="col-4 font-semibold">Cola:</div>
-        <div class="col-8">{{ selectedCartera.cola }}</div>
-      </div>
-      <div class="grid mt-2">
-        <div class="col-4 font-semibold">Agente:</div>
-        <div class="col-8">{{ selectedCartera.agente }}</div>
-      </div>
-      <div class="grid mt-2">
-        <div class="col-4 font-semibold">Total Registros:</div>
-        <div class="col-8">{{ selectedCartera.total }}</div>
-      </div>
-      <div class="grid mt-2">
-        <div class="col-4 font-semibold">Pendientes:</div>
-        <div class="col-8">{{ selectedCartera.pendiente }}</div>
-      </div>
-      <div class="grid mt-2">
-        <div class="col-4 font-semibold">Generadas:</div>
-        <div class="col-8">{{ selectedCartera.generada }}</div>
-      </div>
-    </div>
-    <div class="p-dialog-footer">
-      <button
-        pButton
-        icon="pi pi-times"
-        label="Cerrar"
-        class="p-button-text"
-        (click)="detallesDialog = false"
-      ></button>
-    </div>
+    <app-detalle-cartera [idCartera]="selectedCartera" />
   </p-dialog>
 
   <p-toast></p-toast>

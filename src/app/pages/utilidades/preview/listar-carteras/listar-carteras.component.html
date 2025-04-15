@@ -1,1 +1,126 @@
-<p>listar-carteras works!</p>
+<div class="card">
+  <div class="flex justify-between items-center p-4 border-b bg-white">
+    <h2 class="text-xl font-semibold">Carteras por Cola</h2>
+  </div>
+
+  <div class="p-4 bg-gray-50">
+    <div class="mb-3">
+      <label class="block mb-2 font-medium">Colas:</label>
+      <p-multiSelect
+        [options]="colasOptions"
+        [(ngModel)]="selectedColas"
+        optionLabel="label"
+        placeholder="Seleccione colas"
+        [style]="{ width: '100%' }"
+      ></p-multiSelect>
+    </div>
+    <div class="flex justify-end">
+      <button
+        pButton
+        label="Filtrar"
+        icon="pi pi-filter"
+        class="p-button-primary"
+        (click)="filterBySelectedColas()"
+      ></button>
+    </div>
+  </div>
+
+  <p-table
+    #dt
+    [value]="filteredCarteras()"
+    [rows]="rows"
+    [paginator]="true"
+    [globalFilterFields]="[
+      'id_camp',
+      'nom_camp',
+      'cola',
+      'agente',
+      'total',
+      'pendiente',
+      'generada'
+    ]"
+    [rowHover]="true"
+    dataKey="id_camp"
+    [showCurrentPageReport]="true"
+    [loading]="isLoading"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+    styleClass="p-datatable-sm"
+    [scrollable]="true"
+    [responsiveLayout]="'scroll'"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="id_camp" style="width: 8%">
+          ID <p-sortIcon field="id_camp"></p-sortIcon>
+        </th>
+        <th pSortableColumn="nom_camp" style="width: 20%">
+          Nombre Cartera <p-sortIcon field="nom_camp"></p-sortIcon>
+        </th>
+        <th pSortableColumn="cola" style="width: 10%">
+          Cola <p-sortIcon field="cola"></p-sortIcon>
+        </th>
+        <th pSortableColumn="agente" style="width: 15%">
+          Agente <p-sortIcon field="agente"></p-sortIcon>
+        </th>
+        <th pSortableColumn="total" style="width: 12%">
+          Total Registros <p-sortIcon field="total"></p-sortIcon>
+        </th>
+        <th pSortableColumn="pendiente" style="width: 10%">
+          Pendiente <p-sortIcon field="pendiente"></p-sortIcon>
+        </th>
+        <th pSortableColumn="generada" style="width: 10%">
+          Generada <p-sortIcon field="generada"></p-sortIcon>
+        </th>
+        <th style="width: 15%; text-align: center">Acciones</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-cartera>
+      <tr>
+        <td class="p-2" style="vertical-align: middle">{{ cartera.id_camp }}</td>
+        <td class="p-2" style="vertical-align: middle">
+          {{ cartera.nom_camp }}
+        </td>
+        <td class="p-2" style="vertical-align: middle">{{ cartera.cola }}</td>
+        <td class="p-2" style="vertical-align: middle">{{ cartera.agente }}</td>
+        <td class="p-2 text-center" style="vertical-align: middle">
+          {{ cartera.total }}
+        </td>
+        <td class="p-2 text-center" style="vertical-align: middle">
+          {{ cartera.pendiente }}
+        </td>
+        <td class="p-2 text-center" style="vertical-align: middle">
+          {{ cartera.generada }}
+        </td>
+        <td class="p-2" style="text-align: center">
+          <div class="flex justify-center gap-2">
+            <button
+              pButton
+              icon="pi pi-eye"
+              class="p-button-rounded p-button-sm p-button-info"
+              pTooltip="Ver detalles"
+              (click)="verDetalles(cartera)"
+            ></button>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="8" class="text-center p-4">No se encontraron carteras.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-dialog
+    [(visible)]="detallesDialog"
+    [style]="{ width: '1400px' }"
+    header="Detalles de Cartera"
+    [draggable]="false"
+    [modal]="true"
+    styleClass="p-fluid"
+  >
+    <app-detalle-cartera [idCartera]="selectedCartera" />
+  </p-dialog>
+
+  <p-toast></p-toast>
+</div>

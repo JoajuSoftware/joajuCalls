@@ -22,6 +22,7 @@ import { Team } from './interface/teams.interface';
 import { finalize, forkJoin } from 'rxjs';
 import { ColasService } from '../colas/services/colas.service';
 import { Cola } from '../colas/interfaces/colas.interface';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-teams',
@@ -98,23 +99,16 @@ export class TeamsComponent {
           this.teams.set(response.mensaje);
           this.totalRecords = response.mensaje.length;
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: typeof response.mensaje === 'string' ? response.mensaje : 'Error al cargar los equipos',
-            life: 3000
+          toast.error('Error al cargar los equipos', {
+            description: typeof response.mensaje === 'string' ? response.mensaje : 'Error al cargar los equipos',
+            duration: 3000,
           });
         }
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error al cargar equipos:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los equipos',
-          life: 3000
-        });
+        toast.error('Error al cargar los equipos');
         this.isLoading = false;
       }
     });
@@ -172,12 +166,10 @@ export class TeamsComponent {
               };
         
               this.teams.update(currentTeams => [newTeam, ...currentTeams]);
-              
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: response.mensaje || 'Equipo creado correctamente',
-                life: 3000
+
+              toast.success('Equipo creado correctamente', {
+                description: response.mensaje || 'Equipo creado correctamente',
+                duration: 3000,
               });
         
               this.teamDialog = false;
@@ -186,22 +178,15 @@ export class TeamsComponent {
                 service: 'crea_team'
               });
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje || 'Error al crear el equipo',
-                life: 3000
+              toast.error('Error al crear el equipo', {
+                description: response.mensaje || 'Error al crear el equipo',
+                duration: 3000,
               });
             }
           },
           error: (error) => {
             console.error('Error en la petición:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al crear el equipo',
-              life: 3000
-            });
+            toast.error('Error al crear el equipo');
           }
         });
       } else if (formValues.service === 'act_team') {
@@ -221,12 +206,10 @@ export class TeamsComponent {
                   return t;
                 });
               });
-              
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: response.mensaje || 'Equipo actualizado correctamente',
-                life: 3000
+
+              toast.success('Equipo actualizado correctamente', {
+                description: response.mensaje || 'Equipo actualizado correctamente',
+                duration: 3000,
               });
    
               this.teamDialog = false;
@@ -235,21 +218,14 @@ export class TeamsComponent {
                 service: 'crea_team'
               });
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje || 'Error al actualizar el equipo',
-                life: 3000
+              toast.error('Error al actualizar el equipo', {
+                description: response.mensaje || 'Error al actualizar el equipo',
+                duration: 3000,
               });
             }
           },
           error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al actualizar el equipo',
-              life: 3000
-            });
+            toast.error('Error al actualizar el equipo');
           }
         });
       }
@@ -271,29 +247,17 @@ export class TeamsComponent {
               this.teams.update(currentTeams => 
                 currentTeams.filter(t => t.id_team !== team.id_team)
               );
-              
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Equipo eliminado',
-                life: 3000
-              });
+
+              toast.success('Equipo eliminado correctamente')
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje || 'Error al eliminar el equipo',
-                life: 3000
+              toast.error('Error al eliminar el equipo', {
+                description: response.mensaje || 'Error al eliminar el equipo',
+                duration: 3000,
               });
             }
           },
           error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar el equipo',
-              life: 3000
-            });
+            toast.error('Error al eliminar el equipo')
           }
         });
       }
@@ -318,31 +282,16 @@ export class TeamsComponent {
             this.associatedColas.set(associatedColaExtens);
           } else {
             this.associatedColas.set([]);
-            this.messageService.add({
-              severity: 'info',
-              summary: 'Info',
-              detail: 'Este equipo no tiene colas asociadas',
-              life: 3000
-            });
+            toast.error('Error al cargar las colas asociadas al equipo');
           }
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar las colas',
-            life: 3000
-          });
+          toast.error('Error al cargar las colas');
         }
         this.isLoadingColas = false;
       },
       error: (error) => {
         console.error('Error cargando datos:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar las colas',
-          life: 3000
-        });
+        toast.error('Error al cargar las colas');
         this.isLoadingColas = false;
       }
     });
@@ -358,30 +307,24 @@ export class TeamsComponent {
       next: (response) => {
         if (response.err_code === '200') {
           this.associatedColas.update(current => [...current, cola.cola]);
-          
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: `Cola ${cola.n_cola} asociada correctamente al equipo`,
-            life: 3000
+
+          toast.success('Cola asociada correctamente', {
+            description: `Cola ${cola.n_cola} asociada correctamente al equipo`,
+            duration: 3000,
           });
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: response.mensaje || 'Error al asociar la cola',
-            life: 3000
+          toast.error('Error al asociar la cola', {
+            description: response.mensaje || 'Error al asociar la cola',
+            duration: 3000,
           });
         }
         this.isLoadingColas = false;
       },
       error: (error) => {
         console.error('Error al asociar cola:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al asociar la cola',
-          life: 3000
+        toast.error('Error al asociar la cola', {
+          description: 'Error al asociar la cola',
+          duration: 3000,
         });
         this.isLoadingColas = false;
       }
@@ -401,31 +344,22 @@ export class TeamsComponent {
               this.associatedColas.update(current => 
                 current.filter(id => id !== cola.cola)
               );
-              
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: `Cola ${cola.n_cola} desasociada correctamente del equipo`,
-                life: 3000
+
+              toast.success('Cola desasociada correctamente', {
+                description: `Cola ${cola.n_cola} desasociada correctamente del equipo`,
+                duration: 3000,
               });
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje || 'Error al desasociar la cola',
-                life: 3000
+              toast.error('Error al desasociar la cola', {
+                description: response.mensaje || 'Error al desasociar la cola',
+                duration: 3000,
               });
             }
             this.isLoadingColas = false;
           },
           error: (error) => {
             console.error('Error al desasociar cola:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al desasociar la cola',
-              life: 3000
-            });
+            toast.error('Error al desasociar la cola');
             this.isLoadingColas = false;
           }
         });

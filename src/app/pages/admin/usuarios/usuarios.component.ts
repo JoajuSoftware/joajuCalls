@@ -22,6 +22,7 @@ import { Cola } from '../colas/interfaces/colas.interface';
 import { ColasService } from '../colas/services/colas.service';
 import { TeamsService } from '../teams/service/teams.service';
 import { Team } from '../teams/interface/teams.interface';
+import { toast } from 'ngx-sonner';
 
 interface Perfil {
   id_perfil: string;
@@ -141,12 +142,7 @@ export class UsuariosComponent {
       error: (error) => {
         console.error('Error cargando usuarios:', error);
         this.isLoading = false;
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los usuarios',
-          life: 3000
-        });
+        toast.error('Error al cargar los usuarios');
       }
     });
   }
@@ -167,12 +163,7 @@ export class UsuariosComponent {
       },
       error: (error) => {
         console.error('Error al obtener agentes:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los agentes',
-          life: 3000
-        });
+        toast.error('Error al cargar los agentes');
       }
     });
   }
@@ -186,22 +177,12 @@ export class UsuariosComponent {
             displayName: `${cola.cola} - ${cola.n_cola}`
           }));
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar las colas',
-            life: 3000
-          });
+          toast.error('Error al cargar las colas');
         }
       },
       error: (error) => {
         console.error('Error al obtener colas:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar las colas',
-          life: 3000
-        });
+        toast.error('Error al cargar las colas');
       }
     });
   }
@@ -212,22 +193,12 @@ export class UsuariosComponent {
         if (response.err_code === '200') {
           this.teams = response.mensaje;
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar los equipos',
-            life: 3000
-          });
+          toast.error('Error al cargar los equipos');
         }
       },
       error: (error) => {
         console.error('Error al obtener equipos:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los equipos',
-          life: 3000
-        });
+        toast.error('Error al cargar los equipos');
       }
     });
   }
@@ -380,11 +351,8 @@ export class UsuariosComponent {
               };
         
               this.usuarios.unshift(newUser);
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: response.mensaje || 'Usuario creado correctamente',
-                life: 3000
+              toast.success(response.mensaje || 'Usuario creado correctamente', {
+                duration: 3000,
               });
         
               this.usuarioDialog = false;
@@ -395,22 +363,15 @@ export class UsuariosComponent {
                 activo: true
               });
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje || 'Error al crear el usuario',
-                life: 3000
+              toast.error(response.mensaje || 'Error al crear el usuario', {
+                description: response.mensaje || 'Error al crear el usuario',
+                duration: 3000,
               });
             }
           },
           error: (error) => {
             console.error('Error en la petición:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al crear el usuario',
-              life: 3000
-            });
+            toast.error('Error al crear el usuario');
           }
         });
       } else if (formValues.service === 'act_usuario') {
@@ -442,11 +403,9 @@ export class UsuariosComponent {
                 };
               }
               
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: response.mensaje || 'Usuario actualizado correctamente',
-                life: 3000
+              toast.success(response.mensaje || 'Usuario actualizado correctamente', {
+                description: response.mensaje || 'Usuario actualizado correctamente',
+                duration: 3000,
               });
    
               this.usuarioDialog = false;
@@ -457,21 +416,14 @@ export class UsuariosComponent {
                 activo: true
               });
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje || 'Error al actualizar el usuario',
-                life: 3000
+              toast.error(response.mensaje || 'Error al actualizar el usuario', {
+                description: response.mensaje || 'Error al actualizar el usuario',
+                duration: 3000,
               });
             }
           },
           error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al actualizar el usuario',
-              life: 3000
-            });
+            toast.error('Error al actualizar el usuario');
           }
         });
       }

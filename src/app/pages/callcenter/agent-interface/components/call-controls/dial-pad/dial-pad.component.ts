@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { PauseService } from '../pause-panel/services/pause.service';
 import { checkAgentStatusResponse } from '../pause-panel/interfaces/pause.interface';
 import { MessageService } from 'primeng/api';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-dial-pad',
@@ -69,10 +70,8 @@ export class DialPadComponent implements OnInit {
     const userDataString = sessionStorage.getItem('userData');
     if (!userDataString) {
       console.error('No user data found in session storage');
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'No se encontraron datos de usuario en la sesión'
+      toast .error('No se encontraron datos de usuario en la sesión', {
+        description: 'Por favor, inicie sesión nuevamente.'
       });
       return;
     }
@@ -88,10 +87,8 @@ export class DialPadComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error checking agent status', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al verificar el estado del agente'
+        toast.error('Error al verificar el estado del agente', {
+          description: 'Por favor, inténtelo de nuevo más tarde.'
         });
       }
     })
@@ -177,10 +174,8 @@ export class DialPadComponent implements OnInit {
                           this.callStatusChange.emit(false);
                           this.endCall();
                           
-                          this.messageService.add({
-                            severity: 'info',
-                            summary: 'Llamada finalizada',
-                            detail: 'La llamada ha finalizado'
+                          toast.info('Llamada finalizada', {
+                            description: 'La llamada ha finalizado'
                           });
                         }
                       }

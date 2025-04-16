@@ -68,8 +68,8 @@
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-usuario>
-    <tr>
-      <td class="p-2">{{usuario.id_usuario}}</td>
+    <tr class="text-sm">
+      <td class="p-2 font-semibold">{{usuario.id_usuario}}</td>
       <td class="p-2">{{usuario.n_usuario}}</td>
       <td class="p-2">{{usuario.nro_agente}}</td>
       <td class="p-2">{{usuario.nom}}</td>
@@ -89,8 +89,8 @@
           ></button>
           <button
             pButton
-            icon="pi pi-trash"
-            class="p-button-rounded p-button-sm p-button-delete"
+            icon="pi pi-plus"
+            class="p-button-rounded p-button-sm p-button-info"
             pTooltip="Eliminar"
             (click)="false"
           ></button>

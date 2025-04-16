@@ -4,6 +4,10 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environtment';
 import { Team, TeamResponse } from '../interface/teams.interface';
 
+const HEADER = { 
+  'Authorization': `Bearer ${environment.apiKey}`
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -64,10 +68,10 @@ export class TeamsService {
 
   removeColaFromTeam(teamId: string, colaId: string): Observable<any> {
     const formData = new FormData();
-    formData.append('service', 'delete_cola_team');
+    formData.append('service', 'del_cola_team');
     formData.append('id_team', teamId);
     formData.append('cola', colaId);
 
-    return this.http.post<any>(`${this.baseUrl}/gestion_call`, formData);
+    return this.http.post<any>(`${this.baseUrl}/gestion_call`, formData, {headers: HEADER } );
   }
 }

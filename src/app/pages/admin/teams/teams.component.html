@@ -47,8 +47,8 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-team>
-      <tr>
-        <td class="p-2" style="vertical-align: middle">{{team.id_team}}</td>
+      <tr class="text-sm">
+        <td class="p-2 font-semibold" style="vertical-align: middle">{{team.id_team}}</td>
         <td class="p-2" style="vertical-align: middle">{{team.n_team}}</td>
         <td class="p-2" style="text-align: center">
           <div class="flex justify-center gap-2">
@@ -59,13 +59,14 @@
               (click)="editTeam(team)"
               pTooltip="Modificar"
             ></button>
-            <button
+            <!-- <button
               pButton
-              icon="pi pi-trash"
-              class="p-button-rounded p-button-sm p-button-delete"
-              (click)="deleteTeam(team)"
-              pTooltip="Eliminar"
-            ></button>
+              icon="pi pi-plus"
+              severity="warn"
+              class="p-button-rounded p-button-sm"
+              (click)="openColasDialog()"
+              pTooltip="Gestionar Colas"
+            ></button> -->
           </div>
         </td>
       </tr>
@@ -217,7 +218,6 @@
 
   <!-- Diálogo de confirmación para eliminar -->
   <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
-  <p-toast></p-toast>
 </div>
 
 <!-- Indicador de carga -->

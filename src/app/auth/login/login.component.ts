@@ -9,8 +9,11 @@ import { AuthService } from '../../shared/services/auth.service';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { PasswordModule } from 'primeng/password';
 import { Router } from '@angular/router';
-import { MessageService } from 'primeng/api';
+// import { MessageService } from 'primeng/api';
 import { joajuLogo } from '../../shared/utilities/utils';
+
+// toast import 
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-login',
@@ -33,10 +36,12 @@ export class LoginComponent implements OnInit {
   loading = false;
   joajuLogo = joajuLogo;
 
+  protected readonly toast = toast;
+
   constructor(
     private authService: AuthService, 
     private router: Router, 
-    private messageService: MessageService, 
+    // private messageService: MessageService, 
     private fb: FormBuilder
   ) {
     this.loginForm = this.fb.group({
@@ -65,44 +70,24 @@ export class LoginComponent implements OnInit {
         next: (response) => {
           this.loading = false;
           if (response.err_code === "200") {
-            this.messageService.add({ 
-              severity: 'success', 
-              summary: 'Éxito', 
-              detail: 'Inicio de sesión exitoso' 
-            });
+            this.toast.success('Sesión iniciada exitosamente');
           } else {
             this.loading = false;
-            this.messageService.add({ 
-              severity: 'error', 
-              summary: 'Error', 
-              detail: response.mensaje
-            });
+            this.toast.error(`Error al iniciar sesión: ${response.mensaje}`);
           }
         },
         error: (error) => {
           console.log('Error estructura:', error);
           
           if (error.error?.mensaje) {
-            this.messageService.add({ 
-              severity: 'error', 
-              summary: 'Error', 
-              detail: error.error.mensaje 
-            });
+            this.toast.error(error.error.mensaje);
           } else {
-            this.messageService.add({ 
-              severity: 'error', 
-              summary: 'Error', 
-              detail: 'Error al iniciar sesión' 
-            });
+            this.toast.error('Error al iniciar sesión');
           }
         }
       });
     } else {
-      this.messageService.add({ 
-        severity: 'error', 
-        summary: 'Error', 
-        detail: 'Todos los campos son obligatorios' 
-      });
+      this.toast.error('Todos los campos son obligatorios');
     }
   }
 

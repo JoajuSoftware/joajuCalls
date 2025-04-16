@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
-import { ToastModule } from 'primeng/toast';
 import { PrimeNG } from 'primeng/config';
+
+// Toast import
+import { toast, NgxSonnerToaster } from 'ngx-sonner';
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule, ToastModule],
+  imports: [RouterOutlet, RouterModule, NgxSonnerToaster],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

@@ -78,7 +78,7 @@ export class ManageQueueComponent implements OnInit, AfterViewInit {
 
     const data = new FormData();
 
-    data.append('service', 'add_agente');
+    data.append('service', 'add_ag_cola');
     data.append('agente', this.user.agente);
     data.append('cola', queue.cola);
 
@@ -89,22 +89,29 @@ export class ManageQueueComponent implements OnInit, AfterViewInit {
   addQueueFetch(data: any) {
     const response = this.queueService.addAgentToQueue(data).subscribe({
       next: (response) => {
-        console.log(response)
+        console.log(response);
+        if (response.err_code === "200") {
+          const currentQueues = this.queuesSelected();
+          const colaToAdd = data.get('cola');
+          if (!currentQueues.includes(colaToAdd)) {
+            this.queuesSelected.set([...currentQueues, colaToAdd]);
+          }
+        }
       },
       error: (error) => {
-        console.log('Error al agregar el agente a la cola: ', error)
+        console.log('Error al agregar el agente a la cola: ', error);
       },
       complete: () => {
-        response.unsubscribe()
+        response.unsubscribe();
       }
-    })
+    });
   }
 
   deleteQueue(queue: Cola) {
 
     const data = new FormData();
 
-    data.append('service', 'delete_agente');
+    data.append('service', 'del_ag_cola');
     data.append('agente', this.user.agente);
     data.append('cola', queue.cola);
 
@@ -113,18 +120,19 @@ export class ManageQueueComponent implements OnInit, AfterViewInit {
   }
 
   deleteQueueFetch(data: any) {
-    
     const response = this.queueService.deleteAgentFromQueue(data).subscribe({
       next: (response) => {
-        console.log(response)
+        const currentQueues = this.queuesSelected();
+        const colaToRemove = data.get('cola');
+        this.queuesSelected.set(currentQueues.filter(cola => cola !== colaToRemove));
       },
       error: (error) => {
-        console.log('Error al eliminar el agente de la cola: ', error)
+        console.log('Error al eliminar el agente de la cola: ', error);
       },
       complete: () => {
-        response.unsubscribe()
+        response.unsubscribe();
       }
-    })
+    });
   }
 
   checkQueue(queue: Cola) {

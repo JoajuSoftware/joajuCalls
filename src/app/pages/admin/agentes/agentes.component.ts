@@ -25,6 +25,7 @@ import { finalize } from 'rxjs';
 import { TeamsService } from '../teams/service/teams.service';
 import { Team, TeamResponse } from '../teams/interface/teams.interface';
 import { ManageQueueComponent } from "./components/manage-queue/manage-queue.component";
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-agentes',
@@ -104,12 +105,7 @@ export class AgentesComponent {
       },
       error: (error) => {
         console.error('Error al obtener los teams:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los teams',
-          life: 3000
-        });
+        toast.error('Error al cargar los teams');
       }
     });
 
@@ -134,12 +130,7 @@ export class AgentesComponent {
       },
       error: (error) => {
         console.error('Error al obtener agentes:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los agentes',
-          life: 3000
-        });
+        toast.error('Error al cargar los agentes');
         this.isLoading = false;
       }
     });
@@ -215,12 +206,7 @@ export class AgentesComponent {
         
               this.agents.update(currentAgents => [newAgent, ...currentAgents]);
               
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: response.mensaje,
-                life: 3000
-              });
+              toast.success(response.mensaje);
         
               this.agentDialog = false;
               this.submitted = false;
@@ -229,22 +215,12 @@ export class AgentesComponent {
                 estado: 'Desconectado'
               });
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje,
-                life: 3000
-              });
+              toast.error(response.mensaje);
             }
           },
           error: (error) => {
             console.error('Error en la petición:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al crear el agente',
-              life: 3000
-            });
+            toast.error('Error al crear el agente');
           }
         });
       } else if (formValues.service === 'act_agente') {
@@ -269,13 +245,8 @@ export class AgentesComponent {
                   return a;
                 });
               });
-              
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: response.mensaje,
-                life: 3000
-              });
+
+              toast.success(response.mensaje);
    
               this.agentDialog = false;
               this.submitted = false;
@@ -284,21 +255,11 @@ export class AgentesComponent {
                 estado: 'Desconectado'
               });
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje,
-                life: 3000
-              });
+              toast.error(response.mensaje);
             }
           },
           error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al actualizar el agente',
-              life: 3000
-            });
+            toast.error('Error al actualizar el agente');
           }
         });
       }

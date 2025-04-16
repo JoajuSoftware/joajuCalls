@@ -20,6 +20,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ColasService } from './services/colas.service';
 import { Cola } from './interfaces/colas.interface';
 import { finalize } from 'rxjs';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-colas',
@@ -90,23 +91,16 @@ export class ColasComponent {
           this.colas.set(response.mensaje);
           this.totalRecords = response.mensaje.length;
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: typeof response.mensaje === 'string' ? response.mensaje : 'Error al cargar las colas',
-            life: 3000
+          toast.error('Error al cargar las colas', {
+            description: typeof response.mensaje === 'string' ? response.mensaje : 'Error al cargar las colas',
+            duration: 3000,
           });
         }
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error al cargar colas:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar las colas',
-          life: 3000
-        });
+        toast.error('Error al cargar las colas');
         this.isLoading = false;
       }
     });
@@ -168,12 +162,10 @@ export class ColasComponent {
               };
         
               this.colas.update(currentColas => [newCola, ...currentColas]);
-              
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: response.mensaje || 'Cola creada correctamente',
-                life: 3000
+
+              toast.success('Cola creada correctamente', {
+                description: response.mensaje || 'Cola creada correctamente',
+                duration: 3000
               });
         
               this.colaDialog = false;
@@ -182,22 +174,15 @@ export class ColasComponent {
                 service: 'crea_cola'
               });
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje || 'Error al crear la cola',
-                life: 3000
+              toast.error('Error al crear la cola', {
+                description: response.mensaje || 'Error al crear la cola',
+                duration: 3000
               });
             }
           },
           error: (error) => {
             console.error('Error en la petición:', error);
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al crear la cola',
-              life: 3000
-            });
+            toast.error('Error al crear la cola');
           }
         });
       } else if (formValues.service === 'act_cola') {
@@ -219,12 +204,10 @@ export class ColasComponent {
                   return c;
                 });
               });
-              
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: response.mensaje || 'Cola actualizada correctamente',
-                life: 3000
+
+              toast.success('Cola actualizada correctamente', {
+                description: response.mensaje || 'Cola actualizada correctamente',
+                duration: 3000
               });
    
               this.colaDialog = false;
@@ -233,21 +216,14 @@ export class ColasComponent {
                 service: 'crea_cola'
               });
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje || 'Error al actualizar la cola',
-                life: 3000
+              toast.error('Error al actualizar la cola', {
+                description: response.mensaje || 'Error al actualizar la cola',
+                duration: 3000
               });
             }
           },
           error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al actualizar la cola',
-              life: 3000
-            });
+            toast.error('Error al actualizar la cola');
           }
         });
       }
@@ -269,29 +245,17 @@ export class ColasComponent {
               this.colas.update(currentColas => 
                 currentColas.filter(c => c.id !== cola.id)
               );
-              
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Cola eliminada',
-                life: 3000
-              });
+
+              toast.success('Cola eliminada correctamente')
             } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: response.mensaje || 'Error al eliminar la cola',
-                life: 3000
+              toast.error('Error al eliminar la cola', {
+                description: response.mensaje || 'Error al eliminar la cola',
+                duration: 3000
               });
             }
           },
           error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar la cola',
-              life: 3000
-            });
+            toast.error('Error al eliminar la cola');
           }
         });
       }

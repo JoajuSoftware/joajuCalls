@@ -17,6 +17,7 @@ import { ColasService } from '../../../admin/colas/services/colas.service';
 import { Cartera } from './interfaces/cartera.interface';
 import { CarteraService } from './services/cartera.service';
 import { DetalleCarteraComponent } from "./detalle-cartera/detalle-cartera.component";
+import { toast } from 'ngx-sonner';
 
 interface SelectOption {
   value: string;
@@ -85,23 +86,13 @@ export class ListarCarterasComponent implements OnInit {
           
           this.loadCarteras();
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar las colas',
-            life: 3000
-          });
+          toast.error("Error al cargar las colas");
         }
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error al obtener colas:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar las colas',
-          life: 3000
-        });
+        toast.error("Error al cargar las colas");
         this.isLoading = false;
       }
     });
@@ -120,23 +111,13 @@ export class ListarCarterasComponent implements OnInit {
           this.filteredCarteras.set(response.mensaje);
           this.totalRecords = response.mensaje.length;
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al cargar las carteras',
-            life: 3000
-          });
+          toast.error("Error al cargar las carteras");
         }
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error al obtener carteras:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar las carteras',
-          life: 3000
-        });
+        toast.error("Error al cargar las carteras");
         this.isLoading = false;
       }
     });
@@ -144,11 +125,8 @@ export class ListarCarterasComponent implements OnInit {
   
   filterBySelectedColas() {
     if (this.selectedColas.length === 0) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe seleccionar al menos una cola',
-        life: 3000
+      toast.warning("Debe seleccionar al menos una cola", {
+        description: "Por favor, seleccione una o más colas para filtrar las carteras."
       });
       return;
     }
@@ -164,31 +142,18 @@ export class ListarCarterasComponent implements OnInit {
           this.carteras.set(response.mensaje);
           this.filteredCarteras.set(response.mensaje);
           this.totalRecords = response.mensaje.length;
-          
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Filtro aplicado',
-            detail: 'Se han cargado las carteras con el filtro seleccionado',
-            life: 3000
+
+          toast.success("Filtro aplicado", {
+            description: "Se han cargado las carteras con el filtro seleccionado."
           });
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al filtrar las carteras',
-            life: 3000
-          });
+          toast.error("Error al filtrar las carteras");
         }
         this.isLoading = false;
       },
       error: (error) => {
         console.error('Error al filtrar carteras:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al filtrar las carteras',
-          life: 3000
-        });
+        toast.error("Error al filtrar las carteras");
         this.isLoading = false;
       }
     });

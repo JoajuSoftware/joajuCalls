@@ -10,6 +10,7 @@ import { PasswordModule } from 'primeng/password';
 import { MessageService } from 'primeng/api';
 import { joajuLogo } from '../../../shared/utilities/utils';
 import { LoginAgentService } from './services/login-agent.service';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-login-agent',
@@ -55,34 +56,18 @@ export class LoginAgentComponent {
       this.loginAgentService.signIn(credentials).subscribe({
         next: (response: any) => {
           if (response.err_code === "302"){
-            this.messageService.add({ 
-              severity: 'error', 
-              summary: 'Error', 
-              detail: "No se encuentra el usuario"
-            });
+            toast.error("No se encuentra el usuario");
           } else {
-            this.messageService.add({ 
-              severity: 'success', 
-              summary: 'Éxito', 
-              detail: "Inicio de sesión éxitoso"
-            });
+            toast.success("Inicio de sesión éxitoso");
           }
         },
         error: (err) => {
-          this.messageService.add({ 
-            severity: 'error', 
-            summary: 'Error',
-            detail: "Error al iniciar sesión"
-          });
+          toast.error("Error al iniciar sesión");
           console.error(err);
         }
       });
     } else {
-      this.messageService.add({ 
-        severity: 'error', 
-        summary: 'Error', 
-        detail: 'Todos los campos son obligatorios' 
-      });
+      toast.error("Todos los campos son obligatorios");
     }
   }
 }

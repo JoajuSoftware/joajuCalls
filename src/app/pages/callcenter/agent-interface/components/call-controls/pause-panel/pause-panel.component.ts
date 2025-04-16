@@ -10,6 +10,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { PauseService } from './services/pause.service';
 import { MessageService } from 'primeng/api';
 import { checkAgentStatusResponse } from './interfaces/pause.interface';
+import { toast } from 'ngx-sonner';
 
 interface PauseOption {
   id: string;
@@ -72,11 +73,7 @@ export class PausePanelComponent implements OnInit {
     const userDataString = sessionStorage.getItem('userData');
     if (!userDataString) {
       console.error('No user data found in session storage');
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'No se encontraron datos de usuario en la sesión'
-      });
+      toast.error('No se encontraron datos de usuario en la sesión');
       this.isLoading.set(false);
       return;
     }
@@ -131,11 +128,7 @@ export class PausePanelComponent implements OnInit {
       error: (err) => {
         console.error('Error al verificar estado del agente:', err);
         this.isLoading.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al verificar el estado del agente'
-        });
+        toast.error('Error al verificar el estado del agente',);
       }
     });
   }
@@ -166,11 +159,7 @@ export class PausePanelComponent implements OnInit {
     const userDataString = sessionStorage.getItem('userData');
     if (!userDataString) {
       console.error('No user data found in session storage');
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'No se encontraron datos de usuario en la sesión'
-      });
+      toast.error('No se encontraron datos de usuario en la sesión');
       this.isLoading.set(false);
       return;
     }
@@ -210,10 +199,8 @@ export class PausePanelComponent implements OnInit {
         console.error('Error en la petición:', err);
         this.isLoading.set(false);
         this.currentPause.set('');
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al activar pausa: ' + (err.message || 'Error desconocido')
+        toast.error('Error al activar la pausa', {
+          description: err.message || 'Error desconocido'
         });
       }
     });
@@ -229,10 +216,8 @@ export class PausePanelComponent implements OnInit {
       console.log('Pausa activada con tipo:', option.label);
     }
     
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Éxito',
-      detail: response.mensaje || 'Pausa activada correctamente'
+    toast.success('Pausa activada correctamente', {
+      description: response.mensaje || 'Pausa activada correctamente'
     });
   }
   
@@ -245,24 +230,19 @@ export class PausePanelComponent implements OnInit {
       this.pauseReason.set(option.label);
       console.log('Pausa parcialmente activada con tipo:', option.label);
     }
-    
-    this.messageService.add({
-      severity: 'warn',
-      summary: 'Advertencia',
-      detail: 'Pausa aplicada parcialmente: algunos canales no se pudieron pausar'
+
+    toast.warning('Pausa aplicada parcialmente', {
+      description: response.mensaje || 'Pausa aplicada parcialmente: algunos canales no se pudieron pausar'
     });
   }
   
   private handlePauseError(response: any): void {
     console.log('Manejando error de pausa:', response);
     
-    this.messageService.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: response.mensaje || 'Error al activar la pausa'
+    toast.error('Error al activar la pausa', {
+      description: response.mensaje || 'Error al activar la pausa'
     });
   
-    // Limpiamos el estado después de mostrar el mensaje de error
     this.isPaused.set(false);
     this.currentPause.set('');
     this.pauseReason.set('');
@@ -274,11 +254,7 @@ export class PausePanelComponent implements OnInit {
     const userDataString = sessionStorage.getItem('userData');
     if (!userDataString) {
       console.error('No user data found in session storage');
-      this.messageService.add({
-        severity: 'error',
-        summary: 'Error',
-        detail: 'No se encontraron datos de usuario en la sesión'
-      });
+      toast.error('No se encontraron datos de usuario en la sesión');
       this.isLoading.set(false);
       return;
     }
@@ -297,20 +273,16 @@ export class PausePanelComponent implements OnInit {
         if (response.err_code === '200' || (response.estado && response.estado.includes('correcta'))) {
           this.handleSuccessfulUnpause();
         } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: response.estado || response.mensaje || 'Error al desactivar la pausa'
+          toast.error('Error al desactivar la pausa', {
+            description: response.estado || response.mensaje || 'Error al desactivar la pausa'
           });
         }
       },
       error: (err: any) => {
         console.error('Error en la petición:', err);
         this.isLoading.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al desactivar pausa: ' + (err.message || 'Error desconocido')
+        toast.error('Error al desactivar la pausa', {
+          description: err.message || 'Error desconocido'
         });
       }
     });
@@ -322,11 +294,9 @@ export class PausePanelComponent implements OnInit {
     this.pauseReason.set('');
     this.pauseStatusChange.emit(false);
     this.selectedPauseOption = null;
-    
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Éxito',
-      detail: 'Pausa desactivada correctamente'
+
+    toast.success('Pausa desactivada correctamente', {
+      description: 'La pausa ha sido desactivada con éxito'
     });
   }
   

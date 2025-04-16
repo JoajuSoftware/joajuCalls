@@ -53,10 +53,10 @@ export class ColasService {
   }
 
   addAgentToQueue(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/agente`, data);
+    return this.http.post(`${this.baseUrl}/agentes`, data);
   }
 
   deleteAgentFromQueue(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/agente`, data);
+    return this.http.post(`${this.baseUrl}/agentes`, data);
   }
 }

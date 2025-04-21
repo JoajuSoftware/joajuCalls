@@ -14,6 +14,8 @@ import { FloatLabelModule } from 'primeng/floatlabel';
 import { AgentConectionsService } from './services/agent-connections.service';
 import { ConnectionAgentData } from '../../models/interface';
 
+import { toast } from 'ngx-sonner';
+
 @Component({
   selector: 'app-conexion-agentes',
   imports: [TableModule, TagModule, ButtonModule, DatePickerModule, MultiSelectModule, ReactiveFormsModule, FormsModule, FloatLabelModule],
@@ -30,6 +32,8 @@ export class ConexionAgentesComponent implements OnInit {
   teams = signal<Team[]>([]);
   headers = signal<string[]>([]);
   agentsConnectionsData = signal<ConnectionAgentData[]>([]);
+
+  protected readonly toast = toast;
 
   constructor() {
     this.data = this.fb.group({
@@ -62,6 +66,11 @@ export class ConexionAgentesComponent implements OnInit {
   }
 
   submitForm(): void {
+
+    if(this.data.value.initDate === '' || this.data.value.endDate === '' || this.data.value.selectedTeams === ''){
+      this.toast.error('Debes llenar todos los campos');
+      return;
+    }
 
     const formData = {
       'fecha_ini': this.data.value.initDate,

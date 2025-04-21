@@ -13,6 +13,7 @@ import { TableModule } from 'primeng/table';
 
 // Import Types
 import { CallData, Data, ResponseInterface } from '../../models/interface';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-call-detalle',
@@ -30,6 +31,8 @@ export class CallDetalleComponent implements OnInit {
   data: FormGroup;
   callsDetails = signal<CallData[]>([]);
   headers = signal<string[]>([]);
+
+  protected readonly toast = toast;
 
   constructor() { 
     this.data = this.fb.group({
@@ -66,7 +69,13 @@ export class CallDetalleComponent implements OnInit {
     console.log(response);
   }
 
-  submitForm() { 
+  submitForm(): void { 
+
+    if(this.data.value.selectedQueue === '' || this.data.value.initDate === '' || this.data.value.endDate === ''){
+      this.toast.error('Debes llenar todos los campos');
+      return; 
+    }
+
     console.log(this.data.value);
 
     const formData = {

@@ -12,6 +12,8 @@ import { TableModule } from 'primeng/table';
 import { AgentResumeService } from './services/agent-resume.service';
 import { AgentData, Data } from '../../models/interface';
 
+import {toast} from 'ngx-sonner'
+
 @Component({
   selector: 'app-resumen-por-agente',
   imports: [MultiSelectModule, ButtonModule, DatePickerModule, ReactiveFormsModule, FormsModule, TableModule, FloatLabel],
@@ -29,6 +31,8 @@ export class ResumenPorAgenteComponent implements OnInit {
   headers = signal<string[]>([]);
   agentsData = signal<AgentData[]>([]);
   data: FormGroup;
+
+  protected readonly toast = toast;
 
   constructor() {
     this.data = this.fb.group({
@@ -65,10 +69,12 @@ export class ResumenPorAgenteComponent implements OnInit {
 
   submitForm(): void {
 
-    console.log(this.data.value);
+    // console.log(this.data.value);
 
-    if(this.data.value.initDate === '' || this.data.value.endDate === ''){
-      return alert('Campos vacios');
+    // Validación de los campos
+    if(this.data.value.initDate === '' || this.data.value.endDate === ''|| this.data.value.selectedQueue === ''){
+      this.toast.error('Debes llenar todos los campos');
+      return;
     }
 
     // Se crea un objeto con los datos del formulario

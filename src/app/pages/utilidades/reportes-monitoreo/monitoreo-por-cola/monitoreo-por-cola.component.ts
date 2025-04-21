@@ -14,6 +14,7 @@ import { ColasService } from '../../../admin/colas/services/colas.service';
 import { Cola } from '../../../admin/colas/interfaces/colas.interface';
 import { Data, QueueMonitoringData } from '../../models/interface';
 import { QueueMonitoringService } from './services/queue-monitoring.service';
+import { toast } from 'ngx-sonner';
 
 
 @Component({
@@ -34,6 +35,8 @@ export class MonitoreoPorColaComponent implements OnInit {
   headers = signal<string[]>([]);
   agentsQueueData = signal<QueueMonitoringData[]>([]);
   data: FormGroup;
+
+  protected readonly toast = toast;
 
   constructor() {
     this.data = this.fb.group({
@@ -64,6 +67,11 @@ export class MonitoreoPorColaComponent implements OnInit {
   }
 
   submitForm(): void {
+
+    if(this.data.value.selectedQueue === ''){
+      this.toast.error('Debes seleccionar una cola');
+      return;
+    }
 
     const formData = { 
       'queues': this.data.value.selectedQueue.cola

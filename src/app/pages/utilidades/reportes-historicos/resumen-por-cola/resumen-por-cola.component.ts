@@ -12,6 +12,8 @@ import { TableModule } from 'primeng/table';
 import { Data, QueueData } from '../../models/interface';
 import { QueueResumeService } from './services/queue-resume.service';
 
+import { toast } from 'ngx-sonner';
+
 @Component({
   selector: 'app-resumen-por-cola',
   imports: [ MultiSelectModule, ButtonModule, DatePickerModule, ReactiveFormsModule, FormsModule, TableModule, FloatLabel],
@@ -29,6 +31,8 @@ export class ResumenPorColaComponent {
   headers = signal<string[]>([]);
   queuesData = signal<QueueData[]>([]);
   data: FormGroup;
+
+  protected readonly toast = toast;
 
   constructor() {
     this.data = this.fb.group({
@@ -65,6 +69,11 @@ export class ResumenPorColaComponent {
   }
 
   submitForm(): void {
+
+    if(this.data.value.initDate === '' || this.data.value.endDate === '' || this.data.value.selectedQueue === ''){
+      this.toast.error('Debes llenar todos los campos');
+      return;
+    }
 
     const formData = { 
       'initDate': this.data.value.initDate,

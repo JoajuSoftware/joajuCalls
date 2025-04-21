@@ -6,6 +6,8 @@ import { ContactListComponent } from "../components/contact-list/contact-list.co
 import { PausePanelComponent } from "../components/call-controls/pause-panel/pause-panel.component";
 import { ContactManageComponent } from "../components/contact-manage/contact-manage.component";
 
+import {toast } from 'ngx-sonner';
+
 @Component({
   selector: 'app-agent-dashboard',
   imports: [
@@ -26,9 +28,11 @@ export class AgentDashboardComponent {
   currentNumber = signal<string>('');
   isCallActive = signal<boolean>(false);
   isPaused = signal<boolean>(false);
+  protected readonly toast = toast;
 
   handlePhoneNumber(phoneNumber: string): void {
     this.dialPad.displayNumber.set(phoneNumber);
+    this.toast.success('Número cargado correctamente');
   }
   
   handleCallStatusChange(isActive: boolean): void {

@@ -1,16 +1,337 @@
-<div class="relative h-screen w-full h-full flex items-center justify-center overflow-hidden">
-  <!-- Imagen de dashboard como fondo con blur --> 
-    <div class="dashboard absolute w-full h-full inset-0 z-0 blur-sm">
+<div class="dashboard-container p-3">
+  <div class="mb-3 p-3 shadow-1 border-round bg-white">
+    <div
+      class="flex flex-column md:flex-row justify-content-between align-items-center"
+    >
+      <div class="filters flex flex-column sm:flex-row gap-2">
+        <p-dropdown
+          [options]="timeRangeOptions"
+          [(ngModel)]="selectedTimeRange"
+          placeholder="Periodo de tiempo"
+          styleClass="w-full sm:w-auto"
+          (onChange)="onTimeRangeChange()"
+        >
+        </p-dropdown>
+
+        <button
+          pButton
+          icon="pi pi-refresh"
+          class="p-button-outlined p-button-sm w-full sm:w-auto"
+          pTooltip="Actualizar datos"
+          (click)="refreshData()"
+        ></button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading()" class="grid gap-4 mb-4">
+    <div class="col-12 md:col-4 p-2">
+      <div class="kpi-card bg-white shadow-2 border-round-xl p-4 h-full transition-all hover:shadow-4">
+        <div class="flex flex-column items-center gap-x-5 text-center w-full h-full">
+          <div class="bg-blue-50 text-blue-600 p-3 border-circle mb-3 shadow-1">
+            <i class="pi pi-phone text-2xl"></i>
+          </div>
+          <span class="text-sm text-gray-500 mb-2">Total Llamadas</span>
+          <span class="text-3xl font-bold text-blue-700">{{ metrics().totalCalls }}</span>
+        </div>
+      </div>
     </div>
 
-  <!--  Overlay para mejorar la legibilidad del texto  -->
-  <div class="absolute inset-0 bg-black/40 z-10"></div>
+    <div class="col-12 md:col-4 p-2">
+      <div class="kpi-card bg-white shadow-2 border-round-xl p-4 h-full transition-all hover:shadow-4">
+        <div class="flex flex-column items-center gap-x-5 text-center w-full h-full">
+          <div class="bg-green-50 text-green-600 p-3 border-circle mb-3 shadow-1">
+            <i class="pi pi-check-circle text-2xl"></i>
+          </div>
+          <span class="text-sm text-gray-500 mb-2">Atendidas</span>
+          <span class="text-3xl font-bold text-green-700">{{ metrics().answeredCalls }}</span>
+        </div>
+      </div>
+    </div>
 
-  <!-- Contenido centrado --> 
-  <div class="relative z-20 text-center px-4">
-    <h1 class="text-5xl md:text-7xl font-semibold text-white drop-shadow-lg">Próximamente</h1>
-    <p class="mt-4 text-xl md:text-2xl text-white max-w-md mx-auto">
-      Estamos trabajando en nuestro nuevo dashboard para mejorar tu experiencia
-    </p>
+    <div class="col-12 md:col-4 p-2">
+      <div class="kpi-card bg-white shadow-2 border-round-xl p-4 h-full transition-all hover:shadow-4">
+        <div class="flex flex-column items-center gap-x-5 text-center w-full h-full">
+          <div class="bg-red-50 text-red-600 p-3 border-circle mb-3 shadow-1">
+            <i class="pi pi-times-circle text-2xl"></i>
+          </div>
+          <span class="text-sm text-gray-500 mb-2">Abandonadas</span>
+          <span class="text-3xl font-bold text-red-700">{{ metrics().abandonedCalls }}</span>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <div class="grid mb-3">
+    <div class="col-12 lg:col-4 p-2">
+      <div class="card shadow-1 border-round-2xl bg-white h-full">
+        <h3 class="text-lg font-medium m-0 mb-3">Estado de Llamadas</h3>
+        <div class="chart-container">
+          <p-chart
+            type="doughnut"
+            [data]="callStatusData"
+            [options]="{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'right'
+                }
+              }
+            }"
+            height="250px"
+          ></p-chart>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 lg:col-8 p-2">
+      <div class="card shadow-1 border-round-2xl bg-white h-full">
+        <h3 class="text-lg font-medium m-0 mb-3">Volumen de Llamadas</h3>
+        <div class="chart-container">
+          <p-chart
+            type="line"
+            [data]="callVolumeData"
+            [options]="{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'top'
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }"
+            height="250px"
+          ></p-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-tabView>
+    <p-tabPanel header="Resumen por Agente">
+      <div class="card shadow-1 border-round-2xl bg-white">
+        <div class="mb-3">
+          <p-chart
+            type="bar"
+            [data]="callsByAgentData"
+            [options]="{
+              indexAxis: 'y',
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'top'
+                }
+              },
+              scales: {
+                x: {
+                  beginAtZero: true
+                }
+              }
+            }"
+            height="200px"
+          ></p-chart>
+        </div>
+
+        <p-table
+          [value]="agentSummary()"
+          styleClass="p-datatable-sm"
+          [paginator]="true"
+          [rows]="5"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Agente</th>
+              <th>Total Llamadas</th>
+              <th>Atendidas</th>
+              <th>Abandonadas</th>
+              <th>Tiempo Medio</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-agent>
+            <tr>
+              <td>{{ agent.agent }}</td>
+              <td>{{ agent.totalCalls }}</td>
+              <td>{{ agent.answeredCalls }}</td>
+              <td>{{ agent.abandonedCalls }}</td>
+              <td>{{ agent.avgTalkTime }}</td>
+              <td>
+                <div class="flex align-items-center">
+                  <div class="w-8rem">
+                    <p-progressBar
+                      [value]="agent.serviceLevel"
+                      [showValue]="false"
+                    ></p-progressBar>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel header="Resumen por Cola">
+      <div class="card shadow-1 border-round-2xl bg-white">
+        <div class="mb-3">
+          <p-chart
+            type="bar"
+            [data]="callsByQueueData"
+            [options]="{
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'top'
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }"
+            height="200px"
+          ></p-chart>
+        </div>
+
+        <p-table
+          [value]="queueSummary()"
+          styleClass="p-datatable-sm"
+          [paginator]="true"
+          [rows]="5"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Cola</th>
+              <th>Total Llamadas</th>
+              <th>Atendidas</th>
+              <th>Abandonadas</th>
+              <th>Tiempo de Espera</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-queue>
+            <tr>
+              <td>{{ queue.queue }}</td>
+              <td>{{ queue.totalCalls }}</td>
+              <td>{{ queue.answeredCalls }}</td>
+              <td>{{ queue.abandonedCalls }}</td>
+              <td>{{ queue.avgWaitTime }}</td>
+              <td>
+                <div class="flex align-items-center">
+                  <div class="w-8rem">
+                    <p-progressBar
+                      [value]="queue.serviceLevel"
+                      [showValue]="false"
+                    ></p-progressBar>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel header="Call Detalle">
+      <div class="card shadow-1 border-round-2xl bg-white">
+        <p-table
+          [value]="callDetails()"
+          styleClass="p-datatable-sm"
+          [paginator]="true"
+          [rows]="8"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>ID</th>
+              <th>Fecha/Hora</th>
+              <th>Tipo</th>
+              <th>Agente</th>
+              <th>Cola</th>
+              <th>Espera</th>
+              <th>Duración</th>
+              <th>Estado</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-call>
+            <tr>
+              <td>{{ call.id }}</td>
+              <td>{{ call.date }} {{ call.time }}</td>
+              <td>{{ call.type }}</td>
+              <td>{{ call.agent }}</td>
+              <td>{{ call.queue }}</td>
+              <td>{{ call.waitTime }}</td>
+              <td>{{ call.talkTime }}</td>
+              <td>
+                <span
+                  class="call-status"
+                  [ngClass]="{
+                    'status-atendida': call.status === 'Atendida',
+                    'status-abandonada': call.status === 'Abandonada',
+                    'status-transferida': call.status === 'Transferida'
+                  }"
+                >
+                  {{ call.status }}
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-tabPanel>
+
+    <p-tabPanel header="Monitoreo por Agentes">
+      <div class="card shadow-1 border-round-2xl bg-white">
+        <p-table
+          [value]="agentMonitoring()"
+          styleClass="p-datatable-sm"
+          [paginator]="true"
+          [rows]="5"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Agente</th>
+              <th>Extensión</th>
+              <th>Estado</th>
+              <th>Motivo Pausa</th>
+              <th>Última Llamada</th>
+              <th>Llamadas Hoy</th>
+              <th>Tiempo Medio</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-agent>
+            <tr>
+              <td>{{ agent.agent }}</td>
+              <td>{{ agent.extension }}</td>
+              <td>
+                <span
+                  class="agent-status"
+                  [ngClass]="{
+                    'status-disponible': agent.status === 'Disponible',
+                    'status-en-llamada': agent.status === 'En llamada',
+                    'status-pausa': agent.status === 'Pausa',
+                    'status-desconectado': agent.status === 'Desconectado'
+                  }"
+                >
+                  {{ agent.status }}
+                </span>
+              </td>
+              <td>{{ agent.pauseReason }}</td>
+              <td>{{ agent.lastCallTime }}</td>
+              <td>{{ agent.callsToday }}</td>
+              <td>{{ agent.avgTalkTime }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+
+  <p-toast></p-toast>
 </div>

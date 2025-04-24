@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { map, forkJoin } from 'rxjs';
-
 import { AgentResumeService } from '../../utilidades/reportes-historicos/resumen-por-agente/services/agent-resume.service';
 import { QueueResumeService } from '../../utilidades/reportes-historicos/resumen-por-cola/services/queue-resume.service';
 import { ReportsService } from '../../utilidades/reportes-historicos/call-detalle/services/reports.service';
@@ -48,7 +47,7 @@ export class DashboardDataService {
       callsByQueueData: this.createCallsByQueueData(data.queueResume),
       callsByAgentData: this.createCallsByAgentData(data.agentResume),
       metrics: this.calculateMetrics(data),
-      agentSummary: this.formatAgentSummary(data.agentResume),
+      agentSummary: this.formatAgentSummary(data.agentResume, data.callDetails),
       queueSummary: this.formatQueueSummary(data.queueResume),
       callDetails: this.formatCallDetails(data.callDetails)
     };
@@ -77,9 +76,9 @@ export class DashboardDataService {
 
       hourGroups[hourKey].received++;
 
-      if (call.estado === 'ANSWERED' || call.estado === 'Atendida') {
+      if (call.estado.toLowerCase() === 'terminada') {
         hourGroups[hourKey].answered++;
-      } else if (call.estado === 'ABANDONED' || call.estado === 'Abandonada') {
+      } else if (call.estado.toLowerCase() === 'abandonada') {
         hourGroups[hourKey].abandoned++;
       }
     });
@@ -196,7 +195,13 @@ export class DashboardDataService {
   private createCallsByQueueData(queueResume: any) {
     const queues = queueResume.mensaje;
     const queueNames = queues.map((q: any) => q.n_cola || q.cola);
-    const totalCalls = queues.map((q: any) => parseInt(q.terminada || '0'));
+
+    const totalCalls = queues.map((q: any) => {
+      const terminadas = parseInt(q.terminada || '0');
+      const abandonadas = parseInt(q.abandonadas || '0');
+      return terminadas + abandonadas;
+    });
+
     const waitTimes = queues.map((q: any) => parseInt(q.espera || q.wait_min_15 || '0'));
 
     return {
@@ -220,7 +225,19 @@ export class DashboardDataService {
     const agents = agentResume.mensaje;
     const agentNames = agents.map((a: any) => a.n_agente).slice(0, 5);
     const answeredCalls = agents.map((a: any) => parseInt(a.terminada || '0')).slice(0, 5);
-    const talkTimes = agents.map((a: any) => parseInt(a.conversacion || '0')).slice(0, 5);
+
+    const talkTimes = agents.map((a: any) => {
+      if (a.conversacion) {
+        const timeParts = a.conversacion.split(':');
+        if (timeParts.length === 3) {
+          const hours = parseInt(timeParts[0]);
+          const mins = parseInt(timeParts[1]);
+          const secs = parseInt(timeParts[2]);
+          return hours * 3600 + mins * 60 + secs;
+        }
+      }
+      return 0;
+    }).slice(0, 5);
 
     return {
       labels: agentNames,
@@ -231,9 +248,9 @@ export class DashboardDataService {
           data: answeredCalls
         },
         {
-          label: 'Tiempo Medio de Conversación',
+          label: 'Tiempo Medio de Conversación (min)',
           backgroundColor: '#8B5CF6',
-          data: talkTimes
+          data: talkTimes.map(t => Math.round(t / 60))
         }
       ]
     };
@@ -276,9 +293,9 @@ export class DashboardDataService {
       const queues = data.queueResume.mensaje;
 
       queues.forEach((queue: any) => {
-        totalCalls += parseInt(queue.total || queue.total_llamadas || '0');
+        totalCalls += parseInt(queue.total_calls || queue.terminada || '0');
         answeredCalls += parseInt(queue.terminada || '0');
-        abandonedCalls += parseInt(queue.abandonada || '0');
+        abandonedCalls += parseInt(queue.abandonadas || '0');
       });
 
       if (totalCalls > 0) {
@@ -288,14 +305,51 @@ export class DashboardDataService {
 
     if (data.agentResume && data.agentResume.mensaje && data.agentResume.mensaje.length > 0) {
       const agents = data.agentResume.mensaje;
-      const totalTalkTime = agents.reduce((acc: number, curr: any) => acc + parseInt(curr.conversacion || '0'), 0);
-      const totalHandleTime = agents.reduce((acc: number, curr: any) => acc + parseInt(curr.operacion || '0'), 0);
-      const totalWaitTime = agents.reduce((acc: number, curr: any) => acc + parseInt(curr.espera || '0'), 0);
-      const count = agents.length;
 
-      avgTalkTime = this.formatSecondsToTime(Math.floor(totalTalkTime / count));
-      avgHandleTime = this.formatSecondsToTime(Math.floor(totalHandleTime / count));
-      avgWaitTime = this.formatSecondsToTime(Math.floor(totalWaitTime / count));
+      let totalTalkSeconds = 0;
+      let totalHandleSeconds = 0;
+      let totalWaitSeconds = 0;
+      let validAgentCount = 0;
+
+      agents.forEach((agent: any) => {
+        validAgentCount++;
+
+        if (agent.conversacion) {
+          const timeParts = agent.conversacion.split(':');
+          if (timeParts.length === 3) {
+            const hours = parseInt(timeParts[0]);
+            const mins = parseInt(timeParts[1]);
+            const secs = parseInt(timeParts[2]);
+            totalTalkSeconds += hours * 3600 + mins * 60 + secs;
+          }
+        }
+
+        if (agent.operacion) {
+          const timeParts = agent.operacion.split(':');
+          if (timeParts.length === 3) {
+            const hours = parseInt(timeParts[0]);
+            const mins = parseInt(timeParts[1]);
+            const secs = parseInt(timeParts[2]);
+            totalHandleSeconds += hours * 3600 + mins * 60 + secs;
+          }
+        }
+
+        if (agent.dur_avg) {
+          const timeParts = agent.dur_avg.split(':');
+          if (timeParts.length === 3) {
+            const hours = parseInt(timeParts[0]);
+            const mins = parseInt(timeParts[1]);
+            const secs = parseInt(timeParts[2]);
+            totalWaitSeconds += hours * 3600 + mins * 60 + secs;
+          }
+        }
+      });
+
+      if (validAgentCount > 0) {
+        avgTalkTime = this.formatSecondsToTime(Math.floor(totalTalkSeconds / validAgentCount));
+        avgHandleTime = this.formatSecondsToTime(Math.floor(totalHandleSeconds / validAgentCount) || Math.floor(totalTalkSeconds / validAgentCount));
+        avgWaitTime = this.formatSecondsToTime(Math.floor(totalWaitSeconds / validAgentCount));
+      }
     }
 
     return {
@@ -309,18 +363,20 @@ export class DashboardDataService {
     };
   }
 
-  private formatAgentSummary(agentResume: any) {
-    return agentResume.mensaje.map((agent: any) => {
+  private formatAgentSummary(agentResume: any, callDetails: any) {
+    const agentData = agentResume.mensaje.map((agent: any) => {
       const totalCalls = parseInt(agent.terminada || '0') + parseInt(agent.activas || '0');
       const answeredCalls = parseInt(agent.terminada || '0');
-      const abandonedCalls = parseInt(agent.dur_min_15 || '0');
+      const abandonedCalls = 0;
 
       let avgTalkTime = '00:00';
       if (agent.conversacion) {
-        const talkSecs = parseInt(agent.conversacion);
-        const mins = Math.floor(talkSecs / 60);
-        const secs = talkSecs % 60;
-        avgTalkTime = `${mins}:${secs.toString().padStart(2, '0')}`;
+        const timeParts = agent.conversacion.split(':');
+        if (timeParts.length === 3) {
+          avgTalkTime = agent.conversacion.substring(0, 5);
+        }
+      } else if (agent.dur_avg) {
+        avgTalkTime = agent.dur_avg.substring(0, 5);
       }
 
       const serviceLevel = Math.round((answeredCalls / (totalCalls || 1)) * 100);
@@ -335,28 +391,56 @@ export class DashboardDataService {
         serviceLevel
       };
     });
+
+    const abandonedCalls = callDetails?.mensaje?.filter((call: any) =>
+      call.estado.toLowerCase() === 'abandonada'
+    ).length || 0;
+
+    if (abandonedCalls > 0) {
+      agentData.push({
+        agent: 'Sin asignar',
+        totalCalls: abandonedCalls,
+        answeredCalls: 0,
+        abandonedCalls: abandonedCalls,
+        avgTalkTime: '-',
+        avgHandleTime: '-',
+        serviceLevel: 0
+      });
+    }
+
+    return agentData;
   }
 
   private formatQueueSummary(queueResume: any) {
     return queueResume.mensaje.map((queue: any) => {
-      const totalCalls = parseInt(queue.terminada || '0') + parseInt(queue.activas || '0');
+      const totalCalls = parseInt(queue.terminada || '0') + parseInt(queue.abandonadas || '0');
       const answeredCalls = parseInt(queue.terminada || '0');
-      const abandonedCalls = totalCalls - answeredCalls;
+      const abandonedCalls = parseInt(queue.abandonadas || '0');
 
       let avgWaitTime = '00:00';
       if (queue.espera) {
-        const waitSecs = parseInt(queue.espera);
-        const mins = Math.floor(waitSecs / 60);
-        const secs = waitSecs % 60;
-        avgWaitTime = `${mins}:${secs.toString().padStart(2, '0')}`;
+        const waitParts = queue.espera.split(':');
+        if (waitParts.length === 3) {
+          avgWaitTime = queue.espera.substring(0, 5);
+        } else {
+          const waitSecs = parseInt(queue.espera);
+          const mins = Math.floor(waitSecs / 60);
+          const secs = waitSecs % 60;
+          avgWaitTime = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
       }
 
       let avgTalkTime = '00:00';
       if (queue.conversacion) {
-        const talkSecs = parseInt(queue.conversacion);
-        const mins = Math.floor(talkSecs / 60);
-        const secs = talkSecs % 60;
-        avgTalkTime = `${mins}:${secs.toString().padStart(2, '0')}`;
+        const talkParts = queue.conversacion.split(':');
+        if (talkParts.length === 3) {
+          avgTalkTime = queue.conversacion.substring(0, 5);
+        } else {
+          const talkSecs = parseInt(queue.conversacion);
+          const mins = Math.floor(talkSecs / 60);
+          const secs = talkSecs % 60;
+          avgTalkTime = `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
       }
 
       const serviceLevel = parseInt(queue.wait_min_15 || '85');
@@ -382,9 +466,9 @@ export class DashboardDataService {
       const callType = call.num && call.num.startsWith('0') ? 'Saliente' : 'Entrante';
 
       let status = 'Atendida';
-      if (call.estado === 'ABANDONED' || call.estado === 'Abandonada') {
+      if (call.estado.toLowerCase() === 'abandonada') {
         status = 'Abandonada';
-      } else if (call.estado === 'TRANSFERRED' || call.estado === 'Transferida') {
+      } else if (call.estado.toLowerCase() === 'transferida') {
         status = 'Transferida';
       }
 
@@ -395,7 +479,7 @@ export class DashboardDataService {
         type: callType,
         agent: call.n_agente || '-',
         queue: call.n_cola || call.cola,
-        waitTime: call.espera ? `0:${call.espera}` : '0:00',
+        waitTime: call.espera || '0:00',
         talkTime: call.duracion || '-',
         status
       };
@@ -408,9 +492,11 @@ export class DashboardDataService {
     let totalAbandonedCalls = 0;
 
     agentResume.mensaje.forEach((agent: any) => {
-      totalCalls += parseInt(agent.total || '0');
-      totalAnsweredCalls += parseInt(agent.terminada || '0');
-      totalAbandonedCalls += parseInt(agent.abandonada || '0');
+      const terminadas = parseInt(agent.terminada || '0');
+      const activas = parseInt(agent.activas || '0');
+
+      totalCalls += terminadas + activas;
+      totalAnsweredCalls += terminadas;
     });
 
     return {

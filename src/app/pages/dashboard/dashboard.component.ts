@@ -7,7 +7,6 @@ import { ChartModule } from 'primeng/chart';
 import { TableModule } from 'primeng/table';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { DividerModule } from 'primeng/divider';
 import { BadgeModule } from 'primeng/badge';
@@ -20,6 +19,7 @@ import { ColasService } from '../admin/colas/services/colas.service';
 import { TeamsService } from '../admin/teams/service/teams.service';
 import { forkJoin } from 'rxjs';
 import { DashboardDataService } from './services/dashboard-data.service';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-dashboard',
@@ -41,7 +41,7 @@ import { DashboardDataService } from './services/dashboard-data.service';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [MessageService],
+  providers: [],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
@@ -113,7 +113,6 @@ export class DashboardComponent implements OnInit {
   private colasService = inject(ColasService);
   private teamsService = inject(TeamsService);
   private dashboardDataService = inject(DashboardDataService);
-  private messageService = inject(MessageService);
   private router = inject(Router);
 
   ngOnInit() {
@@ -160,12 +159,7 @@ export class DashboardComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error cargando datos del dashboard:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cargar los datos del dashboard',
-          life: 3000
-        });
+        toast.error('Error al cargar los datos del dashboard');
       }
     });
   }
@@ -260,24 +254,14 @@ export class DashboardComponent implements OnInit {
           error: (error) => {
             console.error('Error cargando datos de reportes:', error);
             this.resetData();
-            this.messageService.add({
-              severity: 'warn',
-              summary: 'Advertencia',
-              detail: 'No se encontraron datos para el periodo seleccionado',
-              life: 3000
-            });
+            toast.warning('No se encontraron datos para el periodo seleccionado');
             this.isLoading.set(false);
           }
         });
       },
       error: (error) => {
         console.error('Error obteniendo colas:', error);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudieron obtener las colas',
-          life: 3000
-        });
+        toast.error('Error al obtener las colas');
         this.isLoading.set(false);
       }
     });
@@ -474,19 +458,9 @@ export class DashboardComponent implements OnInit {
 
     if (this.selectedTimeRange !== 'custom' || (this.customDateRange && this.customDateRange.length === 2)) {
       this.loadInitialData();
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Actualización',
-        detail: 'Datos actualizados correctamente',
-        life: 3000
-      });
+      toast.success('Datos actualizados correctamente');
     } else {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Por favor seleccione un rango de fechas completo',
-        life: 3000
-      });
+      toast.warning('Por favor seleccione un rango de fechas completo');
     }
   }
 

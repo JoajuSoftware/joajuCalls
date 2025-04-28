@@ -1,9 +1,9 @@
-<div class="dashboard-container p-3">
-  <div class="mb-3 p-3 shadow-1 border-round bg-white">
+<div class="dashboard-container p-3 grid grid-cols-12 gap-4">
+  <div class="mb-3 p-3 shadow-1 border-round bg-white col-span-12">
     <div
       class="flex flex-column md:flex-row justify-content-between align-items-center"
     >
-      <div class="filters flex flex-column sm:flex-row gap-2">
+      <div class="filters flex flex-column sm:flex-row gap-4 col-span-12 h-10">
         <p-dropdown
           [options]="timeRangeOptions"
           [(ngModel)]="selectedTimeRange"
@@ -24,48 +24,48 @@
     </div>
   </div>
 
-  <div *ngIf="!isLoading()" class="grid gap-4 mb-4">
-    <div class="col-12 md:col-4 p-2">
-      <div class="kpi-card bg-white shadow-2 border-round-xl p-4 h-full transition-all hover:shadow-4">
-        <div class="flex flex-column items-center gap-x-5 text-center w-full h-full">
-          <div class="bg-blue-50 text-blue-600 p-3 border-circle mb-3 shadow-1">
+  <div *ngIf="!isLoading()" class="flex flex-col gap-6 mb-4 col-span-6">
+    <div class="p-2 h-36" >
+      <div class="kpi-card flex gap-2 items-center jusify-center bg-white shadow-2 rounded p-4 h-36 transition-all hover:shadow-4">
+        <div class="flex items-center gap-x-4 text-center">
+          <div class="bg-blue-50 text-blue-600 px-3 py-2 rounded mb-3 shadow-1 border-2 border-blue-600">
             <i class="pi pi-phone text-2xl"></i>
           </div>
-          <span class="text-sm text-gray-500 mb-2">Total Llamadas</span>
-          <span class="text-3xl font-bold text-blue-700">{{ metrics().totalCalls }}</span>
+          <p class="text-sm text-gray-500 mb-2">Total Llamadas</p>
+          <p class="text-3xl font-bold mb-2 text-blue-700">{{ metrics().totalCalls }}</p>
         </div>
       </div>
     </div>
 
-    <div class="col-12 md:col-4 p-2">
-      <div class="kpi-card bg-white shadow-2 border-round-xl p-4 h-full transition-all hover:shadow-4">
-        <div class="flex flex-column items-center gap-x-5 text-center w-full h-full">
-          <div class="bg-green-50 text-green-600 p-3 border-circle mb-3 shadow-1">
-            <i class="pi pi-check-circle text-2xl"></i>
+    <div class="p-2 h-36">
+      <div class="kpi-card bg-white shadow-2 rounded h-36 p-4 transition-all hover:shadow-4">
+        <div class="flex items-center gap-x-4 text-center w-full h-full">
+          <div class="bg-green-50 text-green-600 px-3 py-2 rounded mb-3 shadow-1">
+            <i class="pi pi-check-circle text-2xl "></i>
           </div>
-          <span class="text-sm text-gray-500 mb-2">Atendidas</span>
-          <span class="text-3xl font-bold text-green-700">{{ metrics().answeredCalls }}</span>
+          <p class="text-sm text-gray-500 mb-2">Atendidas</p>
+          <p class="text-3xl font-bold mb-2 text-green-700">{{ metrics().answeredCalls }}</p>
         </div>
       </div>
     </div>
 
-    <div class="col-12 md:col-4 p-2">
-      <div class="kpi-card bg-white shadow-2 border-round-xl p-4 h-full transition-all hover:shadow-4">
-        <div class="flex flex-column items-center gap-x-5 text-center w-full h-full">
-          <div class="bg-red-50 text-red-600 p-3 border-circle mb-3 shadow-1">
+    <div class="p-2 h-36">
+      <div class="kpi-card bg-white shadow-2 rounded h-36 p-4 transition-all hover:shadow-4">
+        <div class="flex items-center gap-x-4 text-center w-full h-full">
+          <div class="bg-red-50 text-red-600 px-3 py-2 rounded mb-3 shadow-1">
             <i class="pi pi-times-circle text-2xl"></i>
           </div>
-          <span class="text-sm text-gray-500 mb-2">Abandonadas</span>
-          <span class="text-3xl font-bold text-red-700">{{ metrics().abandonedCalls }}</span>
+          <p class="text-sm text-gray-500 mb-2">Abandonadas</p>
+          <p class="text-3xl font-bold mb-2 text-red-700">{{ metrics().abandonedCalls }}</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="grid mb-3">
+  <div class="grid mb-3 col-span-6 gap-4">
     <div class="col-12 lg:col-4 p-2">
-      <div class="card shadow-1 border-round-2xl bg-white h-full">
-        <h3 class="text-lg font-medium m-0 mb-3">Estado de Llamadas</h3>
+      <div class="card shadow-1 border-round-2xl bg-white h-full p-3">
+        <h3 class="text-lg font-medium text-center m-0 text-slate-600 mb-3">Estado de Llamadas</h3>
         <div class="chart-container">
           <p-chart
             type="doughnut"
@@ -85,9 +85,9 @@
       </div>
     </div>
 
-    <div class="col-12 lg:col-8 p-2">
-      <div class="card shadow-1 border-round-2xl bg-white h-full">
-        <h3 class="text-lg font-medium m-0 mb-3">Volumen de Llamadas</h3>
+    <div class="col-span-6 lg:col-8 p-2">
+      <div class="card shadow-1 border-round-2xl bg-white h-full p-3">
+        <h3 class="text-lg font-medium text-center m-0 text-slate-600 mb-3">Volumen de Llamadas</h3>
         <div class="chart-container">
           <p-chart
             type="line"
@@ -113,10 +113,10 @@
     </div>
   </div>
 
-  <p-tabView>
+  <p-tabView class="col-span-12">
     <p-tabPanel header="Resumen por Agente">
       <div class="card shadow-1 border-round-2xl bg-white">
-        <div class="mb-3">
+        <div class="mb-3 col-span-12">
           <p-chart
             type="bar"
             [data]="callsByAgentData"
@@ -178,7 +178,7 @@
     </p-tabPanel>
 
     <p-tabPanel header="Resumen por Cola">
-      <div class="card shadow-1 border-round-2xl bg-white">
+      <div class="card shadow-1 border-round-2xl bg-white col-span-12">
         <div class="mb-3">
           <p-chart
             type="bar"
@@ -240,7 +240,7 @@
     </p-tabPanel>
 
     <p-tabPanel header="Call Detalle">
-      <div class="card shadow-1 border-round-2xl bg-white">
+      <div class="card shadow-1 border-round-2xl bg-white col-span-12">
         <p-table
           [value]="callDetails()"
           styleClass="p-datatable-sm"

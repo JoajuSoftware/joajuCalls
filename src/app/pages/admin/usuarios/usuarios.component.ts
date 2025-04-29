@@ -24,7 +24,7 @@ import { TeamsService } from '../teams/service/teams.service';
 import { Team } from '../teams/interface/teams.interface';
 import { toast } from 'ngx-sonner';
 import { TooltipModule } from 'primeng/tooltip';
-import { ManageTeamComponent } from './components/manage-queue/manage-team.component';
+import { ManageTeamComponent } from './components/manage-team/manage-team.component';
 
 interface Perfil {
   id_perfil: string;

@@ -23,6 +23,8 @@ import { ColasService } from '../colas/services/colas.service';
 import { TeamsService } from '../teams/service/teams.service';
 import { Team } from '../teams/interface/teams.interface';
 import { toast } from 'ngx-sonner';
+import { TooltipModule } from 'primeng/tooltip';
+import { ManageTeamComponent } from './components/manage-team/manage-team.component';
 
 interface Perfil {
   id_perfil: string;
@@ -46,7 +48,9 @@ interface Perfil {
     ProgressSpinnerModule,
     MessagesModule,
     DropdownModule,
-    CheckboxModule
+    CheckboxModule,
+    TooltipModule,
+    ManageTeamComponent
   ],
   providers: [MessageService, ConfirmationService],
   templateUrl: './usuarios.component.html',
@@ -54,7 +58,7 @@ interface Perfil {
 })
 export class UsuariosComponent {
   @ViewChild('dt') dt!: Table;
-  
+
   usuarioForm: FormGroup;
   usuarioDialog: boolean = false;
   agentes: Agent[] = [];
@@ -75,6 +79,8 @@ export class UsuariosComponent {
   first: number = 0;
   isSubmitting: boolean = false;
   isEditMode: boolean = false;
+  showTeamTable: boolean = false;
+  selectedUser!: Usuario;
 
   private colasService = inject(ColasService);
   private agentesService = inject(AgentesService);
@@ -106,15 +112,15 @@ export class UsuariosComponent {
   private passwordMatchValidator(g: FormGroup) {
     const passControl = g.get('crea_pass');
     const pass2Control = g.get('crea_pass2');
-    
+
     if (!passControl || !pass2Control) return null;
-    
-    if (g.get('service')?.value === 'act_usuario' && 
-        (!passControl.value || passControl.value.length === 0) && 
+
+    if (g.get('service')?.value === 'act_usuario' &&
+        (!passControl.value || passControl.value.length === 0) &&
         (!pass2Control.value || pass2Control.value.length === 0)) {
       return null;
     }
-    
+
     return passControl.value === pass2Control.value
       ? null
       : { 'mismatch': true };
@@ -158,7 +164,7 @@ export class UsuariosComponent {
           team: agent.team,
           estado: agent.estado,
         }));
-        
+
         this.agentes = formattedAgents;
       },
       error: (error) => {
@@ -237,14 +243,14 @@ export class UsuariosComponent {
 
     const passControl = this.usuarioForm.get('crea_pass');
     const pass2Control = this.usuarioForm.get('crea_pass2');
-    
+
     if (passControl && pass2Control) {
       passControl.setValidators([Validators.required, Validators.minLength(6)]);
       pass2Control.setValidators([Validators.required]);
       passControl.updateValueAndValidity();
       pass2Control.updateValueAndValidity();
     }
-    
+
     this.submitted = false;
     this.usuarioDialog = true;
   }
@@ -266,7 +272,7 @@ export class UsuariosComponent {
     }
 
     const activoValue = usuario.activo === '1';
-    
+
     this.usuarioForm.patchValue({
       service: 'act_usuario',
       usuario: usuario.n_usuario,
@@ -285,20 +291,20 @@ export class UsuariosComponent {
 
     const passControl = this.usuarioForm.get('crea_pass');
     const pass2Control = this.usuarioForm.get('crea_pass2');
-    
+
     if (passControl && pass2Control) {
       passControl.setValidators([Validators.minLength(6)]);
       pass2Control.clearValidators();
       passControl.updateValueAndValidity();
       pass2Control.updateValueAndValidity();
     }
-    
+
     this.usuarioDialog = true;
   }
 
   saveUsuario() {
     this.submitted = true;
-   
+
     if (this.usuarioForm.valid) {
       this.isSubmitting = true;
       const formValues = {...this.usuarioForm.value};
@@ -308,7 +314,7 @@ export class UsuariosComponent {
       const formData = new FormData();
 
       if (
-        (!formValues.crea_pass || formValues.crea_pass.trim() === '') && 
+        (!formValues.crea_pass || formValues.crea_pass.trim() === '') &&
         (!formValues.crea_pass2 || formValues.crea_pass2.trim() === '')
       ) {
         delete formValues.crea_pass;
@@ -319,13 +325,13 @@ export class UsuariosComponent {
         delete formValues.nro_exten;
         delete formValues.agente;
       }
-   
+
       Object.keys(formValues).forEach(key => {
         if (formValues[key] !== null && formValues[key] !== undefined) {
           formData.append(key, formValues[key]);
         }
       });
-   
+
       if (formValues.service === 'crea_usuario') {
         this.usuariosService.createUsuario(formData).pipe(
           finalize(() => this.isSubmitting = false)
@@ -349,12 +355,12 @@ export class UsuariosComponent {
                 activo: formValues.activo,
                 id_team: formValues.id_team
               };
-        
+
               this.usuarios.unshift(newUser);
               toast.success(response.mensaje || 'Usuario creado correctamente', {
                 duration: 3000,
               });
-        
+
               this.usuarioDialog = false;
               this.submitted = false;
               this.usuarioForm.reset({
@@ -376,7 +382,7 @@ export class UsuariosComponent {
         });
       } else if (formValues.service === 'act_usuario') {
         formData.append('id_usuario', this.usuario.id_usuario);
-   
+
         this.usuariosService.updateUsuario(formData).pipe(
           finalize(() => this.isSubmitting = false)
         ).subscribe({
@@ -384,7 +390,7 @@ export class UsuariosComponent {
             if (response.err_code === "200") {
               const teamNombre = this.teams.find(t => t.id_team === formValues.id_team)?.n_team || '';
               const perfilNombre = this.perfiles.find(p => p.id_perfil === formValues.id_perfil)?.n_perfil || '';
-              
+
               const index = this.usuarios.findIndex(u => u.id_usuario === this.usuario.id_usuario);
               if (index !== -1) {
                 this.usuarios[index] = {
@@ -402,12 +408,12 @@ export class UsuariosComponent {
                   activo: formValues.activo
                 };
               }
-              
+
               toast.success(response.mensaje || 'Usuario actualizado correctamente', {
                 description: response.mensaje || 'Usuario actualizado correctamente',
                 duration: 3000,
               });
-   
+
               this.usuarioDialog = false;
               this.submitted = false;
               this.usuarioForm.reset({
@@ -437,5 +443,10 @@ export class UsuariosComponent {
   onInput(event: Event) {
     const searchValue = (event.target as HTMLInputElement).value;
     this.dt.filterGlobal(searchValue, 'contains');
+  }
+
+  manageTeam(user: Usuario) {
+    this.showTeamTable = true;
+    this.selectedUser = user;
   }
 }

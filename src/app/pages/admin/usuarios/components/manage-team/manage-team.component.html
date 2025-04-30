@@ -1,0 +1,58 @@
+<div class="border-gray-200 rounded-lg text-sm">
+  <p-table
+    [value]="teams"
+    dataKey="id_team"
+    [paginator]="true"
+    [rows]="5"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} entradas"
+    [loading]="isLoading()"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Team</th>
+        <th>Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-team>
+      <tr class="text-sm text-center">
+        <td>{{ team.id_team }}</td>
+        <td>{{ team.n_team }}</td>
+        <td>
+          <ng-container *ngIf="isTeamAssociated(team.id_team); else addButton">
+            <button
+              (click)="deleteTeam(team)"
+              pButton
+              icon="pi pi-times"
+              class="p-button-rounded p-button-sm p-button-danger"
+              pTooltip="Eliminar asociación"
+              [disabled]="isLoading()"
+            ></button>
+          </ng-container>
+          <ng-template #addButton>
+            <button
+              (click)="addTeam(team)"
+              pButton
+              icon="pi pi-plus"
+              class="p-button-rounded p-button-sm p-button-success"
+              pTooltip="Agregar asociación"
+              [disabled]="isLoading()"
+            ></button>
+          </ng-template>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4" class="text-center p-4">No se encontraron equipos.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <div *ngIf="isLoading()" class="flex justify-center items-center mt-4">
+    <p-progressSpinner strokeWidth="4" [style]="{width: '50px', height: '50px'}"></p-progressSpinner>
+  </div>
+</div>

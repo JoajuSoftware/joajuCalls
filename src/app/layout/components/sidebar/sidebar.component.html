@@ -8,25 +8,27 @@
 
   <!-- Contenedor scrolleable para la navegación -->
   <div class="flex-1 overflow-y-auto">
+    @if (userData.perfil !== 'agente') {
     <!-- PRINCIPAL -->
-    <div class="px-3 mt-3">
-      <h3
-        class="px-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
-      >
-        Principal
-      </h3>
-    </div>
+      <div class="px-3 mt-3">
+        <h3
+          class="px-3 text-xs font-medium text-gray-500 uppercase tracking-wider"
+        >
+          Principal
+        </h3>
+      </div>
 
-    <nav class="px-3 py-2">
-      <a
-        routerLink="/dashboard"
-        routerLinkActive="text-indigo-600"
-        class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer no-underline"
-      >
-        <i class="pi pi-home text-xl"></i>
-        Dashboard
-      </a>
-    </nav>
+      <nav class="px-3 py-2">
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="text-indigo-600"
+          class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:text-indigo-600 rounded-lg cursor-pointer no-underline"
+        >
+          <i class="pi pi-home text-xl"></i>
+          Dashboard
+        </a>
+      </nav>
+    }
 
     <!--INTERFACE SECTION-->
     <div class="px-3">
@@ -124,7 +126,7 @@
                 class="pi text-xl ml-auto transition-transform duration-300"
               ></i>
             </a>
-  
+
             @if(isUtilidadesOpen) {
             <div class="pl-6 space-y-1">
               <!-- REPORTE HISTORICO -->
@@ -140,7 +142,7 @@
                     class="pi scale-75 ml-auto transition-transform duration-300"
                   ></i>
                 </a>
-  
+
                 @if(isReporteHistoricoOpen) {
                 <div class="pl-4 space-y-1">
                   <a
@@ -170,7 +172,7 @@
                 </div>
                 }
               </div>
-  
+
               <!-- REPORTES MONITORES -->
               <div>
                 <a
@@ -184,7 +186,7 @@
                     class="pi scale-75 ml-auto transition-transform duration-300"
                   ></i>
                 </a>
-  
+
                 @if(isReporteMonitoreoOpen) {
                 <div class="pl-4 space-y-1">
                   <a
@@ -202,7 +204,7 @@
                 </div>
                 }
               </div>
-  
+
               <!-- PREVIEW -->
               <div>
                 <a
@@ -216,7 +218,7 @@
                     class="pi scale-75 ml-auto transition-transform duration-300"
                   ></i>
                 </a>
-  
+
                 @if(isPreviewOpen) {
                 <div class="pl-4 space-y-1">
                   <a

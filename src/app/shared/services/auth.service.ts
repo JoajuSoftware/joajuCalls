@@ -20,7 +20,7 @@ export class AuthService {
 
     signIn(credentials: any): Observable<any> {
         const formData = new FormData();
-        
+
         formData.append('service', "login_usuario");
         formData.append('usuario', credentials.username);
         formData.append('password', credentials.password);
@@ -31,6 +31,12 @@ export class AuthService {
                     const userData = JSON.parse(response.mensaje);
                     sessionStorage.setItem('userData', JSON.stringify(userData));
                     this.isAuth.next(true);
+                    if (userData.perfil === 'agente') {
+                        this.router.navigate(['/loginAgent']);
+                    }
+                    else if (userData.perfil === 'admin' || userData.perfil === 'supervisor') {
+                        this.router.navigate(['/dashboard']);
+                    }
                     this.router.navigate(['/dashboard']);
                 }
             }),

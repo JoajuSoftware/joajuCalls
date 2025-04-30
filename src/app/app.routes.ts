@@ -36,7 +36,12 @@ export const routes: Routes = [
     component: LayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: DashboardComponent },
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [roleGuard],
+        data: { requiredRole: ['admin', 'supervisor'] }
+      },
 
       // SECCIÓN ADMIN
       {

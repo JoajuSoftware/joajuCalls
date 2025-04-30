@@ -38,17 +38,14 @@ export class PausePanelComponent implements OnInit {
   isPaused = signal<boolean>(false);
   currentPause = signal<string>('');
   isLoading = signal<boolean>(false);
-  
+
   displayPasswordDialog = signal<boolean>(false);
   selectedPauseId = signal<string>('');
   selectedPauseOption: PauseOption | null = null;
-  agentPass = '';
-  passwordError = signal<string>('');
   pauseReason = signal<string>('');
 
   private pauseService: PauseService = inject(PauseService);
-  private messageService = inject(MessageService);
-  
+
   pauseOptions: PauseOption[] = [
     { id: '1', label: 'ALMUERZO' },
     { id: '2', label: 'SANITARIO' },
@@ -60,7 +57,7 @@ export class PausePanelComponent implements OnInit {
     { id: '8', label: 'SINIESTRO' },
     { id: '9', label: 'ENVIO_MENSAJES' }
   ];
-  
+
   @Output() pauseStatusChange = new EventEmitter<boolean>();
 
   ngOnInit(): void {
@@ -69,7 +66,7 @@ export class PausePanelComponent implements OnInit {
 
   checkAgentPause(): void {
     this.isLoading.set(true);
-  
+
     const userDataString = sessionStorage.getItem('userData');
     if (!userDataString) {
       console.error('No user data found in session storage');
@@ -77,29 +74,29 @@ export class PausePanelComponent implements OnInit {
       this.isLoading.set(false);
       return;
     }
-    
+
     const userData = JSON.parse(userDataString);
-  
+
     this.pauseService.checkAgentStatus(userData.agente).subscribe({
       next: (response: checkAgentStatusResponse) => {
         this.isLoading.set(false);
-        
+
         if (response.err_code === '200' && Array.isArray(response.mensaje)) {
           const agenteInfo = response.mensaje.find(item => item.agente === userData.agente);
           console.log('Información del agente:', JSON.stringify(agenteInfo, null, 2));
-  
+
           if (agenteInfo && agenteInfo.estado === 'En Pausa') {
             this.isPaused.set(true);
-            
+
             if (agenteInfo.info_pausa) {
-              
+
               if (agenteInfo.info_pausa.pausa) {
                 const pausaReason = agenteInfo.info_pausa.pausa;
-                
-                const matchedOption = this.pauseOptions.find(opt => 
+
+                const matchedOption = this.pauseOptions.find(opt =>
                   pausaReason.toUpperCase().includes(opt.label)
                 );
-                
+
                 if (matchedOption) {
                   console.log(`Coincidencia encontrada: ${matchedOption.label}`);
                   this.pauseReason.set(matchedOption.label);
@@ -116,7 +113,7 @@ export class PausePanelComponent implements OnInit {
               console.log('No se encontró info_paused en el objeto del agente');
               this.pauseReason.set('Pausa activa');
             }
-            
+
             this.pauseStatusChange.emit(true);
           } else {
             console.log('El agente no está en pausa o no se encontró');
@@ -133,29 +130,10 @@ export class PausePanelComponent implements OnInit {
     });
   }
 
-  showPasswordDialog(pauseId: string): void {
-    if (!pauseId) return;
-    
-    this.selectedPauseId.set(pauseId);
-    this.displayPasswordDialog.set(true);
-    this.passwordError.set('');
-    this.agentPass = '';
-  }
-
-  confirmPause(): void {
-    if (!this.agentPass) {
-      this.passwordError.set('Por favor, ingrese su contraseña.');
-      return;
-    }
-    
-    this.displayPasswordDialog.set(false);
-    this.activatePause(this.selectedPauseId());
-  }
-
   activatePause(pauseId: string): void {
     this.isLoading.set(true);
     this.currentPause.set(pauseId);
-  
+
     const userDataString = sessionStorage.getItem('userData');
     if (!userDataString) {
       console.error('No user data found in session storage');
@@ -163,25 +141,24 @@ export class PausePanelComponent implements OnInit {
       this.isLoading.set(false);
       return;
     }
-    
+
     const userData = JSON.parse(userDataString);
-  
+
     const pauseData = {
       agente: userData.agente,
-      ag_pass: this.agentPass,
       reason: pauseId
     };
-  
+
     this.pauseService.pause(pauseData).subscribe({
       next: (response: any) => {
         this.isLoading.set(false);
         console.log('Respuesta del servidor:', response);
-        
+
         // Verificar primero si el mensaje es "Agente vacio"
         if (response.mensaje === 'Agente vacio') {
           console.log('Agente vacío detectado');
           this.handlePauseError(response);
-        } 
+        }
         // Luego verificar el código de error
         else if (response.err_code === '200') {
           this.handleSuccessfulPause(response, pauseId);
@@ -205,26 +182,26 @@ export class PausePanelComponent implements OnInit {
       }
     });
   }
-  
+
   private handleSuccessfulPause(response: any, pauseId: string): void {
     this.isPaused.set(true);
     this.pauseStatusChange.emit(true);
-    
+
     const option = this.pauseOptions.find(opt => opt.id === pauseId);
     if (option) {
       this.pauseReason.set(option.label);
       console.log('Pausa activada con tipo:', option.label);
     }
-    
+
     toast.success('Pausa activada correctamente', {
       description: response.mensaje || 'Pausa activada correctamente'
     });
   }
-  
+
   private handlePartialSuccess(response: any, pauseId: string): void {
     this.isPaused.set(true);
     this.pauseStatusChange.emit(true);
-    
+
     const option = this.pauseOptions.find(opt => opt.id === pauseId);
     if (option) {
       this.pauseReason.set(option.label);
@@ -235,22 +212,22 @@ export class PausePanelComponent implements OnInit {
       description: response.mensaje || 'Pausa aplicada parcialmente: algunos canales no se pudieron pausar'
     });
   }
-  
+
   private handlePauseError(response: any): void {
     console.log('Manejando error de pausa:', response);
-    
+
     toast.error('Error al activar la pausa', {
       description: response.mensaje || 'Error al activar la pausa'
     });
-  
+
     this.isPaused.set(false);
     this.currentPause.set('');
     this.pauseReason.set('');
   }
-  
+
   deactivatePause(): void {
     this.isLoading.set(true);
-    
+
     const userDataString = sessionStorage.getItem('userData');
     if (!userDataString) {
       console.error('No user data found in session storage');
@@ -258,18 +235,17 @@ export class PausePanelComponent implements OnInit {
       this.isLoading.set(false);
       return;
     }
-    
+
     const userData = JSON.parse(userDataString);
-  
+
     const unPauseData = {
-      agente: userData.agente,
-      ag_pass: this.agentPass,
+      agente: userData.agente
     };
-    
+
     this.pauseService.unPause(unPauseData).subscribe({
       next: (response: any) => {
         this.isLoading.set(false);
-        
+
         if (response.err_code === '200' || (response.estado && response.estado.includes('correcta'))) {
           this.handleSuccessfulUnpause();
         } else {
@@ -287,7 +263,7 @@ export class PausePanelComponent implements OnInit {
       }
     });
   }
-  
+
   private handleSuccessfulUnpause(): void {
     this.isPaused.set(false);
     this.currentPause.set('');
@@ -299,7 +275,7 @@ export class PausePanelComponent implements OnInit {
       description: 'La pausa ha sido desactivada con éxito'
     });
   }
-  
+
   getCurrentPauseLabel(): string {
     const label = this.pauseReason();
     return label || 'Pausa activa';

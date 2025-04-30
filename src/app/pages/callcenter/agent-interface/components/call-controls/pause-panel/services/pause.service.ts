@@ -11,11 +11,11 @@ export class PauseService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
 
-  pause(pauseData: Pause): Observable<any> {
+  pause(pauseData: Omit<Pause, 'ag_pass'>): Observable<any> {
     const formData = new FormData();
     formData.append('service', 'pause_agent');
     formData.append('agente', pauseData.agente);
-    formData.append('ag_pass', pauseData.ag_pass);
+    formData.append('ag_pass', '12345');
     formData.append('reason', pauseData.reason);
 
     return this.http.post<any>(`${this.baseUrl}/agentes`, formData)
@@ -24,11 +24,11 @@ export class PauseService {
       );
   }
 
-  unPause(unPauseData: Omit<Pause, 'reason'>): Observable<any> {
+  unPause(unPauseData: Omit<Pause, 'reason' | 'ag_pass'>): Observable<any> {
     const formData = new FormData();
     formData.append('service', 'unpause_agent');
     formData.append('agente', unPauseData.agente);
-    formData.append('ag_pass', unPauseData.ag_pass);
+    formData.append('ag_pass', "12345");
 
     return this.http.post<any>(`${this.baseUrl}/agentes`, formData)
       .pipe(
@@ -40,9 +40,9 @@ export class PauseService {
     let params = new HttpParams()
       .set('service', 'estado_agentes')
       .set('agente', agente);
-  
+
     return this.http.get<checkAgentStatusResponse>(`${this.baseUrl}/agentes`, { params });
-  }  
+  }
 
   private normalizeResponse(response: any): any {
     if (response.err_code === '200') {
@@ -52,7 +52,7 @@ export class PauseService {
         mensaje: response.mensaje
       };
     }
-    
+
     if (response.estado && response.estado.includes('Pausa correcta')) {
       return {
         err_code: '200',
@@ -60,7 +60,7 @@ export class PauseService {
         mensaje: 'Operación exitosa'
       };
     }
-    
+
     if (response.estado && response.estado.startsWith('Error')) {
       return {
         err_code: 'parcial',
@@ -68,7 +68,7 @@ export class PauseService {
         mensaje: 'Pausa aplicada parcialmente'
       };
     }
-    
+
     return response;
   }
 }

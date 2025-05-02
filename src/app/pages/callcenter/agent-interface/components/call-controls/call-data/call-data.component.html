@@ -1,32 +1,34 @@
 <div class="call-data-container">
   <h2 class="section-title">Datos de la llamada:</h2>
-  
-  <ng-container *ngIf="callInfo() && callInfo().number; else noCallInfo">
+
+  <ng-container *ngIf="callInfo() && callInfo().numero; else noCallInfo">
     <div class="call-info">
       <div class="info-row">
         <span class="info-label">Número:</span>
-        <span class="info-value">{{ callInfo().number }}</span>
+        <span class="info-value">{{ callInfo().numero }}</span>
       </div>
-      
+
       <div class="info-row">
-        <span class="info-label">Hora de inicio:</span>
-        <span class="info-value">{{ formatTime(callInfo().startTime) }}</span>
+        <span class="info-label">Call ID:</span>
+        <span class="info-value">{{ callInfo().callid }}</span>
       </div>
-      
+
       <div class="info-row">
-        <span class="info-label">Duración:</span>
-        <span class="info-value">{{ callInfo().duration }}</span>
+        <span class="info-label">Inicio:</span>
+        <span class="info-value status">
+          {{ callInfo().inicio }}
+        </span>
       </div>
-      
+
       <div class="info-row">
-        <span class="info-label">Estado:</span>
-        <span class="info-value status" [ngClass]="callInfo().status">
-          {{ getStatusText(callInfo().status) }}
+        <span class="info-label">Tiempo:</span>
+        <span class="info-value status">
+          {{ displayTime }}
         </span>
       </div>
     </div>
   </ng-container>
-  
+
   <ng-template #noCallInfo>
     <div class="no-call-message">
       No hay llamada en curso

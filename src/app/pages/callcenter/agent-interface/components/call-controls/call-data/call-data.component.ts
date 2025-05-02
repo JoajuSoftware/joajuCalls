@@ -1,12 +1,7 @@
-import { Component, Input, signal, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, signal, OnInit, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-export interface CallInfo {
-  number: string;
-  startTime: Date;
-  duration: string;
-  status: 'active' | 'hold' | 'ended';
-}
+import { CallInfoService } from './services/callInfo.service';
+import { AgentCallInfo, CallInfo } from './interfaces/callInfo';
 
 @Component({
   selector: 'app-call-data',
@@ -15,95 +10,89 @@ export interface CallInfo {
   templateUrl: './call-data.component.html',
   styleUrl: './call-data.component.scss'
 })
-export class CallDataComponent implements OnChanges {
+export class CallDataComponent implements OnInit, OnDestroy {
   callInfo = signal<CallInfo | null>(null);
-  private timerInterval: any;
-  
+  userData = JSON.parse(sessionStorage.getItem('userData') || '{}')
+  private checkCallDataInterval: any;
+
+  //temporizador
+  timeInterval: any = null;
+  seconds: number = 0;
+  displayTime: string = '00:00:00';
+
+  private callInfoService: CallInfoService = inject(CallInfoService);
+
   @Input() callNumber: string = '';
   @Input() callStatus: boolean = false;
-  
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['callStatus'] && !changes['callStatus'].firstChange) {
-      const isActive = changes['callStatus'].currentValue;
-      if (!isActive) {
-        this.endCall();
-      } else if (isActive && this.callNumber) {
-        this.startCall(this.callNumber);
-      }
-    }
-    
-    if (changes['callNumber'] && !changes['callNumber'].firstChange) {
-      const newNumber = changes['callNumber'].currentValue;
-      if (newNumber && this.callStatus) {
-        this.startCall(newNumber);
-      } else if (!newNumber) {
-        this.endCall();
-      }
-    }
-    
-    if (this.callStatus && this.callNumber && 
-        (changes['callStatus']?.firstChange || changes['callNumber']?.firstChange)) {
-      this.startCall(this.callNumber);
-    }
+
+  ngOnInit() {
+    this.checkCallData();
   }
-  
-  startCall(number: string): void {
-    this.endCall();
-    
-    const startTime = new Date();
-    this.callInfo.set({
-      number,
-      startTime,
-      duration: '00:00',
-      status: 'active'
-    });
-    
-    console.log('Iniciando llamada con número:', number);
-    
-    let seconds = 0;
-    this.timerInterval = setInterval(() => {
-      seconds++;
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      const duration = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
-      
-      this.callInfo.update(info => {
-        if (info) {
-          return { ...info, duration };
+
+  checkCallData() {
+    this.checkCallDataInterval = setInterval(() => {
+      this.checkCallDataServer();
+      console.log('Checking call data...');
+    }, 2000);
+  }
+
+  checkCallDataServer() {
+    this.callInfoService.getAgentCallInfo(this.userData.agente).subscribe({
+      next: (data: AgentCallInfo) => {
+        const previousCallStatus = this.callStatus;
+        this.callInfo.set(data.mensaje.callinfo);
+        if (!this.callInfo()) {
+          this.callStatus = false;
+        } else {
+          this.callStatus = true;
         }
-        return null;
-      });
+
+        if (!previousCallStatus && this.callStatus) {
+          this.resetTimer();
+          this.startTimer();
+        } else if (previousCallStatus && !this.callStatus) {
+          this.stopTimer();
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching call info:', error);
+      }
+    })
+  }
+
+  //temporizador
+  startTimer() {
+    this.timeInterval = setInterval(() => {
+      this.seconds++;
+      const hours = Math.floor(this.seconds / 3600);
+      const minutes = Math.floor((this.seconds % 3600) / 60);
+      const seconds = this.seconds % 60;
+      this.displayTime = `${this.pad(hours)}:${this.pad(minutes)}:${this.pad(seconds)}`;
     }, 1000);
   }
-  
-  endCall(): void {
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-      this.timerInterval = null;
+
+  stopTimer() {
+    if (this.timeInterval) {
+      clearInterval(this.timeInterval);
+      this.timeInterval = null;
     }
-    this.callInfo.set(null);
   }
-  
-  setCallOnHold(onHold: boolean): void {
-    this.callInfo.update(info => {
-      if (info) {
-        return { ...info, status: onHold ? 'hold' : 'active' };
-      }
-      return null;
-    });
+
+  resetTimer() {
+    this.stopTimer();
+    this.seconds = 0;
+    this.displayTime = '00:00:00';
   }
-  
-  formatTime(date: Date): string {
-    if (!date) return '';
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  pad(value: number): string {
+    return value.toString().padStart(2, '0');
   }
-  
-  getStatusText(status: string): string {
-    switch (status) {
-      case 'active': return 'En curso';
-      case 'hold': return 'En espera';
-      case 'ended': return 'Finalizada';
-      default: return '';
+
+  ngOnDestroy() {
+    if (this.checkCallDataInterval) {
+      clearInterval(this.checkCallDataInterval);
     }
+    this.stopTimer();
+    this.resetTimer();
   }
 }

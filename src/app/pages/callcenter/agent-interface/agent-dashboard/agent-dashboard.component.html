@@ -9,23 +9,21 @@
         </app-dial-pad>
       </div>
     </div>
-    
+
     <div class="right-column">
       <div class="call-data-row">
         <div class="component-box call-data-area">
-          <app-call-data
-            [callNumber]="currentNumber()"
-            [callStatus]="isCallActive()">
+          <app-call-data>
           </app-call-data>
         </div>
-        
+
         <div class="disconnect-wrapper">
           <app-disconnect-button
             (disconnect)="handleDisconnect()">
           </app-disconnect-button>
         </div>
       </div>
-      
+
       <div class="component-box pause-area">
         <app-pause-panel
           (pauseStatusChange)="handlePauseStatusChange($event)">
@@ -33,13 +31,13 @@
       </div>
     </div>
   </div>
-  
+
   <div class="contacts-section">
     <div class="component-box contact-list-area">
       <app-contact-list (phoneNumber)="handlePhoneNumber($event)">
       </app-contact-list>
     </div>
-    
+
     <div class="component-box managed-contacts-area">
       <app-contact-manage></app-contact-manage>
     </div>

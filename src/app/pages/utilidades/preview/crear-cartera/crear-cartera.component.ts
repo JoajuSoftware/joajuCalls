@@ -1,4 +1,4 @@
-import { Component, signal, inject, OnInit, computed } from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 
@@ -19,6 +19,7 @@ import { Agent, AgentResponse } from '../../../admin/agentes/interface/agentes.i
 import { AgentesService } from '../../../admin/agentes/service/agentes.service';
 import { Cola } from '../../../admin/colas/interfaces/colas.interface';
 import { PreviewService } from '../services/preview.service';
+import { toast } from 'ngx-sonner';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class CrearCarteraComponent implements OnInit {
   private agentsService: AgentesService = inject(AgentesService)
   private queuesService: ColasService = inject(ColasService)
   private previewService: PreviewService = inject(PreviewService)
+  // private toast = inject(toast)
   fb: FormBuilder = inject(FormBuilder);
 
   teams = signal<Team[]>([]);
@@ -46,10 +48,7 @@ export class CrearCarteraComponent implements OnInit {
   data: FormGroup;
   file: File;
   queues = signal<Cola[]>([]);
-  // portfolioId = signal<string[]>([]);
   agents = signal<Agent[]>([]);
-  // portfolioId = signal<{ [key: string]: string }>({});
-  // portfolioId= signal<Map<string, string>>(new Map());
   portfolioId = signal<any[]>([{
     agent: '',
     campaignId: ''
@@ -132,10 +131,17 @@ export class CrearCarteraComponent implements OnInit {
 
   // primero validamos de que team se traeran los datos ( usuarios )
   submitForm(): void {
+
+    if(!this.selectTeamForm.valid) {
+      toast.warning('Debes seleccionar un team');
+      return;
+    }
     
     this.teamSelected.set(this.selectTeamForm.value.team);
 
     this.filteredAgents = this.totalAgents().filter(agent => agent.team === this.teamSelected().n_team)
+
+    toast.success('Team seleccionado');
 
     // console.info(this.filteredAgents)
 
@@ -179,23 +185,32 @@ export class CrearCarteraComponent implements OnInit {
   
       this.agents.set(this.data.value.agents);
 
+      if(this.agents().length === 0){
+        toast.warning('Debes llenar todos los campos');
+        return;
+      }
+
       this.createCampaigns(this.agents());
 
+      toast.success('Campañas creadas');
+
     } catch (error) {
-      alert('Error al crear la campaña');
-      console.log(error);
+    
+      console.log(error);      
+      toast.error('Error al crear la campaña');
+      return;
 
-    } finally {
-
-      this.loadingCampaigns.set(false);
-      this.campaignsReady.set(true);
-      alert('Campañas creadas');
-    }
+    } 
 
   }
 
   // Por cada agente se hace una petición para obtener el id de la campaña creada 
   createCampaigns(agent: Agent[]): void {
+
+    if(agent.length === 0){
+      toast.warning('Debes llenar todos los campos');
+      return;
+    } 
 
     agent.forEach((agent: Agent) => {
 
@@ -246,7 +261,10 @@ export class CrearCarteraComponent implements OnInit {
   // Funcion para la distribución de contactos
   distributeContacts(): void {
 
-    if(!this.campaignsReady()) return alert('Por favor espere a que se hayan creado las campañas');
+    if(!this.campaignsReady()) {
+      toast.warning('Por favor espere a que se hayan creado las campañas');
+      return;
+    } 
     
     try{
 
@@ -276,9 +294,9 @@ export class CrearCarteraComponent implements OnInit {
 
     } catch (error) {
 
-      alert('Error al distribuir los contactos');
       console.log(error);
-
+      toast.error('Error al distribuir los contactos');
+      return;
     }
 
     this.clearGroups();
@@ -318,11 +336,12 @@ export class CrearCarteraComponent implements OnInit {
     const response = this.previewService.distributeContacts(data).subscribe({
       next: (response) => {
         console.log(response);
-        alert('Contactos distribuidos');
+        toast.success('Contactos distribuidos');
       },
       error: (err) => {
         console.log(err);
-        alert('Error al distribuir los contactos');
+        toast.error('Error al distribuir los contactos');
+        return;
       },
       complete: () => {
         console.log('complete');
